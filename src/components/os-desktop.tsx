@@ -48,35 +48,7 @@ function AppContent({ id }: { id: AppId }) {
         </div>
       </div>
     );
-  if (id === "projects")
-    return (
-      <div className="grid gap-3">
-        {projects.map((p) => (
-          <article
-            key={p.name}
-            className="rounded-xl border border-[var(--line)] bg-[#101725] p-4"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="font-semibold">{p.name}</h3>
-              <span className="mono text-[10px] text-[var(--mint)]">
-                {p.status}
-              </span>
-            </div>
-            <p className="mt-2 text-sm text-[var(--muted)]">{p.description}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {p.stack.map((s) => (
-                <span
-                  key={s}
-                  className="rounded-md bg-[#202b40] px-2 py-1 text-xs text-[var(--blue)]"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
-    );
+  if (id === "projects") return <ProjectsPanel />;
   if (id === "skills")
     return (
       <div className="grid gap-4 sm:grid-cols-2">
@@ -117,36 +89,7 @@ function AppContent({ id }: { id: AppId }) {
         </div>
       </div>
     );
-  if (id === "contact")
-    return (
-      <div className="space-y-4 text-sm text-[var(--muted)]">
-        <p>El correo y los enlaces se configuran desde los datos centrales.</p>
-        <div className="grid gap-2">
-          <a
-            className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
-            href={`mailto:${profile.email}`}
-          >
-            {profile.email}
-          </a>
-          <a
-            className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
-            href={profile.github}
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub ↗
-          </a>
-          <a
-            className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
-            href={profile.linkedin}
-            target="_blank"
-            rel="noreferrer"
-          >
-            LinkedIn ↗
-          </a>
-        </div>
-      </div>
-    );
+  if (id === "contact") return <ContactPanel />;
   if (id === "files")
     return (
       <div className="mono text-sm leading-8 text-[var(--muted)]">
@@ -163,6 +106,144 @@ function AppContent({ id }: { id: AppId }) {
     );
   if (id === "settings") return <SettingsPanel />;
   return <TerminalPanel onOpen={openWindow} />;
+}
+
+function ProjectsPanel() {
+  const [query, setQuery] = useState("");
+  const visible = projects.filter((project) =>
+    `${project.name} ${project.description} ${project.stack.join(" ")}`
+      .toLowerCase()
+      .includes(query.toLowerCase()),
+  );
+  return (
+    <div className="space-y-3">
+      <label className="sr-only" htmlFor="project-search">
+        Buscar proyectos
+      </label>
+      <input
+        id="project-search"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="Buscar por nombre o tecnología…"
+        className="focus-ring w-full rounded-lg border border-[var(--line)] bg-[#0d1421] px-3 py-2 text-sm text-white placeholder:text-[#71809a]"
+      />
+      {visible.length === 0 && (
+        <p className="rounded-xl border border-[var(--line)] p-4 text-sm text-[var(--muted)]">
+          No hay proyectos que coincidan con “{query}”.
+        </p>
+      )}
+      {visible.map((p) => (
+        <article
+          key={p.name}
+          className="rounded-xl border border-[var(--line)] bg-[#101725] p-4"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-semibold">{p.name}</h3>
+            <span className="mono text-[10px] text-[var(--mint)]">
+              {p.status}
+            </span>
+          </div>
+          <p className="mt-2 text-sm text-[var(--muted)]">{p.description}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {p.stack.map((s) => (
+              <span
+                key={s}
+                className="rounded-md bg-[#202b40] px-2 py-1 text-xs text-[var(--blue)]"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function ContactPanel() {
+  const [status, setStatus] = useState("");
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const name = String(form.get("name") ?? "").trim();
+    const message = String(form.get("message") ?? "").trim();
+    if (!name || !message) {
+      setStatus("Completa tu nombre y mensaje.");
+      return;
+    }
+    const subject = encodeURIComponent(
+      `Contacto desde el portafolio — ${name}`,
+    );
+    const body = encodeURIComponent(
+      `${message}\n\nNombre: ${name}\nCorreo: ${String(form.get("email") ?? "")}`,
+    );
+    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+    setStatus("Se preparó un correo en tu cliente predeterminado.");
+  };
+  return (
+    <div className="space-y-4 text-sm text-[var(--muted)]">
+      <p>
+        El formulario usa tu cliente de correo; no almacena ni simula envíos.
+      </p>
+      <form onSubmit={submit} className="grid gap-3">
+        <input
+          name="name"
+          required
+          placeholder="Tu nombre"
+          className="focus-ring rounded-lg border border-[var(--line)] bg-[#0d1421] px-3 py-2 text-white placeholder:text-[#71809a]"
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="Tu correo (opcional)"
+          className="focus-ring rounded-lg border border-[var(--line)] bg-[#0d1421] px-3 py-2 text-white placeholder:text-[#71809a]"
+        />
+        <textarea
+          name="message"
+          required
+          minLength={10}
+          rows={4}
+          placeholder="¿En qué podemos trabajar?"
+          className="focus-ring rounded-lg border border-[var(--line)] bg-[#0d1421] px-3 py-2 text-white placeholder:text-[#71809a]"
+        />
+        <button
+          type="submit"
+          className="rounded-lg bg-[var(--mint)] px-4 py-2 text-[#08101c]"
+        >
+          Preparar correo
+        </button>
+      </form>
+      {status && (
+        <p role="status" className="text-[var(--mint)]">
+          {status}
+        </p>
+      )}
+      <div className="grid gap-2">
+        <a
+          className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
+          href={`mailto:${profile.email}`}
+        >
+          {profile.email}
+        </a>
+        <a
+          className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
+          href={profile.github}
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub ↗
+        </a>
+        <a
+          className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
+          href={profile.linkedin}
+          target="_blank"
+          rel="noreferrer"
+        >
+          LinkedIn ↗
+        </a>
+      </div>
+    </div>
+  );
 }
 
 function SettingsPanel() {
