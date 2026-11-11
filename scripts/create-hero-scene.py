@@ -157,6 +157,16 @@ def create_plant():
         leaf.rotation_euler.y = angle
 
 
+def create_desk():
+    cube("Desk", (0, 0, 0), (8.8, 0.32, 4.6), MAT["desk"], 0.12)
+    for x in (-3.65, 3.65):
+        for z in (-1.72, 1.72):
+            cube("Desk leg", (x, -1.22, z), (0.32, 2.45, 0.32), MAT["edge"], 0.06)
+    cube("Desk front apron", (0, -0.62, -1.94), (7.55, 0.82, 0.16), MAT["edge"], 0.045)
+    cube("Desk cable tray", (0, -0.3, 1.3), (2.4, 0.16, 0.54), MAT["body"], 0.05)
+    cube("Desk edge light", (0, 0.2, -2.28), (8.0, 0.025, 0.025), MAT["blue"], 0.01)
+
+
 def setup_scene():
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.object.delete(use_global=False)
@@ -165,8 +175,7 @@ def setup_scene():
             if block.users == 0:
                 datablocks.remove(block)
 
-    cube("Desk", (0, 0, 0), (8.8, 0.32, 4.6), MAT["desk"], 0.12)
-    cube("Desk edge light", (0, 0.2, -2.28), (8.0, 0.025, 0.025), MAT["blue"], 0.01)
+    create_desk()
     create_monitor()
     create_keyboard()
     create_mouse()

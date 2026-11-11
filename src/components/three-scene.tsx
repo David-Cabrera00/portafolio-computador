@@ -235,7 +235,7 @@ function BlenderWorkstation({
   const { scene } = useGLTF("/models/hero-workstation.glb");
   return (
     <group
-      position={[0.18, -1.05, -0.18]}
+      position={[0.18, -0.76, -0.18]}
       scale={0.56}
       onClick={onSelect}
       onPointerOver={(event) => {
@@ -335,7 +335,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
   };
   return (
     <Canvas
-      camera={{ position: [4.8, 2.3, 6.2], fov: 38 }}
+      camera={{ position: [4.8, 2.45, 6.5], fov: 40 }}
       dpr={[1, 1.25]}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
