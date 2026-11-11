@@ -272,6 +272,58 @@ function BlenderWorkstation({
   );
 }
 
+function RoomBackdrop() {
+  return (
+    <group>
+      <mesh position={[0, -1.42, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[14, 12]} />
+        <meshStandardMaterial color="#0a0e17" roughness={0.88} metalness={0.08} />
+      </mesh>
+      <mesh position={[0, 1.2, -2.9]}>
+        <planeGeometry args={[14, 6]} />
+        <meshStandardMaterial color="#111927" roughness={0.95} metalness={0.02} />
+      </mesh>
+      <mesh position={[-4.8, 1.1, -1.25]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[3.5, 5.2]} />
+        <meshStandardMaterial color="#0d1420" roughness={0.96} />
+      </mesh>
+      <mesh position={[0, -1.28, -2.82]}>
+        <boxGeometry args={[9.6, 0.08, 0.12]} />
+        <meshStandardMaterial color="#1b2637" roughness={0.54} metalness={0.25} />
+      </mesh>
+      <mesh position={[3.55, 1.45, -2.82]}>
+        <boxGeometry args={[2.05, 2.55, 0.05]} />
+        <meshStandardMaterial color="#182438" roughness={0.5} metalness={0.22} />
+      </mesh>
+      <mesh position={[3.55, 1.45, -2.77]}>
+        <boxGeometry args={[1.78, 2.27, 0.018]} />
+        <meshStandardMaterial
+          color="#102b50"
+          emissive="#123c72"
+          emissiveIntensity={0.28}
+          roughness={0.35}
+        />
+      </mesh>
+      <mesh position={[3.55, 1.45, -2.73]}>
+        <boxGeometry args={[0.025, 2.25, 0.025]} />
+        <meshBasicMaterial color="#78a9ff" toneMapped={false} />
+      </mesh>
+      <mesh position={[3.55, 1.45, -2.73]}>
+        <boxGeometry args={[1.8, 0.025, 0.025]} />
+        <meshBasicMaterial color="#78a9ff" toneMapped={false} />
+      </mesh>
+      <mesh position={[0, -1.39, 0.25]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[7.2, 3.2]} />
+        <meshStandardMaterial color="#101825" roughness={0.95} metalness={0.02} />
+      </mesh>
+      <mesh position={[0, -1.385, -1.34]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[7.15, 0.025]} />
+        <meshBasicMaterial color="#28456d" toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
 useGLTF.preload("/models/hero-workstation.glb");
 
 export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
@@ -303,30 +355,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         distance={4}
         color="#467dff"
       />
-      <mesh position={[0, -1.42, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[14, 12]} />
-        <meshStandardMaterial
-          color="#070a11"
-          roughness={0.82}
-          metalness={0.12}
-        />
-      </mesh>
-      <mesh position={[0, 1.2, -1.8]}>
-        <planeGeometry args={[14, 6]} />
-        <meshStandardMaterial
-          color="#0c121d"
-          roughness={0.9}
-          metalness={0.05}
-        />
-      </mesh>
-      <mesh position={[-3.1, 0, -1.65]}>
-        <boxGeometry args={[0.025, 2.8, 0.025]} />
-        <meshBasicMaterial color="#3569c7" />
-      </mesh>
-      <mesh position={[2.7, 0.15, -1.65]}>
-        <boxGeometry args={[0.018, 1.35, 0.018]} />
-        <meshBasicMaterial color="#3caa91" toneMapped={false} />
-      </mesh>
+      <RoomBackdrop />
       <ContactShadows
         position={[0, -1.36, 0]}
         opacity={0.5}

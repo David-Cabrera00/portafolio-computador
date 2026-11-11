@@ -117,10 +117,6 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <footer className="flex justify-between text-xs text-[#6f7d94]">
-              <span>Blender GLB · Procedural fallback</span>
-            <span>Click monitor to enter · keyboard alternative available</span>
-          </footer>
         </div>
       </section>
     </main>

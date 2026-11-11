@@ -56,6 +56,13 @@ button {
   font-feature-settings: normal;
 }
 .display {
+  font-family:
+    "Arial Narrow",
+    "Aptos Display",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  font-weight: 600;
   letter-spacing: -0.055em;
   text-wrap: balance;
 }
