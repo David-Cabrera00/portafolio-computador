@@ -71,6 +71,24 @@ def cylinder(name, loc, radius, depth, mat, vertices=32, rotation=(0, 0, 0)):
     return obj
 
 
+def cone(name, loc, radius1, radius2, depth, mat, vertices=32, rotation=(0, 0, 0)):
+    bpy.ops.mesh.primitive_cone_add(
+        vertices=vertices,
+        radius1=radius1,
+        radius2=radius2,
+        depth=depth,
+        location=loc,
+        rotation=rotation,
+    )
+    obj = bpy.context.object
+    obj.name = name
+    apply_mat(obj, mat)
+    bevel = obj.modifiers.new("Soft edges", "BEVEL")
+    bevel.width = 0.035
+    bevel.segments = 3
+    return obj
+
+
 def uv_sphere(name, loc, scale, mat):
     bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=12, location=loc)
     obj = bpy.context.object
@@ -117,7 +135,7 @@ def create_lamp():
     cylinder("Lamp base", (-3.0, 0.25, -0.1), 0.48, 0.08, MAT["lamp"], rotation=(math.radians(90), 0, 0))
     cube("Lamp lower arm", (-3.0, 1.05, -0.1), (0.1, 1.55, 0.1), MAT["lamp"], 0.035, rotation=(0, 0, math.radians(-10)))
     cube("Lamp upper arm", (-2.82, 2.0, -0.1), (0.1, 1.25, 0.1), MAT["lamp"], 0.035, rotation=(0, 0, math.radians(20)))
-    cylinder("Lamp shade", (-2.62, 2.62, -0.1), 0.38, 0.55, MAT["lamp"], vertices=32, rotation=(0, math.radians(90), math.radians(20)))
+    cone("Lamp shade", (-2.62, 2.62, -0.1), 0.42, 0.23, 0.58, MAT["lamp"], vertices=32, rotation=(math.radians(90), 0, math.radians(20)))
     uv_sphere("Lamp bulb", (-2.56, 2.52, -0.28), (0.12, 0.12, 0.12), MAT["mint"])
 
 
