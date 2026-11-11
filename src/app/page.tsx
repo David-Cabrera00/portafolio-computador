@@ -18,7 +18,7 @@ const ThreeScene = dynamic(
 );
 
 export default function Home() {
-  const [mode, setMode] = useState<"intro" | "scene" | "os">(() =>
+  const [mode, setMode] = useState<"intro" | "scene" | "boot" | "os">(() =>
     typeof window !== "undefined" &&
     localStorage.getItem("dev-os-intro-seen") === "true"
       ? "scene"
@@ -26,9 +26,11 @@ export default function Home() {
   );
   const enterOS = () => {
     localStorage.setItem("dev-os-intro-seen", "true");
-    setMode("os");
+    setMode("boot");
+    window.setTimeout(() => setMode("os"), 700);
   };
   if (mode === "os") return <OSDesktop onExit={() => setMode("scene")} />;
+  if (mode === "boot") return <BootScreen />;
   return (
     <main suppressHydrationWarning className="min-h-screen bg-[var(--bg)]">
       <section className="relative min-h-screen overflow-hidden">
@@ -97,6 +99,33 @@ export default function Home() {
             <span>Click monitor to enter · keyboard alternative available</span>
           </footer>
         </div>
+      </section>
+    </main>
+  );
+}
+
+function BootScreen() {
+  return (
+    <main className="grid-bg grid min-h-screen place-items-center bg-[#080b12] px-6">
+      <section className="w-full max-w-md rounded-2xl border border-[var(--line)] bg-[#111827]/80 p-6 shadow-2xl">
+        <div className="flex items-center justify-between">
+          <span className="mono text-xs tracking-[.25em] text-[var(--mint)]">
+            DEV / OS_01
+          </span>
+          <span className="mono text-xs text-[var(--muted)]">BOOT</span>
+        </div>
+        <p className="mt-12 text-2xl tracking-[-.03em]">
+          Inicializando entorno
+        </p>
+        <p className="mono mt-3 text-xs text-[var(--muted)]">
+          Cargando perfil, proyectos y herramientas…
+        </p>
+        <div className="mt-8 h-1 overflow-hidden rounded-full bg-[#26344d]">
+          <div className="h-full w-2/3 animate-pulse rounded-full bg-[var(--mint)]" />
+        </div>
+        <p className="mono mt-3 text-right text-[10px] text-[var(--muted)]">
+          READY / 68%
+        </p>
       </section>
     </main>
   );
