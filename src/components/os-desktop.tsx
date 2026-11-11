@@ -554,6 +554,18 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
       {wallpaper === "aurora" && (
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
       )}
+      <div className="pointer-events-none absolute right-6 top-6 hidden rounded-2xl border border-[var(--line)] bg-[#111827]/55 p-4 backdrop-blur-md sm:block">
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
+          <span className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">
+            SYSTEM ONLINE
+          </span>
+        </div>
+        <p className="mt-3 text-sm text-white">DEV OS / workspace</p>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Portfolio environment · secure client mode
+        </p>
+      </div>
       <div className="relative flex min-h-[calc(100vh-3.5rem)] flex-wrap content-start gap-5 p-6 sm:p-10">
         {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
           <button
@@ -619,6 +631,10 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
         </div>
         {menu && (
           <div className="absolute bottom-16 left-4 w-56 rounded-2xl border border-[var(--line)] bg-[#111827] p-2 shadow-2xl">
+            <div className="mb-1 border-b border-[var(--line)] px-3 pb-3 pt-2">
+              <p className="text-sm text-white">{profile.name}</p>
+              <p className="mt-1 text-xs text-[var(--muted)]">{profile.role}</p>
+            </div>
             <p className="px-3 py-2 text-xs text-[var(--muted)]">
               DEV OS / aplicaciones
             </p>
