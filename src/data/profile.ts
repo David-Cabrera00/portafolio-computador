@@ -1,3 +1,5 @@
+import type { Profile, Project, SkillGroups } from "@/types/portfolio";
+
 export const profile = {
   name: "Tu nombre",
   role: "Estudiante de Ingeniería de Software",
@@ -9,7 +11,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/",
   education: "Universidad por confirmar",
   experience: "Experiencia profesional por confirmar",
-};
+} satisfies Profile;
 
 export const projects = [
   {
@@ -32,7 +34,7 @@ export const projects = [
     stack: ["ESP32", "IoT"],
     status: "Borrador editable",
   },
-];
+] satisfies Project[];
 
 export const skillGroups = {
   Backend: ["Java", "Spring Boot", "Python", "Node.js", "NestJS"],
@@ -47,4 +49,4 @@ export const skillGroups = {
   ],
   "Bases de datos": ["SQL", "PostgreSQL", "MongoDB", "SQLite"],
   Herramientas: ["Git", "GitHub", "Docker", "VS Code", "UML"],
-};
+} satisfies SkillGroups;

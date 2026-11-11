@@ -6,6 +6,7 @@
 - `src/components`: experiencia 3D procedural y escritorio OS.
 - `src/store`: estado centralizado de ventanas y preferencias con Zustand.
 - `src/data`: fuente única de verdad para el contenido personal.
+- `src/types`: contratos explícitos para perfil, proyectos y habilidades.
 
 La escena 3D se carga únicamente en cliente con `dynamic(..., { ssr: false })`. El modelo actual es procedural para mantener un fallback ejecutable sin GLB. El contenido `/portfolio` no depende de WebGL.
 
