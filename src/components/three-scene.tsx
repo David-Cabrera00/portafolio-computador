@@ -218,12 +218,12 @@ function CameraApproach({ approaching }: { approaching: boolean }) {
     const target = approaching
       ? new THREE.Vector3(0, 1.25, mobile ? 3.7 : 3.2)
       : new THREE.Vector3(
-          (mobile ? 4.4 : 5.8) + Math.sin(ambient * 0.22) * 0.12,
-          (mobile ? 3.1 : 3.8) + Math.sin(ambient * 0.3) * 0.04,
-          (mobile ? 8.4 : 7.6) + Math.cos(ambient * 0.22) * 0.1,
+          (mobile ? 3.8 : 4.35) + Math.sin(ambient * 0.22) * 0.12,
+          (mobile ? 2.45 : 2.7) + Math.sin(ambient * 0.3) * 0.04,
+          (mobile ? 7.4 : 6.55) + Math.cos(ambient * 0.22) * 0.1,
         );
     camera.position.lerp(target, approaching ? 0.055 : 0.02);
-    camera.lookAt(0, approaching ? 1.2 : -0.15, 0);
+    camera.lookAt(0, approaching ? 1.2 : -0.7, 0);
   });
   return null;
 }
@@ -276,19 +276,19 @@ function BlenderWorkstation({
 function RoomBackdrop() {
   return (
     <group>
-      <mesh position={[0, -1.42, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, -2.55, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[14, 12]} />
         <meshStandardMaterial color="#0a0e17" roughness={0.88} metalness={0.08} />
       </mesh>
-      <mesh position={[0, 1.2, -2.9]}>
-        <planeGeometry args={[14, 6]} />
+      <mesh position={[0, 0.8, -2.9]}>
+        <planeGeometry args={[14, 8]} />
         <meshStandardMaterial color="#111927" roughness={0.95} metalness={0.02} />
       </mesh>
-      <mesh position={[-4.8, 1.1, -1.25]} rotation={[0, Math.PI / 2, 0]}>
-        <planeGeometry args={[3.5, 5.2]} />
+      <mesh position={[-4.8, 0.7, -1.25]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[3.5, 6.2]} />
         <meshStandardMaterial color="#0d1420" roughness={0.96} />
       </mesh>
-      <mesh position={[0, -1.28, -2.82]}>
+      <mesh position={[0, -2.4, -2.82]}>
         <boxGeometry args={[9.6, 0.08, 0.12]} />
         <meshStandardMaterial color="#1b2637" roughness={0.54} metalness={0.25} />
       </mesh>
@@ -313,13 +313,40 @@ function RoomBackdrop() {
         <boxGeometry args={[1.8, 0.025, 0.025]} />
         <meshBasicMaterial color="#78a9ff" toneMapped={false} />
       </mesh>
-      <mesh position={[0, -1.39, 0.25]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, -2.52, 0.25]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[7.2, 3.2]} />
         <meshStandardMaterial color="#101825" roughness={0.95} metalness={0.02} />
       </mesh>
-      <mesh position={[0, -1.385, -1.34]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, -2.515, -1.34]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[7.15, 0.025]} />
         <meshBasicMaterial color="#28456d" toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function DeskStructure() {
+  return (
+    <group>
+      {[-1.85, 1.85].map((x) => (
+        <group key={x}>
+          <mesh position={[x, -1.48, -0.92]} rotation={[0.18, 0, 0]}>
+            <boxGeometry args={[0.2, 1.9, 0.2]} />
+            <meshStandardMaterial color="#101827" roughness={0.35} metalness={0.65} />
+          </mesh>
+          <mesh position={[x, -1.48, 0.92]} rotation={[-0.18, 0, 0]}>
+            <boxGeometry args={[0.2, 1.9, 0.2]} />
+            <meshStandardMaterial color="#101827" roughness={0.35} metalness={0.65} />
+          </mesh>
+          <mesh position={[x, -1.9, 0]}>
+            <boxGeometry args={[0.26, 0.18, 2.05]} />
+            <meshStandardMaterial color="#1e2a3d" roughness={0.42} metalness={0.5} />
+          </mesh>
+        </group>
+      ))}
+      <mesh position={[0, -1.98, 0]}>
+        <boxGeometry args={[3.9, 0.12, 0.16]} />
+        <meshStandardMaterial color="#202d43" roughness={0.4} metalness={0.52} />
       </mesh>
     </group>
   );
@@ -362,7 +389,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
   };
   return (
     <Canvas
-      camera={{ position: [5.8, 3.8, 7.6], fov: 42 }}
+      camera={{ position: [4.35, 2.7, 6.55], fov: 38 }}
       dpr={[1, 1.25]}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
@@ -383,18 +410,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         color="#467dff"
       />
       <RoomBackdrop />
-      <WallArt
-        src="/models/posters/fight-poster.png"
-        position={[-3.65, 1.45, -2.68]}
-        size={[1.12, 1.98]}
-        rotation={-0.035}
-      />
-      <WallArt
-        src="/models/posters/glitch-poster.png"
-        position={[-2.05, 2.55, -2.67]}
-        size={[1.08, 1.08]}
-        rotation={0.025}
-      />
+      <DeskStructure />
       <WallArt
         src="/models/posters/space-poster.png"
         position={[3.55, 1.45, -2.68]}
@@ -402,7 +418,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         rotation={0.028}
       />
       <ContactShadows
-        position={[0, -1.36, 0]}
+        position={[0, -2.49, 0]}
         opacity={0.5}
         scale={8}
         blur={2.4}
@@ -418,7 +434,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         enablePan={false}
         minDistance={4}
         maxDistance={9}
-        target={[0, -0.15, 0]}
+        target={[0, -0.7, 0]}
         minPolarAngle={Math.PI / 3.8}
         maxPolarAngle={Math.PI / 2.1}
         enabled={!approaching}
