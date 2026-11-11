@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { OSDesktop } from "@/components/os-desktop";
 import { SceneBoundary } from "@/components/scene-boundary";
@@ -17,20 +17,28 @@ const ThreeScene = dynamic(
   },
 );
 
+const subscribeToIntroPreference = () => () => {};
+const getServerIntroPreference = () => false;
+const getClientIntroPreference = () =>
+  typeof window !== "undefined" &&
+  localStorage.getItem("dev-os-intro-seen") === "true";
+
 export default function Home() {
-  const [mode, setMode] = useState<"intro" | "scene" | "boot" | "os">(() =>
-    typeof window !== "undefined" &&
-    localStorage.getItem("dev-os-intro-seen") === "true"
-      ? "scene"
-      : "intro",
+  const introSeen = useSyncExternalStore(
+    subscribeToIntroPreference,
+    getClientIntroPreference,
+    getServerIntroPreference,
   );
+  const [mode, setMode] = useState<"intro" | "scene" | "boot" | "os">("intro");
   const enterOS = () => {
     localStorage.setItem("dev-os-intro-seen", "true");
     setMode("boot");
     window.setTimeout(() => setMode("os"), 700);
   };
-  if (mode === "os") return <OSDesktop onExit={() => setMode("scene")} />;
-  if (mode === "boot") return <BootScreen />;
+  const visibleMode = mode === "intro" && introSeen ? "scene" : mode;
+  if (visibleMode === "os")
+    return <OSDesktop onExit={() => setMode("scene")} />;
+  if (visibleMode === "boot") return <BootScreen />;
   return (
     <main suppressHydrationWarning className="min-h-screen bg-[var(--bg)]">
       <section className="relative min-h-screen overflow-hidden">
@@ -68,7 +76,7 @@ export default function Home() {
               software.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              {mode === "intro" && (
+              {visibleMode === "intro" && (
                 <button
                   onClick={() => setMode("scene")}
                   className="focus-ring rounded-full bg-[var(--blue)] px-5 py-3 text-sm font-medium text-[#08101c]"
@@ -77,7 +85,7 @@ export default function Home() {
                   <ArrowRight size={16} className="ml-2 inline" />
                 </button>
               )}
-              {mode === "scene" && (
+              {visibleMode === "scene" && (
                 <button
                   onClick={enterOS}
                   className="focus-ring rounded-full bg-[var(--mint)] px-5 py-3 text-sm font-medium text-[#08101c]"
