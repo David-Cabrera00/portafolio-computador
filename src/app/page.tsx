@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { OSDesktop } from "@/components/os-desktop";
 import { SceneBoundary } from "@/components/scene-boundary";
 const ThreeScene = dynamic(
@@ -42,7 +41,7 @@ export default function Home() {
     return <OSDesktop onExit={() => setMode("scene")} />;
   if (visibleMode === "boot") return <BootScreen />;
   return (
-    <main suppressHydrationWarning className="min-h-screen bg-[var(--bg)]">
+    <main suppressHydrationWarning className="min-h-screen bg-[var(--bg)]" aria-label="Portafolio 3D interactivo">
       <section className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0">
           <SceneBoundary>
@@ -54,70 +53,10 @@ export default function Home() {
             />
           </SceneBoundary>
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(8,11,18,.92)_0%,rgba(8,11,18,.68)_34%,rgba(8,11,18,.08)_75%),linear-gradient(0deg,rgba(8,11,18,.65)_0%,transparent_38%)]" />
         {monitorFocus && (
-          <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center bg-[#07101d]/20 backdrop-blur-[1px]">
-            <div className="mt-[-10vh] flex items-center gap-3 rounded-full border border-[var(--mint)]/35 bg-[#08101c]/75 px-4 py-2.5 shadow-[0_0_40px_rgba(124,227,195,.12)]">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
-              <span className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">
-                CONNECTING TO DEV OS
-              </span>
-            </div>
-          </div>
+          <div className="pointer-events-none absolute inset-0 z-20 bg-[#07101d]/35 backdrop-blur-[1px]" />
         )}
-        <div className="pointer-events-none relative z-10 flex min-h-screen flex-col justify-between p-6 sm:p-10">
-          <header className="flex items-center justify-between">
-            <span className="mono text-xs tracking-[.28em] text-[var(--mint)]">
-              DEV / OS_01
-            </span>
-            <a
-              href="/portfolio"
-              className="pointer-events-auto focus-ring rounded-full border border-[var(--line)] px-4 py-2 text-xs text-[var(--muted)] hover:text-white"
-            >
-              Ver portafolio clásico{" "}
-              <ExternalLink size={13} className="ml-2 inline" />
-            </a>
-          </header>
-          <div className="max-w-xl pb-16 sm:pb-20">
-            <div className="mb-5 flex items-center gap-2 text-xs uppercase tracking-[.22em] text-[var(--blue)]">
-              <Sparkles size={14} /> interactive portfolio system
-            </div>
-            <h1 className="display max-w-2xl text-5xl font-semibold leading-[.98] sm:text-7xl">
-              Una interfaz para contar cómo pienso.
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-7 text-[var(--muted)]">
-              Explora una workstation 3D, entra a un escritorio web y
-              conoce proyectos, habilidades y el camino de un ingeniero de
-              software.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {visibleMode === "intro" && (
-                <button
-                  onClick={() => setMode("scene")}
-                  className="pointer-events-auto focus-ring rounded-full bg-[var(--blue)] px-5 py-3 text-sm font-medium text-[#08101c]"
-                >
-                  Iniciar experiencia{" "}
-                  <ArrowRight size={16} className="ml-2 inline" />
-                </button>
-              )}
-              {visibleMode === "scene" && (
-                <button
-                  onClick={enterOS}
-                  className="pointer-events-auto focus-ring rounded-full bg-[var(--mint)] px-5 py-3 text-sm font-medium text-[#08101c]"
-                >
-                  Entrar al sistema{" "}
-                  <ArrowRight size={16} className="ml-2 inline" />
-                </button>
-              )}
-              <button
-                onClick={enterOS}
-                className="pointer-events-auto focus-ring rounded-full border border-[var(--line)] px-5 py-3 text-sm text-white"
-              >
-                Omitir introducción
-              </button>
-            </div>
-          </div>
-        </div>
+        <p className="sr-only">Haz click en el monitor para entrar al portafolio interactivo.</p>
       </section>
     </main>
   );
