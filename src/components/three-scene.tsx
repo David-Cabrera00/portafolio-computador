@@ -216,14 +216,14 @@ function CameraApproach({ approaching }: { approaching: boolean }) {
     const ambient = clock.elapsedTime;
     const mobile = size.width < 640;
     const target = approaching
-      ? new THREE.Vector3(0, 1.25, mobile ? 3.7 : 3.2)
+      ? new THREE.Vector3(-0.35, 2.35, mobile ? 3.1 : 2.25)
       : new THREE.Vector3(
           (mobile ? 3.8 : 4.35) + Math.sin(ambient * 0.22) * 0.12,
           (mobile ? 2.45 : 2.7) + Math.sin(ambient * 0.3) * 0.04,
           (mobile ? 7.4 : 6.55) + Math.cos(ambient * 0.22) * 0.1,
         );
     camera.position.lerp(target, approaching ? 0.055 : 0.02);
-    camera.lookAt(-0.3, approaching ? 1.55 : 1.1, -0.45);
+    camera.lookAt(-0.35, approaching ? 2.38 : 1.1, approaching ? -0.3 : -0.45);
   });
   return null;
 }
