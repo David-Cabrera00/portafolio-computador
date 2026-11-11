@@ -10,6 +10,16 @@
   --blue: #78a9ff;
   --mint: #7ce3c3;
 }
+[data-theme="dusk"] {
+  --bg: #120d1c;
+  --panel: #1c1429;
+  --surface: #261a38;
+  --line: #49355f;
+  --text: #fbf5ff;
+  --muted: #c6b5d7;
+  --blue: #c39bff;
+  --mint: #8fe5d0;
+}
 * {
   box-sizing: border-box;
 }

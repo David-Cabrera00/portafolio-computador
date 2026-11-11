@@ -559,7 +559,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
   return (
     <main
       data-theme={theme}
-      className={`relative min-h-screen overflow-hidden pb-14 ${wallpaper === "grid" ? "grid-bg bg-[#0b101b]" : wallpaper === "plain" ? "bg-[#0b101b]" : "bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.16),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.1),transparent_28%)]"} ${theme === "dusk" ? "saturate-75" : ""}`}
+      className={`relative min-h-screen overflow-hidden pb-14 ${wallpaper === "grid" ? "grid-bg bg-[var(--bg)]" : wallpaper === "plain" ? "bg-[var(--bg)]" : "bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.16),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.1),transparent_28%)]"}`}
     >
       {wallpaper === "aurora" && (
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
