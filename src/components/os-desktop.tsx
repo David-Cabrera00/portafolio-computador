@@ -296,13 +296,32 @@ function SettingsPanel() {
 }
 
 function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
+  const commandNames = [
+    "help",
+    "about",
+    "projects",
+    "skills",
+    "experience",
+    "education",
+    "contact",
+    "whoami",
+    "clear",
+    "date",
+    "echo",
+    "theme",
+    "open",
+  ];
   const [lines, setLines] = useState([
     "DEV OS terminal — escribe help para comenzar.",
   ]);
   const [value, setValue] = useState("");
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
   const run = () => {
     const command = value.trim();
     if (!command) return;
+    setHistory((old) => [...old, command]);
+    setHistoryIndex(-1);
     const [name, arg] = command.split(/\s+/);
     let output = "";
     if (name === "help")
@@ -329,6 +348,29 @@ function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
     setLines((old) => [...old, `> ${command}`, ...output.split("\n")]);
     setValue("");
   };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") run();
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      const next =
+        historyIndex < 0 ? history.length - 1 : Math.max(0, historyIndex - 1);
+      setHistoryIndex(next);
+      setValue(history[next] ?? "");
+    }
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      const next = historyIndex < 0 ? -1 : historyIndex + 1;
+      setHistoryIndex(next);
+      setValue(next >= 0 ? (history[next] ?? "") : "");
+    }
+    if (event.key === "Tab") {
+      event.preventDefault();
+      const match = commandNames.find((command) =>
+        command.startsWith(value.toLowerCase()),
+      );
+      if (match) setValue(match);
+    }
+  };
   return (
     <div className="mono flex h-full min-h-[280px] flex-col rounded-lg bg-[#090d15] p-3 text-xs">
       <div className="flex-1 whitespace-pre-wrap text-[#a9bad4]">
@@ -345,7 +387,7 @@ function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
           autoFocus
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && run()}
+          onKeyDown={handleKeyDown}
           className="min-w-0 flex-1 bg-transparent text-white outline-none"
           placeholder="escribe un comando..."
         />
