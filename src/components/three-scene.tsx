@@ -6,6 +6,7 @@ import {
   Float,
   OrbitControls,
   RoundedBox,
+  ContactShadows,
 } from "@react-three/drei";
 import { useRef, useState } from "react";
 import * as THREE from "three";
@@ -79,6 +80,34 @@ function Computer({
           <boxGeometry args={[1.8, 0.08, 0.75]} />
           <meshStandardMaterial color="#26334a" />
         </mesh>
+        <group position={[0.15, -1.08, 0.2]} rotation={[-0.05, 0, 0]}>
+          <RoundedBox args={[1.85, 0.06, 0.65]} radius={0.04} smoothness={3}>
+            <meshStandardMaterial
+              color="#202c42"
+              metalness={0.35}
+              roughness={0.45}
+            />
+          </RoundedBox>
+          <mesh position={[0, 0.035, 0]}>
+            <boxGeometry args={[1.55, 0.012, 0.42]} />
+            <meshStandardMaterial color="#52627d" roughness={0.65} />
+          </mesh>
+        </group>
+        <Float speed={1.5} rotationIntensity={0.08} floatIntensity={0.06}>
+          <RoundedBox
+            args={[0.38, 0.12, 0.62]}
+            radius={0.08}
+            smoothness={4}
+            position={[1.55, -1.03, 0.18]}
+            rotation={[0, -0.12, 0]}
+          >
+            <meshStandardMaterial
+              color="#26344d"
+              metalness={0.45}
+              roughness={0.34}
+            />
+          </RoundedBox>
+        </Float>
       </group>
     </Float>
   );
@@ -129,6 +158,14 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         color="#78a9ff"
       />
       <pointLight position={[-4, 1, 1]} intensity={18} color="#7ce3c3" />
+      <ContactShadows
+        position={[0, -1.36, 0]}
+        opacity={0.5}
+        scale={8}
+        blur={2.4}
+        far={4}
+        color="#000000"
+      />
       <CameraApproach approaching={approaching} />
       <Computer approaching={approaching} onSelect={selectMonitor} />
       <Environment preset="city" />

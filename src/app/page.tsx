@@ -39,6 +39,7 @@ export default function Home() {
             />
           </SceneBoundary>
         </div>
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(8,11,18,.92)_0%,rgba(8,11,18,.68)_34%,rgba(8,11,18,.08)_75%),linear-gradient(0deg,rgba(8,11,18,.65)_0%,transparent_38%)]" />
         <div className="relative z-10 flex min-h-screen flex-col justify-between p-6 sm:p-10">
           <header className="flex items-center justify-between">
             <span className="mono text-xs tracking-[.28em] text-[var(--mint)]">

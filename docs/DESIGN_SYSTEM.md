@@ -6,4 +6,5 @@
 - Interfaz sin glassmorphism dominante: capas opacas, bordes finos y sombras suaves.
 - Tipografía de interfaz sans-serif; terminal y etiquetas técnicas usan monospace.
 - Motion: transform/opacity, breve y con respeto a `prefers-reduced-motion`.
+- Escena: la luz azul define el monitor, la menta funciona como rebote ambiental y las sombras de contacto anclan los objetos a la superficie.
 - Foco visible con anillo menta; los controles interactivos son botones o enlaces reales.
