@@ -100,6 +100,18 @@ function Computer({
           <meshStandardMaterial color="#2b3850" metalness={0.6} />
         </mesh>
         <RoundedBox
+          args={[1.5, 0.12, 0.78]}
+          radius={0.06}
+          smoothness={4}
+          position={[0, -1.08, 0]}
+        >
+          <meshStandardMaterial
+            color="#202d43"
+            metalness={0.55}
+            roughness={0.3}
+          />
+        </RoundedBox>
+        <RoundedBox
           args={[5.1, 0.22, 2.1]}
           radius={0.08}
           position={[0, -1.25, 0]}
@@ -114,6 +126,18 @@ function Computer({
           <boxGeometry args={[1.8, 0.08, 0.75]} />
           <meshStandardMaterial color="#26334a" />
         </mesh>
+        <RoundedBox
+          args={[3.7, 0.025, 1.65]}
+          radius={0.05}
+          smoothness={3}
+          position={[0.45, -1.1, 0.12]}
+        >
+          <meshStandardMaterial
+            color="#0b111d"
+            roughness={0.7}
+            metalness={0.08}
+          />
+        </RoundedBox>
         <group position={[0.15, -1.08, 0.2]} rotation={[-0.05, 0, 0]}>
           <RoundedBox args={[1.85, 0.06, 0.65]} radius={0.04} smoothness={3}>
             <meshStandardMaterial
