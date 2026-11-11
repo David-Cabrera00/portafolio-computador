@@ -218,12 +218,12 @@ function CameraApproach({ approaching }: { approaching: boolean }) {
     const target = approaching
       ? new THREE.Vector3(0, 1.25, mobile ? 3.7 : 3.2)
       : new THREE.Vector3(
-          (mobile ? 3.8 : 4.8) + Math.sin(ambient * 0.22) * 0.12,
-          (mobile ? 2.5 : 2.3) + Math.sin(ambient * 0.3) * 0.04,
-          (mobile ? 7.3 : 6.2) + Math.cos(ambient * 0.22) * 0.1,
+          (mobile ? 4.4 : 5.8) + Math.sin(ambient * 0.22) * 0.12,
+          (mobile ? 3.1 : 3.8) + Math.sin(ambient * 0.3) * 0.04,
+          (mobile ? 8.4 : 7.6) + Math.cos(ambient * 0.22) * 0.1,
         );
     camera.position.lerp(target, approaching ? 0.055 : 0.02);
-    camera.lookAt(0, approaching ? 1.2 : 0.5, 0);
+    camera.lookAt(0, approaching ? 1.2 : -0.15, 0);
   });
   return null;
 }
@@ -236,7 +236,7 @@ function BlenderWorkstation({
   const { scene } = useGLTF("/models/hero-workstation.glb");
   return (
     <group
-      position={[0.18, -0.76, -0.18]}
+      position={[0.18, -0.3, -0.18]}
       scale={0.56}
       onClick={onSelect}
       onPointerOver={(event) => {
@@ -362,7 +362,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
   };
   return (
     <Canvas
-      camera={{ position: [4.8, 2.45, 6.5], fov: 40 }}
+      camera={{ position: [5.8, 3.8, 7.6], fov: 42 }}
       dpr={[1, 1.25]}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
@@ -418,7 +418,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         enablePan={false}
         minDistance={4}
         maxDistance={9}
-        target={[0, 0.25, 0]}
+        target={[0, -0.15, 0]}
         minPolarAngle={Math.PI / 3.8}
         maxPolarAngle={Math.PI / 2.1}
         enabled={!approaching}
