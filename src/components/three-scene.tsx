@@ -71,10 +71,8 @@ function Computer({
           }}
         >
           <planeGeometry args={[2.85, 1.7]} />
-          <meshStandardMaterial
-            color="#101a2b"
-            emissive="#234a87"
-            emissiveIntensity={approaching ? 0.65 : hovered ? 0.55 : 0.35}
+          <meshBasicMaterial
+            color={approaching ? "#173b78" : hovered ? "#15366d" : "#102a59"}
           />
         </mesh>
         <group position={[0, 1.25, 0.165]} onClick={onSelect}>
@@ -298,9 +296,9 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         <boxGeometry args={[0.025, 2.8, 0.025]} />
         <meshBasicMaterial color="#3569c7" />
       </mesh>
-      <mesh position={[3.1, 0.35, -1.65]}>
-        <boxGeometry args={[0.025, 1.9, 0.025]} />
-        <meshBasicMaterial color="#48b99c" />
+      <mesh position={[2.7, 0.15, -1.65]}>
+        <boxGeometry args={[0.018, 1.35, 0.018]} />
+        <meshBasicMaterial color="#3caa91" toneMapped={false} />
       </mesh>
       <ContactShadows
         position={[0, -1.36, 0]}
