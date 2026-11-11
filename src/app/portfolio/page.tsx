@@ -114,13 +114,31 @@ export default function PortfolioPage() {
           <h2 className="max-w-xl text-5xl tracking-[-.05em]">
             ¿Construimos algo con criterio?
           </h2>
-          <a
-            href={`mailto:${profile.email}`}
-            className="rounded-full bg-[var(--mint)] px-5 py-3 text-sm text-[#08101c]"
-          >
-            Escribir un correo{" "}
-            <ArrowUpRight size={16} className="ml-2 inline" />
-          </a>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={`mailto:${profile.email}`}
+              className="rounded-full bg-[var(--mint)] px-5 py-3 text-sm text-[#08101c]"
+            >
+              Escribir un correo{" "}
+              <ArrowUpRight size={16} className="ml-2 inline" />
+            </a>
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-[var(--line)] px-5 py-3 text-sm text-[var(--blue)]"
+            >
+              GitHub ↗
+            </a>
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-[var(--line)] px-5 py-3 text-sm text-[var(--blue)]"
+            >
+              LinkedIn ↗
+            </a>
+          </div>
         </div>
       </section>
       <footer className="flex justify-between border-t border-[var(--line)] py-6 text-xs text-[#71809a]">
