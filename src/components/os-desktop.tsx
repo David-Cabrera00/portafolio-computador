@@ -374,6 +374,7 @@ function WindowView({ id }: { id: AppId }) {
   const maximize = useOSStore((s) => s.maximizeWindow);
   const focus = useOSStore((s) => s.focusWindow);
   const move = useOSStore((s) => s.moveWindow);
+  const activeId = useOSStore((s) => s.activeId);
   const dragRef = useRef<{
     startX: number;
     startY: number;
@@ -431,18 +432,21 @@ function WindowView({ id }: { id: AppId }) {
   return (
     <section
       onPointerDown={() => focus(id)}
-      style={
-        win.maximized
-          ? undefined
-          : { left: `${win.position.x}%`, top: `${win.position.y}%` }
-      }
-      className={`absolute ${win.maximized ? "inset-3" : "w-[min(720px,84vw)] max-sm:inset-3 max-sm:w-auto"} z-20 overflow-hidden rounded-2xl border border-[var(--line)] bg-[#111827]/95 shadow-2xl backdrop-blur-xl`}
+      style={{
+        zIndex: win.zIndex,
+        ...(win.maximized
+          ? {}
+          : { left: `${win.position.x}%`, top: `${win.position.y}%` }),
+      }}
+      className={`absolute ${win.maximized ? "inset-3" : "w-[min(720px,84vw)] max-sm:inset-3 max-sm:w-auto"} overflow-hidden rounded-2xl border bg-[#111827]/95 shadow-2xl backdrop-blur-xl ${activeId === id ? "border-[var(--blue)]/70 shadow-[0_0_35px_rgba(120,169,255,.12)]" : "border-[var(--line)]"}`}
     >
       <header
         onPointerDown={startDragging}
         className="flex touch-none cursor-move items-center justify-between border-b border-[var(--line)] bg-[#171d2c] px-4 py-3"
       >
         <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-[#ff6b7a]" />
+          <span className="h-2 w-2 rounded-full bg-[#ffd166]" />
           <span className="h-2 w-2 rounded-full bg-[var(--mint)]" />
           <span className="text-sm font-medium">{win.title}</span>
         </div>
