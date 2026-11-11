@@ -111,8 +111,8 @@ function Computer({
             />
           </mesh>
         </group>
-        <mesh position={[0, -0.05, 0]}>
-          <boxGeometry args={[0.35, 2.3, 0.25]} />
+        <mesh position={[0, -0.45, 0]}>
+          <boxGeometry args={[0.35, 1.35, 0.25]} />
           <meshStandardMaterial color="#2b3850" metalness={0.6} />
         </mesh>
         <RoundedBox
