@@ -13,4 +13,13 @@ describe("DEV OS contract", () => {
     useOSStore.getState().minimizeWindow("projects");
     expect(useOSStore.getState().windows.projects.minimized).toBe(true);
   });
+
+  it("resets preferences to safe defaults", async () => {
+    const { useOSStore } = await import("./os-store");
+    useOSStore.getState().setTheme("dusk");
+    useOSStore.getState().setSounds(true);
+    useOSStore.getState().resetPreferences();
+    expect(useOSStore.getState().theme).toBe("dark");
+    expect(useOSStore.getState().sounds).toBe(false);
+  });
 });
