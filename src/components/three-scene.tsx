@@ -315,6 +315,8 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         enablePan={false}
         minDistance={4}
         maxDistance={9}
+        target={[0, 0.25, 0]}
+        minPolarAngle={Math.PI / 3.8}
         maxPolarAngle={Math.PI / 2.1}
         enabled={!approaching}
       />
