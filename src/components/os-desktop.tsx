@@ -111,11 +111,13 @@ function AppContent({ id }: { id: AppId }) {
 
 function ProjectsPanel() {
   const [query, setQuery] = useState("");
+  const [selectedName, setSelectedName] = useState<string | null>(null);
   const visible = projects.filter((project) =>
     `${project.name} ${project.description} ${project.stack.join(" ")}`
       .toLowerCase()
       .includes(query.toLowerCase()),
   );
+  const selected = projects.find((project) => project.name === selectedName);
   return (
     <div className="space-y-3">
       <label className="sr-only" htmlFor="project-search">
@@ -134,9 +136,14 @@ function ProjectsPanel() {
         </p>
       )}
       {visible.map((p) => (
-        <article
+        <button
+          type="button"
           key={p.name}
-          className="rounded-xl border border-[var(--line)] bg-[#101725] p-4"
+          onClick={() =>
+            setSelectedName(selectedName === p.name ? null : p.name)
+          }
+          aria-expanded={selectedName === p.name}
+          className={`block w-full rounded-xl border bg-[#101725] p-4 text-left transition ${selectedName === p.name ? "border-[var(--blue)]" : "border-[var(--line)] hover:border-[var(--blue)]/60"}`}
         >
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-semibold">{p.name}</h3>
@@ -155,8 +162,21 @@ function ProjectsPanel() {
               </span>
             ))}
           </div>
-        </article>
+        </button>
       ))}
+      {selected && (
+        <aside className="rounded-xl border border-[var(--blue)]/50 bg-[#162238] p-4">
+          <p className="mono text-[10px] text-[var(--mint)]">PROJECT DETAIL</p>
+          <h3 className="mt-2 text-lg">{selected.name}</h3>
+          <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+            {selected.description}
+          </p>
+          <p className="mt-3 text-xs text-[#71809a]">
+            Repositorio, demo, capturas y responsabilidades: pendientes de
+            confirmar.
+          </p>
+        </aside>
+      )}
     </div>
   );
 }
