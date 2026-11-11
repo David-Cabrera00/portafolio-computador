@@ -103,9 +103,21 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
   };
   return (
     <Canvas
+      fallback={
+        <div className="grid h-full place-items-center rounded-2xl border border-[var(--line)] bg-[#0b101b] p-8 text-center text-sm text-[var(--muted)]">
+          La escena 3D no está disponible en este dispositivo.
+          <br />
+          <a
+            className="mt-3 inline-block text-[var(--mint)] underline"
+            href="/portfolio"
+          >
+            Abrir portafolio clásico
+          </a>
+        </div>
+      }
       camera={{ position: [4.8, 2.3, 6.2], fov: 38 }}
       dpr={[1, 1.5]}
-      gl={{ antialias: true }}
+      gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       <color attach="background" args={["#080b12"]} />
       <ambientLight intensity={0.65} />
