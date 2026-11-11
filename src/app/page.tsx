@@ -30,8 +30,10 @@ export default function Home() {
     getServerIntroPreference,
   );
   const [mode, setMode] = useState<"intro" | "scene" | "boot" | "os">("intro");
+  const [monitorFocus, setMonitorFocus] = useState(false);
   const enterOS = () => {
     localStorage.setItem("dev-os-intro-seen", "true");
+    setMonitorFocus(false);
     setMode("boot");
     window.setTimeout(() => setMode("os"), 1200);
   };
@@ -45,11 +47,24 @@ export default function Home() {
         <div className="absolute inset-0">
           <SceneBoundary>
             <ThreeScene
-              onMonitorClick={() => window.setTimeout(enterOS, 850)}
+              onMonitorClick={() => {
+                setMonitorFocus(true);
+                window.setTimeout(enterOS, 850);
+              }}
             />
           </SceneBoundary>
         </div>
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(8,11,18,.92)_0%,rgba(8,11,18,.68)_34%,rgba(8,11,18,.08)_75%),linear-gradient(0deg,rgba(8,11,18,.65)_0%,transparent_38%)]" />
+        {monitorFocus && (
+          <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center bg-[#07101d]/20 backdrop-blur-[1px]">
+            <div className="mt-[-10vh] flex items-center gap-3 rounded-full border border-[var(--mint)]/35 bg-[#08101c]/75 px-4 py-2.5 shadow-[0_0_40px_rgba(124,227,195,.12)]">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
+              <span className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">
+                CONNECTING TO DEV OS
+              </span>
+            </div>
+          </div>
+        )}
         <div className="pointer-events-none relative z-10 flex min-h-screen flex-col justify-between p-6 sm:p-10">
           <header className="flex items-center justify-between">
             <span className="mono text-xs tracking-[.28em] text-[var(--mint)]">

@@ -222,7 +222,7 @@ function CameraApproach({ approaching }: { approaching: boolean }) {
           (mobile ? 7.3 : 6.2) + Math.cos(ambient * 0.22) * 0.1,
         );
     camera.position.lerp(target, approaching ? 0.055 : 0.02);
-    camera.lookAt(0, 0.5, 0);
+    camera.lookAt(0, approaching ? 1.2 : 0.5, 0);
   });
   return null;
 }
