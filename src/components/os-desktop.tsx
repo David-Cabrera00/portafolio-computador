@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   FileText,
   Folder,
+  BookOpen,
+  BriefcaseBusiness,
   Mail,
   Monitor,
   Settings,
@@ -22,6 +24,8 @@ const apps: { id: AppId; label: string; icon: typeof UserRound }[] = [
   { id: "about", label: "Sobre mí", icon: UserRound },
   { id: "projects", label: "Proyectos", icon: Folder },
   { id: "skills", label: "Habilidades", icon: Wrench },
+  { id: "experience", label: "Experiencia", icon: BriefcaseBusiness },
+  { id: "education", label: "Educación", icon: BookOpen },
   { id: "terminal", label: "Terminal", icon: Terminal },
   { id: "files", label: "Archivos", icon: FileText },
   { id: "contact", label: "Contacto", icon: Mail },
@@ -91,6 +95,26 @@ function AppContent({ id }: { id: AppId }) {
             </div>
           </div>
         ))}
+      </div>
+    );
+  if (id === "experience")
+    return (
+      <div className="space-y-4">
+        <p className="text-lg">Experiencia</p>
+        <div className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm leading-6 text-[var(--muted)]">
+          {profile.experience}. Añade aquí únicamente experiencias, proyectos
+          académicos o participaciones verificables.
+        </div>
+      </div>
+    );
+  if (id === "education")
+    return (
+      <div className="space-y-4">
+        <p className="text-lg">Formación académica</p>
+        <div className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm leading-6 text-[var(--muted)]">
+          {profile.education}. Completa institución, programa, semestre y fechas
+          cuando estén confirmados.
+        </div>
       </div>
     );
   if (id === "contact")
@@ -208,6 +232,8 @@ function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
       output = projects.map((p) => `• ${p.name}`).join("\n");
     else if (name === "skills")
       output = Object.values(skillGroups).flat().join(" · ");
+    else if (name === "experience") output = profile.experience;
+    else if (name === "education") output = profile.education;
     else if (name === "whoami") output = profile.name;
     else if (name === "date") output = new Date().toLocaleString("es-CO");
     else if (name === "echo") output = command.slice(5);

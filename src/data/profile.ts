@@ -8,17 +8,43 @@ export const profile = {
   github: "https://github.com/",
   linkedin: "https://www.linkedin.com/",
   education: "Universidad por confirmar",
+  experience: "Experiencia profesional por confirmar",
 };
 
 export const projects = [
-  { name: "MediCitas", description: "Sistema web de gestión de citas médicas.", stack: ["Java", "Spring Boot", "MongoDB"], status: "Borrador editable" },
-  { name: "Tanuag", description: "Proyecto con entidades implementadas mediante TypeORM y PostgreSQL.", stack: ["TypeORM", "PostgreSQL"], status: "Borrador editable" },
-  { name: "Collar inteligente", description: "Prototipo con ESP32 para geolocalización de ganado y monitoreo de batería.", stack: ["ESP32", "IoT"], status: "Borrador editable" },
+  {
+    name: "MediCitas",
+    description: "Sistema web de gestión de citas médicas.",
+    stack: ["Java", "Spring Boot", "MongoDB"],
+    status: "Borrador editable",
+  },
+  {
+    name: "Tanuag",
+    description:
+      "Proyecto con entidades implementadas mediante TypeORM y PostgreSQL.",
+    stack: ["TypeORM", "PostgreSQL"],
+    status: "Borrador editable",
+  },
+  {
+    name: "Collar inteligente",
+    description:
+      "Prototipo con ESP32 para geolocalización de ganado y monitoreo de batería.",
+    stack: ["ESP32", "IoT"],
+    status: "Borrador editable",
+  },
 ];
 
 export const skillGroups = {
   Backend: ["Java", "Spring Boot", "Python", "Node.js", "NestJS"],
-  Frontend: ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS"],
+  Frontend: [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Tailwind CSS",
+  ],
   "Bases de datos": ["SQL", "PostgreSQL", "MongoDB", "SQLite"],
   Herramientas: ["Git", "GitHub", "Docker", "VS Code", "UML"],
 };

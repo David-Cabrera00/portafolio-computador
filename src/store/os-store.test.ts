@@ -7,6 +7,8 @@ describe("DEV OS contract", () => {
       "about",
       "projects",
       "skills",
+      "experience",
+      "education",
       "terminal",
       "files",
       "contact",
