@@ -43,18 +43,6 @@ function Computer({
             roughness={0.28}
           />
         </RoundedBox>
-        <RoundedBox
-          args={[3.04, 1.84, 0.035]}
-          radius={0.1}
-          smoothness={4}
-          position={[0, 1.25, 0.095]}
-        >
-          <meshStandardMaterial
-            color="#0a101b"
-            metalness={0.65}
-            roughness={0.24}
-          />
-        </RoundedBox>
         <mesh
           ref={screen}
           position={[0, 1.25, 0.15]}
