@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { OSDesktop } from "@/components/os-desktop";
 import { SceneBoundary } from "@/components/scene-boundary";
@@ -33,7 +33,7 @@ export default function Home() {
   const enterOS = () => {
     localStorage.setItem("dev-os-intro-seen", "true");
     setMode("boot");
-    window.setTimeout(() => setMode("os"), 700);
+    window.setTimeout(() => setMode("os"), 1200);
   };
   const visibleMode = mode === "intro" && introSeen ? "scene" : mode;
   if (visibleMode === "os")
@@ -71,7 +71,7 @@ export default function Home() {
               Una interfaz para contar cómo pienso.
             </h1>
             <p className="mt-6 max-w-md text-base leading-7 text-[var(--muted)]">
-              Explora una computadora procedural, entra a un escritorio web y
+              Explora una workstation 3D, entra a un escritorio web y
               conoce proyectos, habilidades y el camino de un ingeniero de
               software.
             </p>
@@ -113,6 +113,19 @@ export default function Home() {
 }
 
 function BootScreen() {
+  const [progress, setProgress] = useState(16);
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setProgress((current) => Math.min(100, current + 8));
+    }, 90);
+    return () => window.clearInterval(timer);
+  }, []);
+  const status =
+    progress < 40
+      ? "Montando entorno visual…"
+      : progress < 72
+        ? "Sincronizando proyectos y herramientas…"
+        : "Escritorio listo."
   return (
     <main className="grid-bg grid min-h-screen place-items-center bg-[#080b12] px-6">
       <section className="w-full max-w-md rounded-2xl border border-[var(--line)] bg-[#111827]/80 p-6 shadow-2xl">
@@ -125,14 +138,17 @@ function BootScreen() {
         <p className="mt-12 text-2xl tracking-[-.03em]">
           Inicializando entorno
         </p>
-        <p className="mono mt-3 text-xs text-[var(--muted)]">
-          Cargando perfil, proyectos y herramientas…
+        <p aria-live="polite" className="mono mt-3 text-xs text-[var(--muted)]">
+          {status}
         </p>
         <div className="mt-8 h-1 overflow-hidden rounded-full bg-[#26344d]">
-          <div className="h-full w-2/3 animate-pulse rounded-full bg-[var(--mint)]" />
+          <div
+            className="h-full rounded-full bg-[var(--mint)] transition-[width] duration-100"
+            style={{ width: `${progress}%` }}
+          />
         </div>
         <p className="mono mt-3 text-right text-[10px] text-[var(--muted)]">
-          READY / 68%
+          READY / {progress}%
         </p>
       </section>
     </main>

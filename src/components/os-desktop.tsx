@@ -564,7 +564,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
       {wallpaper === "aurora" && (
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
       )}
-      <div className="pointer-events-none absolute right-6 top-6 hidden rounded-2xl border border-[var(--line)] bg-[#111827]/55 p-4 backdrop-blur-md sm:block">
+      <div className="pointer-events-none absolute right-6 top-6 hidden rounded-2xl border border-[var(--line)] bg-[#111827]/55 p-4 backdrop-blur-md lg:block">
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
           <span className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">

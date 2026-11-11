@@ -247,6 +247,23 @@ function BlenderWorkstation({
       }}
     >
       <primitive object={scene} />
+      <mesh
+        position={[0, 2.1, 0.26]}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect();
+        }}
+        onPointerOver={(event) => {
+          event.stopPropagation();
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={() => {
+          document.body.style.cursor = "default";
+        }}
+      >
+        <planeGeometry args={[3.3, 2]} />
+        <meshBasicMaterial transparent opacity={0.001} depthWrite={false} />
+      </mesh>
     </group>
   );
 }
