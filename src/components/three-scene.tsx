@@ -351,6 +351,42 @@ function WallArt({
   );
 }
 
+function AtmosphereLights({ approaching }: { approaching: boolean }) {
+  const screenLight = useRef<THREE.PointLight>(null);
+  const lampLight = useRef<THREE.PointLight>(null);
+  useFrame(({ clock }) => {
+    const pulse = Math.sin(clock.elapsedTime * 1.4) * 0.18;
+    if (screenLight.current)
+      screenLight.current.intensity = (approaching ? 9 : 3.8) + pulse;
+    if (lampLight.current) lampLight.current.intensity = 5.2 + pulse * 0.45;
+  });
+  return (
+    <>
+      <pointLight
+        ref={screenLight}
+        position={[-0.35, 2.38, 0.42]}
+        color="#4e84ff"
+        distance={3.4}
+        decay={2}
+      />
+      <pointLight
+        ref={lampLight}
+        position={[-1.72, 2.38, 0.52]}
+        color="#ff9b69"
+        distance={3.1}
+        decay={2}
+      />
+      <pointLight
+        position={[2.6, 2.4, -1.4]}
+        intensity={1.6}
+        color="#a77cff"
+        distance={4.5}
+        decay={2}
+      />
+    </>
+  );
+}
+
 useGLTF.preload("/models/hero-workstation.glb");
 
 export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
@@ -364,24 +400,19 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
     <Canvas
       camera={{ position: [4.35, 2.7, 6.55], fov: 38 }}
       dpr={[1, 1.25]}
+      shadows
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       <color attach="background" args={["#080b12"]} />
-      <ambientLight intensity={0.65} />
+      <ambientLight intensity={0.38} />
       <spotLight
         position={[3, 5, 4]}
-        intensity={80}
+        intensity={52}
         angle={0.35}
         penumbra={1}
         color="#78a9ff"
       />
-      <pointLight position={[-4, 1, 1]} intensity={18} color="#7ce3c3" />
-      <pointLight
-        position={[0, 1.25, 0.2]}
-        intensity={approaching ? 14 : 4.5}
-        distance={4}
-        color="#467dff"
-      />
+      <AtmosphereLights approaching={approaching} />
       <RoomBackdrop />
       <WallArt
         src="/models/posters/fight-poster.png"
@@ -403,7 +434,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
       />
       <ContactShadows
         position={[0, -0.32, 0]}
-        opacity={0.5}
+        opacity={0.62}
         scale={8}
         blur={2.4}
         far={4}
