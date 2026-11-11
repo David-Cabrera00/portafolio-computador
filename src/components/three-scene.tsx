@@ -7,6 +7,7 @@ import {
   OrbitControls,
   RoundedBox,
   ContactShadows,
+  useTexture,
   useGLTF,
 } from "@react-three/drei";
 import { Suspense, useRef, useState } from "react";
@@ -324,6 +325,32 @@ function RoomBackdrop() {
   );
 }
 
+function WallArt({
+  src,
+  position,
+  size,
+  rotation = 0,
+}: {
+  src: string;
+  position: [number, number, number];
+  size: [number, number];
+  rotation?: number;
+}) {
+  const texture = useTexture(src);
+  return (
+    <group position={position} rotation={[0, 0, rotation]}>
+      <mesh position={[0, 0, -0.035]}>
+        <planeGeometry args={[size[0] + 0.14, size[1] + 0.14]} />
+        <meshStandardMaterial color="#202c42" roughness={0.42} metalness={0.42} />
+      </mesh>
+      <mesh>
+        <planeGeometry args={size} />
+        <meshBasicMaterial map={texture} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
 useGLTF.preload("/models/hero-workstation.glb");
 
 export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
@@ -356,6 +383,24 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         color="#467dff"
       />
       <RoomBackdrop />
+      <WallArt
+        src="/models/posters/fight-poster.png"
+        position={[-3.65, 1.45, -2.68]}
+        size={[1.12, 1.98]}
+        rotation={-0.035}
+      />
+      <WallArt
+        src="/models/posters/glitch-poster.png"
+        position={[-2.05, 2.55, -2.67]}
+        size={[1.08, 1.08]}
+        rotation={0.025}
+      />
+      <WallArt
+        src="/models/posters/space-poster.png"
+        position={[3.55, 1.45, -2.68]}
+        size={[1.3, 2.32]}
+        rotation={0.028}
+      />
       <ContactShadows
         position={[0, -1.36, 0]}
         opacity={0.5}
