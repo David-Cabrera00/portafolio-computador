@@ -170,6 +170,21 @@ function Computer({
             <boxGeometry args={[1.55, 0.012, 0.42]} />
             <meshStandardMaterial color="#52627d" roughness={0.65} />
           </mesh>
+          <group position={[-0.68, 0.052, -0.14]}>
+            {Array.from({ length: 30 }, (_, index) => (
+              <mesh
+                key={index}
+                position={[
+                  (index % 10) * 0.145,
+                  0,
+                  Math.floor(index / 10) * 0.12,
+                ]}
+              >
+                <boxGeometry args={[0.1, 0.018, 0.07]} />
+                <meshStandardMaterial color="#9aa8bd" roughness={0.7} />
+              </mesh>
+            ))}
+          </group>
         </group>
         <Float speed={1.5} rotationIntensity={0.08} floatIntensity={0.06}>
           <RoundedBox
