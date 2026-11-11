@@ -40,46 +40,9 @@ function AppContent({ id }: { id: AppId }) {
   if (id === "about")
     return <AboutPanel onOpen={openWindow} />;
   if (id === "projects") return <ProjectsPanel />;
-  if (id === "skills")
-    return (
-      <div className="grid gap-4 sm:grid-cols-2">
-        {Object.entries(skillGroups).map(([group, skills]) => (
-          <div key={group}>
-            <h3 className="mb-2 text-sm text-[var(--mint)]">{group}</h3>
-            <div className="flex flex-wrap gap-2">
-              {skills.map((s) => (
-                <span
-                  key={s}
-                  className="rounded-full border border-[var(--line)] px-3 py-1 text-xs text-[var(--muted)]"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  if (id === "experience")
-    return (
-      <div className="space-y-4">
-        <p className="text-lg">Experiencia</p>
-        <div className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm leading-6 text-[var(--muted)]">
-          {profile.experience}. Añade aquí únicamente experiencias, proyectos
-          académicos o participaciones verificables.
-        </div>
-      </div>
-    );
-  if (id === "education")
-    return (
-      <div className="space-y-4">
-        <p className="text-lg">Formación académica</p>
-        <div className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm leading-6 text-[var(--muted)]">
-          {profile.education}. Completa institución, programa, semestre y fechas
-          cuando estén confirmados.
-        </div>
-      </div>
-    );
+  if (id === "skills") return <SkillsPanel />;
+  if (id === "experience") return <ExperiencePanel />;
+  if (id === "education") return <EducationPanel />;
   if (id === "contact") return <ContactPanel />;
   if (id === "files")
     return (
@@ -97,6 +60,112 @@ function AppContent({ id }: { id: AppId }) {
     );
   if (id === "settings") return <SettingsPanel />;
   return <TerminalPanel onOpen={openWindow} />;
+}
+
+function SkillsPanel() {
+  const groups = Object.entries(skillGroups);
+  type SkillGroup = keyof typeof skillGroups;
+  const groupNames = Object.keys(skillGroups) as SkillGroup[];
+  const [activeGroup, setActiveGroup] = useState<SkillGroup>(groupNames[0] ?? "Backend");
+  const activeSkills = skillGroups[activeGroup];
+  return (
+    <div className="space-y-5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">CAPABILITY MAP</p>
+          <h2 className="mt-2 text-2xl font-semibold text-white">Herramientas para construir.</h2>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--muted)]">
+            Una vista rápida de las tecnologías registradas en el perfil.
+          </p>
+        </div>
+        <span className="mono text-xs text-[var(--blue)]">{String(Object.values(skillGroups).flat().length).padStart(2, "0")} skills</span>
+      </div>
+      <div className="flex flex-wrap gap-2 border-b border-[var(--line)] pb-3">
+        {groups.map(([group, skills]) => (
+          <button
+            type="button"
+            key={group}
+            onClick={() => setActiveGroup(group as SkillGroup)}
+            className={`focus-ring rounded-lg px-3 py-2 text-xs transition ${activeGroup === group ? "bg-[var(--blue)] text-[#08101c]" : "border border-[var(--line)] text-[var(--muted)] hover:text-white"}`}
+          >
+            {group} <span className="ml-1 opacity-60">{skills.length}</span>
+          </button>
+        ))}
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {activeSkills.map((skill, index) => (
+          <div key={skill} className="rounded-xl border border-[var(--line)] bg-black/20 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-medium text-white">{skill}</span>
+              <span className="mono text-[10px] text-[#71809a]">{String(index + 1).padStart(2, "0")}</span>
+            </div>
+            <div className="mt-3 h-1 overflow-hidden rounded-full bg-[#202b40]">
+              <div className="h-full w-2/3 rounded-full bg-gradient-to-r from-[var(--blue)] to-[var(--mint)]" />
+            </div>
+            <p className="mt-2 text-[10px] text-[#71809a]">Registrado en el perfil · nivel por confirmar</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ExperiencePanel() {
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">TIMELINE / EXPERIENCE</p>
+        <h2 className="mt-2 text-2xl font-semibold text-white">Camino profesional.</h2>
+      </div>
+      <div className="relative pl-8">
+        <div className="absolute bottom-2 left-2 top-2 w-px bg-gradient-to-b from-[var(--mint)] to-[var(--line)]" />
+        <div className="relative rounded-2xl border border-[var(--line)] bg-black/20 p-5">
+          <span className="absolute -left-[2.05rem] top-6 h-3 w-3 rounded-full border-2 border-[var(--mint)] bg-[#111827]" />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="mono text-[10px] text-[var(--mint)]">01 / CURRENT RECORD</p>
+              <h3 className="mt-2 text-lg font-semibold text-white">Experiencia verificable</h3>
+            </div>
+            <span className="rounded-full border border-[var(--line)] px-3 py-1 text-[10px] text-[#71809a]">Pendiente</span>
+          </div>
+          <p className="mt-4 text-sm leading-7 text-[var(--muted)]">{profile.experience}</p>
+          <p className="mt-3 text-xs text-[#71809a]">Añade aquí únicamente experiencias, proyectos académicos o participaciones verificables.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EducationPanel() {
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">EDUCATION / RECORD</p>
+        <h2 className="mt-2 text-2xl font-semibold text-white">Formación en progreso.</h2>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
+        <div className="rounded-2xl border border-[var(--line)] bg-[linear-gradient(135deg,rgba(120,169,255,.1),rgba(0,0,0,.12))] p-5">
+          <p className="mono text-[10px] text-[var(--blue)]">ACADEMIC NODE / 01</p>
+          <h3 className="mt-3 text-xl font-semibold text-white">{profile.education}</h3>
+          <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+            Completa institución, programa, semestre y fechas cuando estén confirmados.
+          </p>
+        </div>
+        <div className="flex min-w-28 flex-col justify-between rounded-2xl border border-[var(--line)] bg-black/20 p-4">
+          <span className="mono text-[10px] text-[#71809a]">STATUS</span>
+          <span className="text-sm text-[var(--mint)]">Por confirmar</span>
+        </div>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {["Programa", "Institución", "Fechas"].map((label) => (
+          <div key={label} className="rounded-xl border border-dashed border-[var(--line)] p-4">
+            <p className="mono text-[10px] text-[#71809a]">{label.toUpperCase()}</p>
+            <p className="mt-2 text-xs text-[var(--muted)]">Dato pendiente</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function AboutPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
