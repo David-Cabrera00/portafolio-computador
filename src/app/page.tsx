@@ -103,7 +103,7 @@ export default function Home() {
             </div>
           </div>
           <footer className="flex justify-between text-xs text-[#6f7d94]">
-            <span>Procedural 3D fallback · WebGL optional</span>
+              <span>Blender GLB · Procedural fallback</span>
             <span>Click monitor to enter · keyboard alternative available</span>
           </footer>
         </div>
