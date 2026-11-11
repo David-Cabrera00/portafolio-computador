@@ -18,15 +18,24 @@ const ThreeScene = dynamic(
 );
 
 export default function Home() {
-  const [mode, setMode] = useState<"intro" | "scene" | "os">("intro");
+  const [mode, setMode] = useState<"intro" | "scene" | "os">(() =>
+    typeof window !== "undefined" &&
+    localStorage.getItem("dev-os-intro-seen") === "true"
+      ? "scene"
+      : "intro",
+  );
+  const enterOS = () => {
+    localStorage.setItem("dev-os-intro-seen", "true");
+    setMode("os");
+  };
   if (mode === "os") return <OSDesktop onExit={() => setMode("scene")} />;
   return (
-    <main className="min-h-screen bg-[var(--bg)]">
+    <main suppressHydrationWarning className="min-h-screen bg-[var(--bg)]">
       <section className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0">
           <SceneBoundary>
             <ThreeScene
-              onMonitorClick={() => window.setTimeout(() => setMode("os"), 850)}
+              onMonitorClick={() => window.setTimeout(enterOS, 850)}
             />
           </SceneBoundary>
         </div>
@@ -67,19 +76,19 @@ export default function Home() {
               )}
               {mode === "scene" && (
                 <button
-                  onClick={() => setMode("os")}
+                  onClick={enterOS}
                   className="focus-ring rounded-full bg-[var(--mint)] px-5 py-3 text-sm font-medium text-[#08101c]"
                 >
                   Entrar al sistema{" "}
                   <ArrowRight size={16} className="ml-2 inline" />
                 </button>
               )}
-              <a
-                href="/portfolio"
+              <button
+                onClick={enterOS}
                 className="focus-ring rounded-full border border-[var(--line)] px-5 py-3 text-sm text-white"
               >
                 Omitir introducción
-              </a>
+              </button>
             </div>
           </div>
           <footer className="flex justify-between text-xs text-[#6f7d94]">
