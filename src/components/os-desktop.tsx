@@ -483,6 +483,7 @@ function WindowView({ id }: { id: AppId }) {
 
 export function OSDesktop({ onExit }: { onExit: () => void }) {
   const [menu, setMenu] = useState(false);
+  const [now, setNow] = useState(() => new Date());
   const hydratePreferences = useOSStore((s) => s.hydratePreferences);
   const openWindow = useOSStore((s) => s.openWindow);
   const closeWindow = useOSStore((s) => s.closeWindow);
@@ -493,6 +494,10 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
   useEffect(() => {
     hydratePreferences();
   }, [hydratePreferences]);
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
       if (event.key === "Escape" && activeId) closeWindow(activeId);
@@ -540,7 +545,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           <WindowView key={id} id={id} />
         ))}
       </div>
-      <footer className="fixed bottom-0 left-0 right-0 z-30 flex h-14 items-center gap-3 border-t border-[var(--line)] bg-[#111827]/90 px-4 backdrop-blur-xl">
+      <footer className="fixed bottom-0 left-0 right-0 z-30 flex h-14 min-w-0 items-center gap-3 overflow-x-auto border-t border-[var(--line)] bg-[#111827]/90 px-4 backdrop-blur-xl">
         <button
           aria-label="Menú de aplicaciones"
           onClick={() => setMenu(!menu)}
@@ -560,7 +565,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
         <div className="ml-auto flex items-center gap-3 text-xs text-[var(--muted)]">
           <span className="hidden sm:inline">Ctrl+K terminal · Esc cerrar</span>
           <span>
-            {new Date().toLocaleTimeString("es-CO", {
+            {now.toLocaleTimeString("es-CO", {
               hour: "2-digit",
               minute: "2-digit",
             })}
