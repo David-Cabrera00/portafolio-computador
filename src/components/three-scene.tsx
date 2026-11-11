@@ -7,8 +7,9 @@ import {
   OrbitControls,
   RoundedBox,
   ContactShadows,
+  useGLTF,
 } from "@react-three/drei";
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 
 function Computer({
@@ -225,6 +226,33 @@ function CameraApproach({ approaching }: { approaching: boolean }) {
   });
   return null;
 }
+
+function BlenderWorkstation({
+  onSelect,
+}: {
+  onSelect: () => void;
+}) {
+  const { scene } = useGLTF("/models/hero-workstation.glb");
+  return (
+    <group
+      position={[0.18, -1.05, -0.18]}
+      scale={0.56}
+      onClick={onSelect}
+      onPointerOver={(event) => {
+        event.stopPropagation();
+        document.body.style.cursor = "pointer";
+      }}
+      onPointerOut={() => {
+        document.body.style.cursor = "default";
+      }}
+    >
+      <primitive object={scene} />
+    </group>
+  );
+}
+
+useGLTF.preload("/models/hero-workstation.glb");
+
 export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
   const [approaching, setApproaching] = useState(false);
   const selectMonitor = () => {
@@ -299,7 +327,9 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         color="#000000"
       />
       <CameraApproach approaching={approaching} />
-      <Computer approaching={approaching} onSelect={selectMonitor} />
+      <Suspense fallback={<Computer approaching={approaching} onSelect={selectMonitor} />}>
+        <BlenderWorkstation onSelect={selectMonitor} />
+      </Suspense>
       <Environment preset="city" />
       <OrbitControls
         enablePan={false}
