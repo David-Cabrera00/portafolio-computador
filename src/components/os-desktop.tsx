@@ -697,6 +697,37 @@ function WindowView({ id }: { id: AppId }) {
   );
 }
 
+function WorkspaceSignal({ activeApps }: { activeApps: number }) {
+  const skillCount = Object.values(skillGroups).flat().length;
+  return (
+    <aside
+      aria-hidden="true"
+      className="pointer-events-none absolute bottom-24 right-6 z-0 hidden w-64 rounded-2xl border border-[var(--line)] bg-[#0c1422]/65 p-4 backdrop-blur-md xl:block"
+    >
+      <div className="flex items-center justify-between">
+        <span className="mono text-[10px] tracking-[.18em] text-[var(--mint)]">WORKSPACE SIGNAL</span>
+        <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
+      </div>
+      <p className="mt-4 text-sm text-white">{profile.role}</p>
+      <p className="mt-1 text-xs leading-5 text-[var(--muted)]">{profile.location} · local portfolio system</p>
+      <div className="mt-4 grid grid-cols-3 gap-2 border-t border-[var(--line)] pt-3">
+        <div>
+          <p className="mono text-[9px] text-[#71809a]">PROJECTS</p>
+          <p className="mt-1 text-sm text-white">{projects.length}</p>
+        </div>
+        <div>
+          <p className="mono text-[9px] text-[#71809a]">SKILLS</p>
+          <p className="mt-1 text-sm text-white">{skillCount}</p>
+        </div>
+        <div>
+          <p className="mono text-[9px] text-[#71809a]">APPS</p>
+          <p className="mt-1 text-sm text-white">{activeApps}</p>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 export function OSDesktop({ onExit }: { onExit: () => void }) {
   const [menu, setMenu] = useState(false);
   const [now, setNow] = useState(() => new Date());
@@ -780,6 +811,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           Portfolio environment · secure client mode
         </p>
       </div>
+      <WorkspaceSignal activeApps={open.length} />
       <div className="relative flex min-h-[calc(100vh-7rem)] flex-wrap content-start gap-5 p-6 pt-8 sm:p-10 sm:pt-10">
         {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
           <button
