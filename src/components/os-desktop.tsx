@@ -380,7 +380,12 @@ function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
   };
   return (
     <div className="mono flex h-full min-h-[280px] flex-col rounded-lg bg-[#090d15] p-3 text-xs">
-      <div className="flex-1 whitespace-pre-wrap text-[#a9bad4]">
+      <div
+        role="log"
+        aria-live="polite"
+        aria-label="Salida de terminal"
+        className="flex-1 whitespace-pre-wrap text-[#a9bad4]"
+      >
         {lines.map((line, i) => (
           <p key={`${line}-${i}`} className="mb-1">
             {line}
@@ -391,6 +396,7 @@ function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
         <span>›</span>
         <input
           aria-label="Comando de terminal"
+          autoComplete="off"
           autoFocus
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -537,6 +543,10 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
   }, []);
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && menu) {
+        setMenu(false);
+        return;
+      }
       if (event.key === "Escape" && activeId) closeWindow(activeId);
       if (event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
@@ -545,7 +555,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
     };
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
-  }, [activeId, closeWindow, openWindow]);
+  }, [activeId, closeWindow, menu, openWindow]);
   return (
     <main
       data-theme={theme}
