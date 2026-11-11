@@ -690,7 +690,7 @@ function WindowView({ id }: { id: AppId }) {
           </button>
         </div>
       </header>
-      <div className="max-h-[68vh] overflow-auto p-5">
+      <div className="max-h-[68vh] overflow-auto p-5 max-sm:max-h-[calc(100vh-8.5rem)] max-sm:p-4">
         <AppContent id={id} />
       </div>
     </section>
@@ -812,7 +812,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
         </p>
       </div>
       <WorkspaceSignal activeApps={open.length} />
-      <div className="relative flex min-h-[calc(100vh-7rem)] flex-wrap content-start gap-5 p-6 pt-8 sm:p-10 sm:pt-10">
+      <div className="relative grid min-h-[calc(100vh-7rem)] grid-cols-4 content-start gap-3 p-4 pt-6 sm:grid-cols-6 sm:gap-5 sm:p-10 sm:pt-10 lg:grid-cols-9">
         {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -820,7 +820,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
             aria-label={`Abrir ${label}`}
             onDoubleClick={() => openWindow(id)}
             onClick={() => openWindow(id)}
-            className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition duration-200 hover:-translate-y-1 hover:bg-white/5 hover:text-white"
+            className="focus-ring flex w-full max-w-20 flex-col items-center gap-2 justify-self-center rounded-xl p-2 text-center text-xs text-[var(--muted)] transition duration-200 hover:-translate-y-1 hover:bg-white/5 hover:text-white"
           >
             <span className="rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--blue)]">
               <Icon size={21} />
@@ -834,7 +834,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
             type="button"
             aria-label={`Abrir ${label}`}
             onClick={() => openWindow(id)}
-            className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition duration-200 hover:-translate-y-1 hover:bg-white/5 hover:text-white"
+            className="focus-ring flex w-full max-w-20 flex-col items-center gap-2 justify-self-center rounded-xl p-2 text-center text-xs text-[var(--muted)] transition duration-200 hover:-translate-y-1 hover:bg-white/5 hover:text-white"
           >
             <span className="rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--mint)]">
               <Icon size={21} />
@@ -862,11 +862,11 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           </div>
         )}
       </div>
-      <footer className="fixed bottom-0 left-0 right-0 z-30 flex h-14 min-w-0 items-center gap-3 overflow-x-auto border-t border-[var(--line)] bg-[#111827]/90 px-4 backdrop-blur-xl">
+      <footer className="fixed bottom-0 left-0 right-0 z-30 flex h-14 min-w-0 items-center gap-3 overflow-x-auto overflow-y-hidden border-t border-[var(--line)] bg-[#111827]/90 px-3 backdrop-blur-xl sm:px-4">
         <button
           aria-label="Menú de aplicaciones"
           onClick={() => setMenu(!menu)}
-          className="focus-ring rounded-lg bg-[var(--blue)] p-2 text-[#08101c]"
+          className="focus-ring shrink-0 rounded-lg bg-[var(--blue)] p-2 text-[#08101c]"
         >
           <Monitor size={18} />
         </button>
@@ -876,12 +876,12 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
             type="button"
             aria-label={`Cambiar a ${label}`}
             onClick={() => openWindow(id)}
-            className={`focus-ring rounded-lg border px-3 py-2 text-xs transition ${activeId === id ? "border-[var(--blue)]/50 bg-[#253553] text-white" : windows[id].minimized ? "border-transparent text-[#71809a] opacity-60 hover:border-[var(--line)] hover:opacity-100" : "border-transparent text-[var(--muted)] hover:border-[var(--line)] hover:text-white"}`}
+            className={`focus-ring shrink-0 whitespace-nowrap rounded-lg border px-3 py-2 text-xs transition ${activeId === id ? "border-[var(--blue)]/50 bg-[#253553] text-white" : windows[id].minimized ? "border-transparent text-[#71809a] opacity-60 hover:border-[var(--line)] hover:opacity-100" : "border-transparent text-[var(--muted)] hover:border-[var(--line)] hover:text-white"}`}
           >
             {label}
           </button>
         ))}
-        <div className="ml-auto flex items-center gap-3 text-xs text-[var(--muted)]">
+        <div className="ml-auto flex shrink-0 items-center gap-3 text-xs text-[var(--muted)]">
           <span className="hidden sm:inline">Ctrl+K terminal · Esc cerrar</span>
           <span>
             {now.toLocaleTimeString("es-CO", {
