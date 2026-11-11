@@ -70,6 +70,15 @@ const initialWindows = Object.fromEntries(
   ]),
 ) as Record<AppId, WindowState>;
 
+function topVisibleWindow(
+  windows: Record<AppId, WindowState>,
+  excluded?: AppId,
+) {
+  return Object.values(windows)
+    .filter((window) => window.open && !window.minimized && window.id !== excluded)
+    .sort((a, b) => b.zIndex - a.zIndex)[0]?.id ?? null;
+}
+
 export const useOSStore = create<OSState>((set) => ({
   windows: initialWindows,
   activeId: null,
@@ -93,21 +102,31 @@ export const useOSStore = create<OSState>((set) => ({
       activeId: id,
     })),
   closeWindow: (id) =>
-    set((s) => ({
-      windows: { ...s.windows, [id]: { ...s.windows[id], open: false } },
-      activeId: s.activeId === id ? null : s.activeId,
-    })),
+    set((s) => {
+      const windows = { ...s.windows, [id]: { ...s.windows[id], open: false } };
+      return {
+        windows,
+        activeId: s.activeId === id ? topVisibleWindow(windows, id) : s.activeId,
+      };
+    }),
   minimizeWindow: (id) =>
-    set((s) => ({
-      windows: { ...s.windows, [id]: { ...s.windows[id], minimized: true } },
-      activeId: null,
-    })),
+    set((s) => {
+      const windows = {
+        ...s.windows,
+        [id]: { ...s.windows[id], minimized: true },
+      };
+      return {
+        windows,
+        activeId: s.activeId === id ? topVisibleWindow(windows, id) : s.activeId,
+      };
+    }),
   maximizeWindow: (id) =>
     set((s) => ({
       windows: {
         ...s.windows,
         [id]: { ...s.windows[id], maximized: !s.windows[id].maximized },
       },
+      activeId: id,
     })),
   focusWindow: (id) =>
     set((s) => ({

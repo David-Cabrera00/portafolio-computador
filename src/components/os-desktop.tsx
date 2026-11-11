@@ -15,6 +15,7 @@ import {
   X,
   Minus,
   Maximize2,
+  Minimize2,
   Power,
   Activity,
   Command,
@@ -658,6 +659,7 @@ function WindowView({ id }: { id: AppId }) {
     >
       <header
         onPointerDown={startDragging}
+        onDoubleClick={() => maximize(id)}
         className="flex touch-none cursor-move items-center justify-between border-b border-[var(--line)] bg-[#171d2c] px-4 py-3"
       >
         <div className="flex items-center gap-2">
@@ -669,6 +671,7 @@ function WindowView({ id }: { id: AppId }) {
         <div className="flex gap-1">
           <button
             aria-label="Minimizar"
+            title="Minimizar ventana"
             onClick={() => minimize(id)}
             className="focus-ring rounded p-1 text-[var(--muted)]"
           >
@@ -676,13 +679,15 @@ function WindowView({ id }: { id: AppId }) {
           </button>
           <button
             aria-label="Maximizar"
+            title={win.maximized ? "Restaurar ventana" : "Maximizar ventana"}
             onClick={() => maximize(id)}
             className="focus-ring rounded p-1 text-[var(--muted)]"
           >
-            <Maximize2 size={14} />
+            {win.maximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </button>
           <button
             aria-label="Cerrar"
+            title="Cerrar ventana"
             onClick={() => close(id)}
             className="focus-ring rounded p-1 text-[var(--muted)] hover:text-red-300"
           >
