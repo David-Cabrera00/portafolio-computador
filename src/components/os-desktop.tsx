@@ -316,7 +316,7 @@ function WindowView({ id }: { id: AppId }) {
           ? undefined
           : { left: `${win.position.x}%`, top: `${win.position.y}%` }
       }
-      className={`absolute ${win.maximized ? "inset-3" : "w-[min(720px,84vw)]"} z-20 overflow-hidden rounded-2xl border border-[var(--line)] bg-[#111827]/95 shadow-2xl backdrop-blur-xl`}
+      className={`absolute ${win.maximized ? "inset-3" : "w-[min(720px,84vw)] max-sm:inset-3 max-sm:w-auto"} z-20 overflow-hidden rounded-2xl border border-[var(--line)] bg-[#111827]/95 shadow-2xl backdrop-blur-xl`}
     >
       <header
         onPointerDown={startDragging}
@@ -361,14 +361,30 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
   const [menu, setMenu] = useState(false);
   const hydratePreferences = useOSStore((s) => s.hydratePreferences);
   const openWindow = useOSStore((s) => s.openWindow);
+  const closeWindow = useOSStore((s) => s.closeWindow);
   const windows = useOSStore((s) => s.windows);
   const activeId = useOSStore((s) => s.activeId);
+  const theme = useOSStore((s) => s.theme);
   const open = apps.filter((a) => windows[a.id].open);
   useEffect(() => {
     hydratePreferences();
   }, [hydratePreferences]);
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && activeId) closeWindow(activeId);
+      if (event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        openWindow("terminal");
+      }
+    };
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, [activeId, closeWindow, openWindow]);
   return (
-    <main className="grid-bg relative min-h-screen overflow-hidden bg-[#0b101b] pb-14">
+    <main
+      data-theme={theme}
+      className={`grid-bg relative min-h-screen overflow-hidden pb-14 ${theme === "dusk" ? "bg-[#17111f]" : "bg-[#0b101b]"}`}
+    >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
       <div className="relative flex min-h-[calc(100vh-3.5rem)] flex-wrap content-start gap-5 p-6 sm:p-10">
         {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
@@ -418,6 +434,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           </button>
         ))}
         <div className="ml-auto flex items-center gap-3 text-xs text-[var(--muted)]">
+          <span className="hidden sm:inline">Ctrl+K terminal · Esc cerrar</span>
           <span>
             {new Date().toLocaleTimeString("es-CO", {
               hour: "2-digit",
