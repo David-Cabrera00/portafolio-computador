@@ -572,7 +572,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
             key={id}
             onDoubleClick={() => openWindow(id)}
             onClick={() => openWindow(id)}
-            className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition hover:bg-white/5 hover:text-white"
+            className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition duration-200 hover:-translate-y-1 hover:bg-white/5 hover:text-white"
           >
             <span className="rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--blue)]">
               <Icon size={21} />
@@ -584,7 +584,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           <button
             key={id}
             onClick={() => openWindow(id)}
-            className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition hover:bg-white/5 hover:text-white"
+            className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition duration-200 hover:-translate-y-1 hover:bg-white/5 hover:text-white"
           >
             <span className="rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--mint)]">
               <Icon size={21} />
@@ -608,7 +608,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           <button
             key={id}
             onClick={() => openWindow(id)}
-            className={`focus-ring rounded-lg px-3 py-2 text-xs ${activeId === id ? "bg-[#253553] text-white" : "text-[var(--muted)]"}`}
+            className={`focus-ring rounded-lg border px-3 py-2 text-xs transition ${activeId === id ? "border-[var(--blue)]/50 bg-[#253553] text-white" : "border-transparent text-[var(--muted)] hover:border-[var(--line)] hover:text-white"}`}
           >
             {label}
           </button>
