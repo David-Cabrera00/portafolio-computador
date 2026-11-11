@@ -220,15 +220,17 @@ function Computer({
   );
 }
 function CameraApproach({ approaching }: { approaching: boolean }) {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
   useFrame(({ clock }) => {
+    if (typeof document !== "undefined" && document.hidden) return;
     const ambient = clock.elapsedTime;
+    const mobile = size.width < 640;
     const target = approaching
-      ? new THREE.Vector3(0, 1.25, 3.2)
+      ? new THREE.Vector3(0, 1.25, mobile ? 3.7 : 3.2)
       : new THREE.Vector3(
-          4.8 + Math.sin(ambient * 0.22) * 0.12,
-          2.3 + Math.sin(ambient * 0.3) * 0.04,
-          6.2 + Math.cos(ambient * 0.22) * 0.1,
+          (mobile ? 3.8 : 4.8) + Math.sin(ambient * 0.22) * 0.12,
+          (mobile ? 2.5 : 2.3) + Math.sin(ambient * 0.3) * 0.04,
+          (mobile ? 7.3 : 6.2) + Math.cos(ambient * 0.22) * 0.1,
         );
     camera.position.lerp(target, approaching ? 0.055 : 0.02);
     camera.lookAt(0, 0.5, 0);
@@ -257,7 +259,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         </div>
       }
       camera={{ position: [4.8, 2.3, 6.2], fov: 38 }}
-      dpr={[1, 1.5]}
+      dpr={[1, 1.25]}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       <color attach="background" args={["#080b12"]} />
