@@ -707,6 +707,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
   const activeId = useOSStore((s) => s.activeId);
   const theme = useOSStore((s) => s.theme);
   const wallpaper = useOSStore((s) => s.wallpaper);
+  const reducedMotion = useOSStore((s) => s.reducedMotion);
   const open = apps.filter((a) => windows[a.id].open);
   useEffect(() => {
     hydratePreferences();
@@ -732,7 +733,9 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
   }, [activeId, closeWindow, menu, openWindow]);
   return (
     <main
+      aria-label="Escritorio DEV OS"
       data-theme={theme}
+      data-reduced-motion={reducedMotion}
       className={`relative min-h-screen overflow-hidden pb-14 ${wallpaper === "grid" ? "grid-bg bg-[var(--bg)]" : wallpaper === "plain" ? "bg-[var(--bg)]" : "bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.16),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.1),transparent_28%)]"}`}
     >
       {wallpaper === "aurora" && (
@@ -781,6 +784,8 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
         {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
           <button
             key={id}
+            type="button"
+            aria-label={`Abrir ${label}`}
             onDoubleClick={() => openWindow(id)}
             onClick={() => openWindow(id)}
             className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition duration-200 hover:-translate-y-1 hover:bg-white/5 hover:text-white"
@@ -794,6 +799,8 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
         {apps.slice(5).map(({ id, label, icon: Icon }) => (
           <button
             key={id}
+            type="button"
+            aria-label={`Abrir ${label}`}
             onClick={() => openWindow(id)}
             className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition duration-200 hover:-translate-y-1 hover:bg-white/5 hover:text-white"
           >
@@ -834,6 +841,8 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
         {open.map(({ id, label }) => (
           <button
             key={id}
+            type="button"
+            aria-label={`Cambiar a ${label}`}
             onClick={() => openWindow(id)}
             className={`focus-ring rounded-lg border px-3 py-2 text-xs transition ${activeId === id ? "border-[var(--blue)]/50 bg-[#253553] text-white" : windows[id].minimized ? "border-transparent text-[#71809a] opacity-60 hover:border-[var(--line)] hover:opacity-100" : "border-transparent text-[var(--muted)] hover:border-[var(--line)] hover:text-white"}`}
           >

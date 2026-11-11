@@ -76,6 +76,14 @@ button {
 .os-menu-in {
   animation: os-menu-in 140ms ease-out both;
 }
+[data-reduced-motion="true"] .os-window,
+[data-reduced-motion="true"] .os-menu-in {
+  animation: none;
+}
+[data-reduced-motion="true"] .transition,
+[data-reduced-motion="true"] .transition\[width\] {
+  transition: none !important;
+}
 @keyframes os-window-in {
   from {
     opacity: 0;
