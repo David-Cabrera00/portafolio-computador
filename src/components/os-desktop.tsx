@@ -38,19 +38,7 @@ const apps: { id: AppId; label: string; icon: typeof UserRound }[] = [
 function AppContent({ id }: { id: AppId }) {
   const openWindow = useOSStore((s) => s.openWindow);
   if (id === "about")
-    return (
-      <div className="space-y-4">
-        <p className="text-lg text-white">{profile.role}</p>
-        <p className="text-[var(--muted)] leading-7">{profile.bio}</p>
-        <div className="rounded-xl border border-[var(--line)] bg-black/20 p-4">
-          <span className="mono text-xs text-[var(--mint)]">STATUS</span>
-          <p className="mt-2 text-sm text-[var(--muted)]">
-            Disponible para construir y aprender. Completa tus datos reales en{" "}
-            <code>src/data/profile.ts</code>.
-          </p>
-        </div>
-      </div>
-    );
+    return <AboutPanel onOpen={openWindow} />;
   if (id === "projects") return <ProjectsPanel />;
   if (id === "skills")
     return (
@@ -111,6 +99,65 @@ function AppContent({ id }: { id: AppId }) {
   return <TerminalPanel onOpen={openWindow} />;
 }
 
+function AboutPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
+  const facts = [
+    ["BASE", profile.location],
+    ["FOCUS", profile.role],
+    ["PROJECTS", String(projects.length).padStart(2, "0")],
+    ["STACK GROUPS", String(Object.keys(skillGroups).length).padStart(2, "0")],
+  ];
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-[var(--line)] bg-[linear-gradient(135deg,rgba(120,169,255,.14),rgba(124,227,195,.05))] p-5">
+        <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">
+          PROFILE / 01
+        </p>
+        <h2 className="mt-3 text-2xl font-semibold text-white">
+          {profile.name}
+        </h2>
+        <p className="mt-1 text-[var(--blue)]">{profile.role}</p>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted)]">
+          {profile.tagline}
+        </p>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-4">
+        {facts.map(([label, value]) => (
+          <div key={label} className="rounded-xl border border-[var(--line)] bg-black/20 p-3">
+            <p className="mono text-[9px] tracking-[.16em] text-[#71809a]">{label}</p>
+            <p className="mt-2 truncate text-xs text-white" title={value}>{value}</p>
+          </div>
+        ))}
+      </div>
+      <div className="rounded-xl border border-[var(--line)] bg-black/20 p-4">
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
+          <span className="mono text-xs text-[var(--mint)]">STATUS / AVAILABLE</span>
+        </div>
+        <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{profile.bio}</p>
+        <p className="mt-3 text-xs text-[#71809a]">
+          Los datos editables están centralizados en <code>src/data/profile.ts</code>.
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => onOpen("projects")}
+          className="focus-ring rounded-lg bg-[var(--mint)] px-4 py-2 text-sm text-[#08101c]"
+        >
+          Ver proyectos
+        </button>
+        <button
+          type="button"
+          onClick={() => onOpen("contact")}
+          className="focus-ring rounded-lg border border-[var(--line)] px-4 py-2 text-sm text-white"
+        >
+          Abrir contacto
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ProjectsPanel() {
   const [query, setQuery] = useState("");
   const [selectedName, setSelectedName] = useState<string | null>(null);
@@ -122,6 +169,13 @@ function ProjectsPanel() {
   const selected = projects.find((project) => project.name === selectedName);
   return (
     <div className="space-y-3">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">PROJECT INDEX</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">Explora el trabajo registrado en este workspace.</p>
+        </div>
+        <span className="mono text-xs text-[var(--blue)]">{String(visible.length).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+      </div>
       <label className="sr-only" htmlFor="project-search">
         Buscar proyectos
       </label>
@@ -137,7 +191,7 @@ function ProjectsPanel() {
           No hay proyectos que coincidan con “{query}”.
         </p>
       )}
-      {visible.map((p) => (
+      {visible.map((p, index) => (
         <button
           type="button"
           key={p.name}
@@ -148,10 +202,11 @@ function ProjectsPanel() {
           className={`block w-full rounded-xl border bg-[#101725] p-4 text-left transition ${selectedName === p.name ? "border-[var(--blue)]" : "border-[var(--line)] hover:border-[var(--blue)]/60"}`}
         >
           <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold">{p.name}</h3>
-            <span className="mono text-[10px] text-[var(--mint)]">
-              {p.status}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="mono text-[10px] text-[#71809a]">{String(index + 1).padStart(2, "0")}</span>
+              <h3 className="font-semibold">{p.name}</h3>
+            </div>
+            <span className="mono text-[10px] text-[var(--mint)]">{p.status}</span>
           </div>
           <p className="mt-2 text-sm text-[var(--muted)]">{p.description}</p>
           <div className="mt-3 flex flex-wrap gap-2">
