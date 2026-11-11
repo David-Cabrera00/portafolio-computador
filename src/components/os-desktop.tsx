@@ -16,6 +16,8 @@ import {
   Minus,
   Maximize2,
   Power,
+  Activity,
+  Command,
 } from "lucide-react";
 import { profile, projects, skillGroups } from "@/data/profile";
 import { executeTerminalCommand, terminalCommands } from "@/lib/terminal";
@@ -565,7 +567,34 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
       {wallpaper === "aurora" && (
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
       )}
-      <div className="pointer-events-none absolute right-6 top-6 hidden rounded-2xl border border-[var(--line)] bg-[#111827]/55 p-4 backdrop-blur-md lg:block">
+      <header className="relative z-20 flex h-14 items-center justify-between border-b border-[var(--line)] bg-[#0b101b]/70 px-4 backdrop-blur-xl sm:px-8">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="mono text-[10px] tracking-[.24em] text-[var(--mint)]">
+            DEV OS
+          </span>
+          <span className="hidden text-xs text-[#71809a] sm:inline">/</span>
+          <span className="hidden truncate text-xs text-[var(--muted)] sm:inline">
+            workspace / portfolio
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
+          <span className="hidden items-center gap-2 lg:flex">
+            <Activity size={13} className="text-[var(--mint)]" />
+            {open.length} apps active
+          </span>
+          <button
+            onClick={() => openWindow("terminal")}
+            className="focus-ring flex items-center gap-2 rounded-lg border border-[var(--line)] px-2.5 py-1.5 hover:border-[var(--blue)]/60 hover:text-white"
+          >
+            <Command size={13} />
+            <span className="hidden sm:inline">Command center</span>
+            <kbd className="mono hidden rounded bg-[#202b40] px-1.5 py-0.5 text-[10px] text-[var(--blue)] sm:inline">
+              Ctrl K
+            </kbd>
+          </button>
+        </div>
+      </header>
+      <div className="pointer-events-none absolute right-6 top-20 hidden rounded-2xl border border-[var(--line)] bg-[#111827]/55 p-4 backdrop-blur-md lg:block">
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
           <span className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">
@@ -577,7 +606,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           Portfolio environment · secure client mode
         </p>
       </div>
-      <div className="relative flex min-h-[calc(100vh-3.5rem)] flex-wrap content-start gap-5 p-6 sm:p-10">
+      <div className="relative flex min-h-[calc(100vh-7rem)] flex-wrap content-start gap-5 p-6 pt-8 sm:p-10 sm:pt-10">
         {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -606,6 +635,22 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
         {apps.map(({ id }) => (
           <WindowView key={id} id={id} />
         ))}
+        {open.length === 0 && (
+          <div className="absolute inset-x-0 top-[42%] flex -translate-y-1/2 justify-center px-6 text-center">
+            <div className="max-w-md">
+              <p className="mono text-[10px] tracking-[.24em] text-[var(--mint)]">
+                WORKSPACE READY
+              </p>
+              <h1 className="display mt-3 text-3xl font-semibold text-white sm:text-4xl">
+                Selecciona una aplicación para comenzar.
+              </h1>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                Explora proyectos, habilidades, experiencia y contacto desde el
+                escritorio interactivo.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
       <footer className="fixed bottom-0 left-0 right-0 z-30 flex h-14 min-w-0 items-center gap-3 overflow-x-auto border-t border-[var(--line)] bg-[#111827]/90 px-4 backdrop-blur-xl">
         <button
