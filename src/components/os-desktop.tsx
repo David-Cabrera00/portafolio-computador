@@ -480,7 +480,8 @@ function WindowView({ id }: { id: AppId }) {
           ? {}
           : { left: `${win.position.x}%`, top: `${win.position.y}%` }),
       }}
-      className={`absolute ${win.maximized ? "inset-3" : "w-[min(720px,84vw)] max-sm:inset-3 max-sm:w-auto"} overflow-hidden rounded-2xl border bg-[#111827]/95 shadow-2xl backdrop-blur-xl ${activeId === id ? "border-[var(--blue)]/70 shadow-[0_0_35px_rgba(120,169,255,.12)]" : "border-[var(--line)]"}`}
+      aria-label={`Ventana ${win.title}`}
+      className={`os-window absolute ${win.maximized ? "inset-3" : "w-[min(720px,84vw)] max-sm:inset-3 max-sm:w-auto"} overflow-hidden rounded-2xl border bg-[#111827]/95 shadow-2xl backdrop-blur-xl ${activeId === id ? "border-[var(--blue)]/70 shadow-[0_0_35px_rgba(120,169,255,.12)]" : "border-[var(--line)]"}`}
     >
       <header
         onPointerDown={startDragging}
@@ -618,7 +619,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           <button
             key={id}
             onClick={() => openWindow(id)}
-            className={`focus-ring rounded-lg border px-3 py-2 text-xs transition ${activeId === id ? "border-[var(--blue)]/50 bg-[#253553] text-white" : "border-transparent text-[var(--muted)] hover:border-[var(--line)] hover:text-white"}`}
+            className={`focus-ring rounded-lg border px-3 py-2 text-xs transition ${activeId === id ? "border-[var(--blue)]/50 bg-[#253553] text-white" : windows[id].minimized ? "border-transparent text-[#71809a] opacity-60 hover:border-[var(--line)] hover:opacity-100" : "border-transparent text-[var(--muted)] hover:border-[var(--line)] hover:text-white"}`}
           >
             {label}
           </button>
@@ -640,7 +641,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           </button>
         </div>
         {menu && (
-          <div className="absolute bottom-16 left-4 w-56 rounded-2xl border border-[var(--line)] bg-[#111827] p-2 shadow-2xl">
+          <div className="os-menu-in absolute bottom-16 left-4 w-56 rounded-2xl border border-[var(--line)] bg-[#111827] p-2 shadow-2xl">
             <div className="mb-1 border-b border-[var(--line)] px-3 pb-3 pt-2">
               <p className="text-sm text-white">{profile.name}</p>
               <p className="mt-1 text-xs text-[var(--muted)]">{profile.role}</p>
