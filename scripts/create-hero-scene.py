@@ -82,17 +82,17 @@ def uv_sphere(name, loc, scale, mat):
 
 
 def create_keyboard():
-    base = cube("Keyboard base", (0.0, 0.28, -0.82), (2.8, 0.12, 0.86), MAT["edge"], 0.06, rotation=(math.radians(-5), 0, 0))
+    base = cube("Keyboard base", (-0.25, 0.28, 0.82), (2.8, 0.12, 0.86), MAT["edge"], 0.06, rotation=(math.radians(-5), 0, 0))
     rows = [10, 10, 9, 8]
     for row, count in enumerate(rows):
-        z = -0.54 - row * 0.16
+        z = 0.54 + row * 0.16
         offset = (10 - count) * 0.075
         for col in range(count):
             width = 0.19
             if row == 3 and col in (0, count - 1):
                 width = 0.34
-            key = cube(f"Key {row}-{col}", (-0.92 + offset + col * 0.21, 0.38, z), (width, 0.045, 0.115), MAT["key"], 0.018, rotation=(math.radians(-5), 0, 0))
-    cube("Space bar", (0.0, 0.38, -1.03), (0.82, 0.045, 0.12), MAT["key"], 0.018, rotation=(math.radians(-5), 0, 0))
+            key = cube(f"Key {row}-{col}", (-1.17 + offset + col * 0.21, 0.38, z), (width, 0.045, 0.115), MAT["key"], 0.018, rotation=(math.radians(-5), 0, 0))
+    cube("Space bar", (-0.25, 0.38, 1.03), (0.82, 0.045, 0.12), MAT["key"], 0.018, rotation=(math.radians(-5), 0, 0))
 
 
 def create_monitor():
@@ -109,8 +109,8 @@ def create_monitor():
 
 
 def create_mouse():
-    cube("Mouse", (1.62, 0.31, -0.65), (0.42, 0.22, 0.62), MAT["edge"], 0.12, rotation=(math.radians(-4), 0, 0))
-    cube("Mouse wheel", (1.62, 0.45, -0.58), (0.05, 0.025, 0.14), MAT["mint"], 0.01, rotation=(math.radians(-4), 0, 0))
+    cube("Mouse", (1.55, 0.31, 0.72), (0.42, 0.22, 0.62), MAT["edge"], 0.12, rotation=(math.radians(-4), 0, 0))
+    cube("Mouse wheel", (1.55, 0.45, 0.79), (0.05, 0.025, 0.14), MAT["mint"], 0.01, rotation=(math.radians(-4), 0, 0))
 
 
 def create_lamp():
