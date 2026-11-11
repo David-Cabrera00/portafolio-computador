@@ -26,6 +26,7 @@ type OSState = {
   windows: Record<AppId, WindowState>;
   activeId: AppId | null;
   theme: "dark" | "dusk";
+  wallpaper: "aurora" | "grid" | "plain";
   sounds: boolean;
   reducedMotion: boolean;
   hydrated: boolean;
@@ -36,6 +37,7 @@ type OSState = {
   focusWindow: (id: AppId) => void;
   moveWindow: (id: AppId, position: { x: number; y: number }) => void;
   setTheme: (theme: "dark" | "dusk") => void;
+  setWallpaper: (wallpaper: "aurora" | "grid" | "plain") => void;
   setSounds: (sounds: boolean) => void;
   setReducedMotion: (value: boolean) => void;
   hydratePreferences: () => void;
@@ -72,6 +74,7 @@ export const useOSStore = create<OSState>((set) => ({
   windows: initialWindows,
   activeId: null,
   theme: "dark",
+  wallpaper: "aurora",
   sounds: false,
   reducedMotion: false,
   hydrated: false,
@@ -126,6 +129,10 @@ export const useOSStore = create<OSState>((set) => ({
     set({ theme });
     persist({ theme });
   },
+  setWallpaper: (wallpaper) => {
+    set({ wallpaper });
+    persist({ wallpaper });
+  },
   setSounds: (sounds) => {
     set({ sounds });
     persist({ sounds });
@@ -139,7 +146,9 @@ export const useOSStore = create<OSState>((set) => ({
     try {
       const stored = JSON.parse(
         localStorage.getItem("dev-os-preferences") ?? "null",
-      ) as Partial<Pick<OSState, "theme" | "sounds" | "reducedMotion">> | null;
+      ) as Partial<
+        Pick<OSState, "theme" | "wallpaper" | "sounds" | "reducedMotion">
+      > | null;
       set({ ...(stored ?? {}), hydrated: true });
     } catch {
       set({ hydrated: true });
@@ -148,12 +157,19 @@ export const useOSStore = create<OSState>((set) => ({
   resetPreferences: () => {
     if (typeof window !== "undefined")
       localStorage.removeItem("dev-os-preferences");
-    set({ theme: "dark", sounds: false, reducedMotion: false });
+    set({
+      theme: "dark",
+      wallpaper: "aurora",
+      sounds: false,
+      reducedMotion: false,
+    });
   },
 }));
 
 function persist(
-  values: Partial<Pick<OSState, "theme" | "sounds" | "reducedMotion">>,
+  values: Partial<
+    Pick<OSState, "theme" | "wallpaper" | "sounds" | "reducedMotion">
+  >,
 ) {
   if (typeof window === "undefined") return;
   try {

@@ -250,9 +250,11 @@ function ContactPanel() {
 function SettingsPanel() {
   const {
     theme,
+    wallpaper,
     sounds,
     reducedMotion,
     setTheme,
+    setWallpaper,
     setSounds,
     setReducedMotion,
     resetPreferences,
@@ -268,6 +270,20 @@ function SettingsPanel() {
         >
           <option value="dark">Dark</option>
           <option value="dusk">Dusk</option>
+        </select>
+      </label>
+      <label className="flex items-center justify-between gap-4">
+        Fondo{" "}
+        <select
+          value={wallpaper}
+          onChange={(event) =>
+            setWallpaper(event.target.value as "aurora" | "grid" | "plain")
+          }
+          className="rounded-lg border border-[var(--line)] bg-[#101725] p-2"
+        >
+          <option value="aurora">Aurora</option>
+          <option value="grid">Grid</option>
+          <option value="plain">Plano</option>
         </select>
       </label>
       <label className="flex items-center justify-between">
@@ -490,6 +506,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
   const windows = useOSStore((s) => s.windows);
   const activeId = useOSStore((s) => s.activeId);
   const theme = useOSStore((s) => s.theme);
+  const wallpaper = useOSStore((s) => s.wallpaper);
   const open = apps.filter((a) => windows[a.id].open);
   useEffect(() => {
     hydratePreferences();
@@ -512,9 +529,11 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
   return (
     <main
       data-theme={theme}
-      className={`grid-bg relative min-h-screen overflow-hidden pb-14 ${theme === "dusk" ? "bg-[#17111f]" : "bg-[#0b101b]"}`}
+      className={`relative min-h-screen overflow-hidden pb-14 ${wallpaper === "grid" ? "grid-bg bg-[#0b101b]" : wallpaper === "plain" ? "bg-[#0b101b]" : "bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.16),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.1),transparent_28%)]"} ${theme === "dusk" ? "saturate-75" : ""}`}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
+      {wallpaper === "aurora" && (
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
+      )}
       <div className="relative flex min-h-[calc(100vh-3.5rem)] flex-wrap content-start gap-5 p-6 sm:p-10">
         {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
           <button
