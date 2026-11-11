@@ -200,6 +200,18 @@ function Computer({
               roughness={0.34}
             />
           </RoundedBox>
+          <mesh position={[1.55, -0.962, 0.18]} rotation={[0, -0.12, 0]}>
+            <boxGeometry args={[0.045, 0.018, 0.12]} />
+            <meshStandardMaterial color="#9aabc2" roughness={0.5} />
+          </mesh>
+          <mesh position={[1.55, -0.962, 0.04]} rotation={[0, -0.12, 0]}>
+            <boxGeometry args={[0.025, 0.012, 0.16]} />
+            <meshStandardMaterial
+              color="#5274af"
+              emissive="#345b9a"
+              emissiveIntensity={0.4}
+            />
+          </mesh>
         </Float>
       </group>
     </Float>
