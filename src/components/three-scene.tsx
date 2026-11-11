@@ -67,7 +67,7 @@ function Computer({
             <meshStandardMaterial
               color="#7ce3c3"
               emissive="#7ce3c3"
-              emissiveIntensity={1.8}
+              emissiveIntensity={0.9}
             />
           </mesh>
           <mesh position={[-0.82, 0.28, 0]}>
@@ -75,7 +75,7 @@ function Computer({
             <meshStandardMaterial
               color="#78a9ff"
               emissive="#78a9ff"
-              emissiveIntensity={1.5}
+              emissiveIntensity={0.75}
             />
           </mesh>
           <mesh position={[0.22, 0.12, 0]}>
@@ -83,7 +83,7 @@ function Computer({
             <meshStandardMaterial
               color="#18345b"
               emissive="#204c87"
-              emissiveIntensity={0.8}
+              emissiveIntensity={0.45}
             />
           </mesh>
           <mesh position={[-0.38, -0.45, 0]}>
@@ -91,7 +91,7 @@ function Computer({
             <meshStandardMaterial
               color="#5273ad"
               emissive="#345b9a"
-              emissiveIntensity={1.2}
+              emissiveIntensity={0.65}
             />
           </mesh>
         </group>
@@ -231,7 +231,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
       <pointLight position={[-4, 1, 1]} intensity={18} color="#7ce3c3" />
       <pointLight
         position={[0, 1.25, 0.2]}
-        intensity={approaching ? 25 : 9}
+        intensity={approaching ? 14 : 4.5}
         distance={4}
         color="#467dff"
       />
