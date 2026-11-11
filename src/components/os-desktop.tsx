@@ -326,7 +326,7 @@ function SettingsPanel() {
         onClick={resetPreferences}
         className="rounded-lg border border-red-400/40 px-3 py-2 text-red-300"
       >
-        Restablecer preferencias
+        Restablecer preferencias e introducción
       </button>
     </div>
   );

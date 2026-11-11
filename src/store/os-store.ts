@@ -155,8 +155,10 @@ export const useOSStore = create<OSState>((set) => ({
     }
   },
   resetPreferences: () => {
-    if (typeof window !== "undefined")
+    if (typeof window !== "undefined") {
       localStorage.removeItem("dev-os-preferences");
+      localStorage.removeItem("dev-os-intro-seen");
+    }
     set({
       theme: "dark",
       wallpaper: "aurora",
