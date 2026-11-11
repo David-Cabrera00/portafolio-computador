@@ -22,7 +22,7 @@ export default function PortfolioPage() {
       <section className="grid min-h-[70vh] items-center gap-10 py-20 md:grid-cols-[1.3fr_.7fr]">
         <div>
           <p className="mono mb-5 text-sm text-[var(--blue)]">{profile.role}</p>
-          <h1 className="max-w-3xl text-6xl font-semibold leading-[.95] tracking-[-.06em] sm:text-8xl">
+          <h1 className="display max-w-3xl text-6xl font-semibold leading-[.95] sm:text-8xl">
             {profile.tagline}
           </h1>
           <p className="mt-8 max-w-xl text-lg leading-8 text-[var(--muted)]">
@@ -111,7 +111,7 @@ export default function PortfolioPage() {
       <section id="contact" className="border-t border-[var(--line)] py-20">
         <p className="mono text-xs text-[var(--blue)]">04 / CONTACT</p>
         <div className="mt-6 flex flex-wrap items-end justify-between gap-8">
-          <h2 className="max-w-xl text-5xl tracking-[-.05em]">
+          <h2 className="display max-w-xl text-5xl">
             ¿Construimos algo con criterio?
           </h2>
           <div className="flex flex-wrap items-center gap-3">

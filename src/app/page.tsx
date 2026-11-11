@@ -67,7 +67,7 @@ export default function Home() {
             <div className="mb-5 flex items-center gap-2 text-xs uppercase tracking-[.22em] text-[var(--blue)]">
               <Sparkles size={14} /> interactive portfolio system
             </div>
-            <h1 className="max-w-2xl text-5xl font-semibold leading-[.98] tracking-[-.05em] sm:text-7xl">
+            <h1 className="display max-w-2xl text-5xl font-semibold leading-[.98] sm:text-7xl">
               Una interfaz para contar cómo pienso.
             </h1>
             <p className="mt-6 max-w-md text-base leading-7 text-[var(--muted)]">
