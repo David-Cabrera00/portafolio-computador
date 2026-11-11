@@ -19,6 +19,7 @@ function Computer({
   onSelect: () => void;
 }) {
   const screen = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
   useFrame(() => {
     if (screen.current)
       screen.current.rotation.y = Math.sin(Date.now() / 2500) * 0.01;
@@ -57,12 +58,15 @@ function Computer({
         <mesh
           ref={screen}
           position={[0, 1.25, 0.11]}
+          scale={hovered && !approaching ? 1.012 : 1}
           onClick={onSelect}
           onPointerOver={(event) => {
             event.stopPropagation();
+            setHovered(true);
             document.body.style.cursor = "pointer";
           }}
           onPointerOut={() => {
+            setHovered(false);
             document.body.style.cursor = "default";
           }}
         >
@@ -70,7 +74,7 @@ function Computer({
           <meshStandardMaterial
             color="#101a2b"
             emissive="#234a87"
-            emissiveIntensity={approaching ? 0.65 : 0.35}
+            emissiveIntensity={approaching ? 0.65 : hovered ? 0.55 : 0.35}
           />
         </mesh>
         <group position={[0, 1.25, 0.125]} onClick={onSelect}>
