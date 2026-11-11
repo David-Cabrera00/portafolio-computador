@@ -114,10 +114,15 @@ function Computer({
 }
 function CameraApproach({ approaching }: { approaching: boolean }) {
   const { camera } = useThree();
-  useFrame(() => {
+  useFrame(({ clock }) => {
+    const ambient = clock.elapsedTime;
     const target = approaching
       ? new THREE.Vector3(0, 1.25, 3.2)
-      : new THREE.Vector3(4.8, 2.3, 6.2);
+      : new THREE.Vector3(
+          4.8 + Math.sin(ambient * 0.22) * 0.12,
+          2.3 + Math.sin(ambient * 0.3) * 0.04,
+          6.2 + Math.cos(ambient * 0.22) * 0.1,
+        );
     camera.position.lerp(target, approaching ? 0.055 : 0.02);
     camera.lookAt(0, 0.5, 0);
   });
@@ -158,6 +163,12 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         color="#78a9ff"
       />
       <pointLight position={[-4, 1, 1]} intensity={18} color="#7ce3c3" />
+      <pointLight
+        position={[0, 1.25, 0.2]}
+        intensity={approaching ? 25 : 9}
+        distance={4}
+        color="#467dff"
+      />
       <ContactShadows
         position={[0, -1.36, 0]}
         opacity={0.5}
