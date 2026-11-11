@@ -203,6 +203,30 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         distance={4}
         color="#467dff"
       />
+      <mesh position={[0, -1.42, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[14, 12]} />
+        <meshStandardMaterial
+          color="#070a11"
+          roughness={0.82}
+          metalness={0.12}
+        />
+      </mesh>
+      <mesh position={[0, 1.2, -1.8]}>
+        <planeGeometry args={[14, 6]} />
+        <meshStandardMaterial
+          color="#0c121d"
+          roughness={0.9}
+          metalness={0.05}
+        />
+      </mesh>
+      <mesh position={[-3.1, 0, -1.65]}>
+        <boxGeometry args={[0.025, 2.8, 0.025]} />
+        <meshBasicMaterial color="#3569c7" />
+      </mesh>
+      <mesh position={[3.1, 0.35, -1.65]}>
+        <boxGeometry args={[0.025, 1.9, 0.025]} />
+        <meshBasicMaterial color="#48b99c" />
+      </mesh>
       <ContactShadows
         position={[0, -1.36, 0]}
         opacity={0.5}
