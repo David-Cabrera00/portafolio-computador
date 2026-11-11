@@ -788,6 +788,12 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           </span>
         </div>
         <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
+          <span className="hidden items-center gap-2 xl:flex">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
+            <span className="mono text-[10px] tracking-[.16em] text-[var(--mint)]">
+              SYSTEM ONLINE
+            </span>
+          </span>
           <span className="hidden items-center gap-2 lg:flex">
             <Activity size={13} className="text-[var(--mint)]" />
             {open.length} apps active
@@ -804,18 +810,6 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           </button>
         </div>
       </header>
-      <div className="pointer-events-none absolute right-6 top-20 hidden rounded-2xl border border-[var(--line)] bg-[#111827]/55 p-4 backdrop-blur-md lg:block">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
-          <span className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">
-            SYSTEM ONLINE
-          </span>
-        </div>
-        <p className="mt-3 text-sm text-white">DEV OS / workspace</p>
-        <p className="mt-1 text-xs text-[var(--muted)]">
-          Portfolio environment · secure client mode
-        </p>
-      </div>
       <WorkspaceSignal activeApps={open.length} />
       <div className="relative grid min-h-[calc(100vh-7rem)] grid-cols-4 content-start gap-3 p-4 pt-6 sm:grid-cols-6 sm:gap-5 sm:p-10 sm:pt-10 lg:grid-cols-9">
         {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
@@ -851,18 +845,47 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
           <WindowView key={id} id={id} />
         ))}
         {open.length === 0 && (
-          <div className="absolute inset-x-0 top-[42%] flex -translate-y-1/2 justify-center px-6 text-center">
-            <div className="max-w-md">
-              <p className="mono text-[10px] tracking-[.24em] text-[var(--mint)]">
-                WORKSPACE READY
-              </p>
-              <h1 className="display mt-3 text-3xl font-semibold text-white sm:text-4xl">
-                Selecciona una aplicación para comenzar.
+          <div className="absolute inset-x-0 top-[38%] flex -translate-y-1/2 justify-center px-4 sm:px-6">
+            <div className="w-full max-w-2xl rounded-3xl border border-[var(--line)] bg-[#0c1422]/80 p-5 text-left shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-7">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--blue)]/30 bg-[var(--blue)]/10 text-[var(--blue)]">
+                    <Monitor size={17} />
+                  </span>
+                  <div>
+                    <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">
+                      WORKSPACE / READY
+                    </p>
+                    <p className="mt-1 text-sm text-white">Sesión local preparada</p>
+                  </div>
+                </div>
+                <span className="rounded-full border border-[var(--line)] px-3 py-1.5 mono text-[10px] text-[var(--muted)]">
+                  0 ventanas abiertas
+                </span>
+              </div>
+              <h1 className="display mt-6 max-w-xl text-3xl font-semibold text-white sm:text-4xl">
+                Explora el trabajo desde dentro.
               </h1>
-              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                Explora proyectos, habilidades, experiencia y contacto desde el
-                escritorio interactivo.
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)]">
+                Abre una sección para conocer los proyectos, habilidades y el camino detrás de este sistema.
               </p>
+              <div className="mt-6 grid gap-2 sm:grid-cols-3">
+                {[
+                  { id: "projects" as AppId, label: "Ver proyectos", value: `${projects.length} registrados` },
+                  { id: "skills" as AppId, label: "Explorar skills", value: `${Object.values(skillGroups).flat().length} tecnologías` },
+                  { id: "about" as AppId, label: "Conocer perfil", value: "Sobre mí" },
+                ].map((action) => (
+                  <button
+                    key={action.id}
+                    type="button"
+                    onClick={() => openWindow(action.id)}
+                    className="focus-ring rounded-2xl border border-[var(--line)] bg-white/[.025] p-3 text-left transition hover:-translate-y-0.5 hover:border-[var(--blue)]/60 hover:bg-[var(--blue)]/[.08]"
+                  >
+                    <span className="text-sm font-medium text-white">{action.label}</span>
+                    <span className="mt-1 block text-xs text-[var(--muted)]">{action.value}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
