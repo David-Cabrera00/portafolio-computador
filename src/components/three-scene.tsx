@@ -292,11 +292,11 @@ function RoomBackdrop() {
         <boxGeometry args={[9.6, 0.08, 0.12]} />
         <meshStandardMaterial color="#1b2637" roughness={0.54} metalness={0.25} />
       </mesh>
-      <mesh position={[4.5, 1.45, -2.82]}>
+      <mesh position={[4.5, 1.68, -2.82]}>
         <boxGeometry args={[1.42, 2.2, 0.05]} />
         <meshStandardMaterial color="#182438" roughness={0.5} metalness={0.22} />
       </mesh>
-      <mesh position={[4.5, 1.45, -2.77]}>
+      <mesh position={[4.5, 1.68, -2.77]}>
         <boxGeometry args={[1.18, 1.96, 0.018]} />
         <meshStandardMaterial
           color="#102b50"
@@ -305,11 +305,11 @@ function RoomBackdrop() {
           roughness={0.35}
         />
       </mesh>
-      <mesh position={[4.5, 1.45, -2.73]}>
+      <mesh position={[4.5, 1.68, -2.73]}>
         <boxGeometry args={[0.025, 1.94, 0.025]} />
         <meshBasicMaterial color="#78a9ff" toneMapped={false} />
       </mesh>
-      <mesh position={[4.5, 1.45, -2.73]}>
+      <mesh position={[4.5, 1.68, -2.73]}>
         <boxGeometry args={[1.2, 0.025, 0.025]} />
         <meshBasicMaterial color="#78a9ff" toneMapped={false} />
       </mesh>
@@ -385,19 +385,19 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
       <RoomBackdrop />
       <WallArt
         src="/models/posters/fight-poster.png"
-        position={[-3.72, 1.18, -2.68]}
+        position={[-3.72, 1.43, -2.68]}
         size={[0.82, 1.46]}
         rotation={-0.025}
       />
       <WallArt
         src="/models/posters/glitch-poster.png"
-        position={[-2.36, 2.4, -2.68]}
+        position={[-2.36, 2.65, -2.68]}
         size={[0.72, 0.72]}
         rotation={0.02}
       />
       <WallArt
         src="/models/posters/space-poster.png"
-        position={[2.28, 1.38, -2.68]}
+        position={[2.28, 1.63, -2.68]}
         size={[1.08, 1.92]}
         rotation={0.028}
       />
