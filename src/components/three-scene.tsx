@@ -387,6 +387,64 @@ function AtmosphereLights({ approaching }: { approaching: boolean }) {
   );
 }
 
+function MonitorHUD({ approaching }: { approaching: boolean }) {
+  const scanline = useRef<THREE.Mesh>(null);
+  const cursor = useRef<THREE.Mesh>(null);
+  const signal = useRef<THREE.Mesh>(null);
+  useFrame(({ clock }) => {
+    const phase = (clock.elapsedTime * 0.18) % 1;
+    if (scanline.current) scanline.current.position.y = 0.42 - phase * 0.84;
+    if (cursor.current) cursor.current.visible = Math.floor(clock.elapsedTime * 1.8) % 2 === 0;
+    if (signal.current) {
+      const pulse = 1 + Math.sin(clock.elapsedTime * 3.2) * 0.12;
+      signal.current.scale.setScalar(pulse);
+    }
+  });
+  const opacity = approaching ? 0.62 : 0.44;
+  return (
+    <group position={[-0.37, 2.38, -0.22]}>
+      <mesh>
+        <planeGeometry args={[1.72, 1.02]} />
+        <meshBasicMaterial color="#061731" transparent opacity={opacity} depthTest={false} depthWrite={false} />
+      </mesh>
+      <group position={[0, 0, 0.004]}>
+        <mesh position={[-0.48, 0.29, 0]}>
+          <planeGeometry args={[0.5, 0.025]} />
+          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest={false} />
+        </mesh>
+        <mesh position={[-0.55, 0.18, 0]}>
+          <planeGeometry args={[0.28, 0.02]} />
+          <meshBasicMaterial color="#80aaff" toneMapped={false} depthTest={false} />
+        </mesh>
+        <mesh position={[0.31, 0.12, 0]}>
+          <planeGeometry args={[0.42, 0.25]} />
+          <meshBasicMaterial color="#164c9c" transparent opacity={0.82} toneMapped={false} depthTest={false} />
+        </mesh>
+        <mesh ref={signal} position={[0.56, 0.22, 0]}>
+          <circleGeometry args={[0.038, 16]} />
+          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest={false} />
+        </mesh>
+        <mesh position={[-0.05, -0.24, 0]}>
+          <planeGeometry args={[1.04, 0.018]} />
+          <meshBasicMaterial color="#587bb6" toneMapped={false} depthTest={false} />
+        </mesh>
+        <mesh position={[-0.64, -0.39, 0]}>
+          <planeGeometry args={[0.23, 0.016]} />
+          <meshBasicMaterial color="#6c8dbf" toneMapped={false} depthTest={false} />
+        </mesh>
+        <mesh ref={cursor} position={[-0.38, -0.39, 0]}>
+          <planeGeometry args={[0.012, 0.052]} />
+          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest={false} />
+        </mesh>
+        <mesh ref={scanline} position={[0, 0.42, 0.006]}>
+          <planeGeometry args={[1.62, 0.012]} />
+          <meshBasicMaterial color="#b4ccff" transparent opacity={0.28} toneMapped={false} depthTest={false} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
 useGLTF.preload("/models/hero-workstation.glb");
 
 export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
@@ -444,6 +502,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
       <Suspense fallback={<Computer approaching={approaching} onSelect={selectMonitor} />}>
         <BlenderWorkstation onSelect={selectMonitor} />
       </Suspense>
+      <MonitorHUD approaching={approaching} />
       <Environment preset="city" />
       <OrbitControls
         enablePan={false}
