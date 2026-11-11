@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { OSDesktop } from "@/components/os-desktop";
+import { SceneBoundary } from "@/components/scene-boundary";
 const ThreeScene = dynamic(
   () => import("@/components/three-scene").then((m) => m.ThreeScene),
   {
@@ -23,9 +24,11 @@ export default function Home() {
     <main className="min-h-screen bg-[var(--bg)]">
       <section className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0">
-          <ThreeScene
-            onMonitorClick={() => window.setTimeout(() => setMode("os"), 850)}
-          />
+          <SceneBoundary>
+            <ThreeScene
+              onMonitorClick={() => window.setTimeout(() => setMode("os"), 850)}
+            />
+          </SceneBoundary>
         </div>
         <div className="relative z-10 flex min-h-screen flex-col justify-between p-6 sm:p-10">
           <header className="flex items-center justify-between">
