@@ -57,7 +57,7 @@ function Computer({
         </RoundedBox>
         <mesh
           ref={screen}
-          position={[0, 1.25, 0.11]}
+          position={[0, 1.25, 0.15]}
           scale={hovered && !approaching ? 1.012 : 1}
           onClick={onSelect}
           onPointerOver={(event) => {
@@ -77,7 +77,7 @@ function Computer({
             emissiveIntensity={approaching ? 0.65 : hovered ? 0.55 : 0.35}
           />
         </mesh>
-        <group position={[0, 1.25, 0.125]} onClick={onSelect}>
+        <group position={[0, 1.25, 0.165]} onClick={onSelect}>
           <mesh position={[-0.7, 0.58, 0]}>
             <boxGeometry args={[1.25, 0.035, 0.01]} />
             <meshStandardMaterial
