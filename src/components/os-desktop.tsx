@@ -18,6 +18,7 @@ import {
   Power,
 } from "lucide-react";
 import { profile, projects, skillGroups } from "@/data/profile";
+import { executeTerminalCommand, terminalCommands } from "@/lib/terminal";
 import { AppId, useOSStore } from "@/store/os-store";
 
 const apps: { id: AppId; label: string; icon: typeof UserRound }[] = [
@@ -296,21 +297,7 @@ function SettingsPanel() {
 }
 
 function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
-  const commandNames = [
-    "help",
-    "about",
-    "projects",
-    "skills",
-    "experience",
-    "education",
-    "contact",
-    "whoami",
-    "clear",
-    "date",
-    "echo",
-    "theme",
-    "open",
-  ];
+  const commandNames = terminalCommands;
   const [lines, setLines] = useState([
     "DEV OS terminal — escribe help para comenzar.",
   ]);
@@ -322,30 +309,14 @@ function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
     if (!command) return;
     setHistory((old) => [...old, command]);
     setHistoryIndex(-1);
-    const [name, arg] = command.split(/\s+/);
-    let output = "";
-    if (name === "help")
-      output =
-        "help  about  projects  skills  experience  education  contact  whoami  clear  date  echo  theme  open";
-    else if (name === "about") output = `${profile.name} · ${profile.role}`;
-    else if (name === "projects")
-      output = projects.map((p) => `• ${p.name}`).join("\n");
-    else if (name === "skills")
-      output = Object.values(skillGroups).flat().join(" · ");
-    else if (name === "experience") output = profile.experience;
-    else if (name === "education") output = profile.education;
-    else if (name === "whoami") output = profile.name;
-    else if (name === "date") output = new Date().toLocaleString("es-CO");
-    else if (name === "echo") output = command.slice(5);
-    else if (name === "clear") {
+    const result = executeTerminalCommand(command);
+    if (result.clear) {
       setLines([]);
       setValue("");
       return;
-    } else if (name === "open" && apps.some((a) => a.id === arg)) {
-      onOpen(arg as AppId);
-      output = `Abriendo ${arg}...`;
-    } else output = `Comando no reconocido: ${name}. Escribe help.`;
-    setLines((old) => [...old, `> ${command}`, ...output.split("\n")]);
+    }
+    if (result.openApp) onOpen(result.openApp);
+    setLines((old) => [...old, `> ${command}`, ...result.output.split("\n")]);
     setValue("");
   };
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
