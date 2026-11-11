@@ -248,7 +248,11 @@ function BlenderWorkstation({
     >
       <primitive object={scene} />
       <mesh
-        position={[0, 2.1, 0.26]}
+        position={[0, 2.1, 0.68]}
+        onPointerDown={(event) => {
+          event.stopPropagation();
+          onSelect();
+        }}
         onClick={(event) => {
           event.stopPropagation();
           onSelect();
@@ -261,7 +265,7 @@ function BlenderWorkstation({
           document.body.style.cursor = "default";
         }}
       >
-        <planeGeometry args={[3.3, 2]} />
+        <planeGeometry args={[3.75, 2.35]} />
         <meshBasicMaterial transparent opacity={0.001} depthWrite={false} />
       </mesh>
     </group>
