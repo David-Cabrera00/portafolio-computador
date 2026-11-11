@@ -44,20 +44,7 @@ function AppContent({ id }: { id: AppId }) {
   if (id === "experience") return <ExperiencePanel />;
   if (id === "education") return <EducationPanel />;
   if (id === "contact") return <ContactPanel />;
-  if (id === "files")
-    return (
-      <div className="mono text-sm leading-8 text-[var(--muted)]">
-        <p className="text-[var(--mint)]">/portfolio</p>
-        <p>├── about/</p>
-        <p>├── projects/</p>
-        <p>├── skills/</p>
-        <p>├── documents/</p>
-        <p>└── contact/</p>
-        <p className="mt-3 text-xs text-[#71809a]">
-          CV no disponible: añade un PDF real en public/documents/.
-        </p>
-      </div>
-    );
+  if (id === "files") return <FilesPanel onOpen={openWindow} />;
   if (id === "settings") return <SettingsPanel />;
   return <TerminalPanel onOpen={openWindow} />;
 }
@@ -328,10 +315,12 @@ function ContactPanel() {
     setStatus("Se preparó un correo en tu cliente predeterminado.");
   };
   return (
-    <div className="space-y-4 text-sm text-[var(--muted)]">
-      <p>
-        El formulario usa tu cliente de correo; no almacena ni simula envíos.
-      </p>
+    <div className="space-y-5 text-sm text-[var(--muted)]">
+      <div className="rounded-2xl border border-[var(--line)] bg-[linear-gradient(135deg,rgba(124,227,195,.1),rgba(0,0,0,.12))] p-5">
+        <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">COMMUNICATION / CHANNEL</p>
+        <h2 className="mt-2 text-2xl font-semibold text-white">Abramos una conversación.</h2>
+        <p className="mt-3 max-w-xl leading-6">El formulario prepara un correo en tu cliente predeterminado; no almacena ni simula envíos.</p>
+      </div>
       <form onSubmit={submit} className="grid gap-3">
         <input
           name="name"
@@ -393,6 +382,42 @@ function ContactPanel() {
   );
 }
 
+function FilesPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
+  const folders = [
+    ["about/", "Perfil y presentación"],
+    ["projects/", `${projects.length} proyectos registrados`],
+    ["skills/", `${Object.values(skillGroups).flat().length} tecnologías catalogadas`],
+    ["documents/", "CV pendiente de añadir"],
+    ["contact/", "Canales de comunicación"],
+  ];
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">FILE SYSTEM / PORTFOLIO</p>
+        <h2 className="mt-2 text-2xl font-semibold text-white">Archivos del workspace.</h2>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {folders.map(([name, description], index) => (
+          <div key={name} className="flex items-center gap-3 rounded-xl border border-[var(--line)] bg-black/20 p-4">
+            <span className="rounded-lg border border-[var(--line)] bg-[#131c2b] px-2 py-1 text-[var(--blue)]">{index + 1}</span>
+            <div className="min-w-0">
+              <p className="mono truncate text-sm text-[var(--mint)]">{name}</p>
+              <p className="mt-1 text-xs text-[var(--muted)]">{description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="rounded-xl border border-dashed border-[var(--line)] p-4">
+        <p className="mono text-[10px] text-[#71809a]">DOCUMENT STATUS</p>
+        <p className="mt-2 text-sm text-[var(--muted)]">CV no disponible: añade un PDF real en <code>public/documents/</code>.</p>
+        <button type="button" onClick={() => onOpen("contact")} className="focus-ring mt-4 rounded-lg border border-[var(--line)] px-3 py-2 text-xs text-white hover:border-[var(--blue)]/60">
+          Abrir contacto
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function SettingsPanel() {
   const {
     theme,
@@ -406,9 +431,14 @@ function SettingsPanel() {
     resetPreferences,
   } = useOSStore();
   return (
-    <div className="space-y-4 text-sm">
-      <label className="flex items-center justify-between gap-4">
-        Tema{" "}
+    <div className="space-y-5 text-sm">
+      <div>
+        <p className="mono text-[10px] tracking-[.2em] text-[var(--mint)]">SYSTEM / PREFERENCES</p>
+        <h2 className="mt-2 text-2xl font-semibold text-white">Ajusta tu entorno.</h2>
+      </div>
+      <div className="space-y-3 rounded-2xl border border-[var(--line)] bg-black/20 p-4">
+      <label className="flex items-center justify-between gap-4 text-[var(--muted)]">
+        Tema
         <select
           value={theme}
           onChange={(e) => setTheme(e.target.value as "dark" | "dusk")}
@@ -418,8 +448,8 @@ function SettingsPanel() {
           <option value="dusk">Dusk</option>
         </select>
       </label>
-      <label className="flex items-center justify-between gap-4">
-        Fondo{" "}
+      <label className="flex items-center justify-between gap-4 text-[var(--muted)]">
+        Fondo
         <select
           value={wallpaper}
           onChange={(event) =>
@@ -432,25 +462,26 @@ function SettingsPanel() {
           <option value="plain">Plano</option>
         </select>
       </label>
-      <label className="flex items-center justify-between">
-        Sonidos{" "}
+      <label className="flex items-center justify-between text-[var(--muted)]">
+        Sonidos
         <input
           type="checkbox"
           checked={sounds}
           onChange={(e) => setSounds(e.target.checked)}
         />
       </label>
-      <label className="flex items-center justify-between">
-        Reducir animaciones{" "}
+      <label className="flex items-center justify-between text-[var(--muted)]">
+        Reducir animaciones
         <input
           type="checkbox"
           checked={reducedMotion}
           onChange={(e) => setReducedMotion(e.target.checked)}
         />
       </label>
+      </div>
       <button
         onClick={resetPreferences}
-        className="rounded-lg border border-red-400/40 px-3 py-2 text-red-300"
+        className="focus-ring rounded-lg border border-red-400/40 px-3 py-2 text-red-300"
       >
         Restablecer preferencias e introducción
       </button>
@@ -506,6 +537,22 @@ function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
   };
   return (
     <div className="mono flex h-full min-h-[280px] flex-col rounded-lg bg-[#090d15] p-3 text-xs">
+      <div className="mb-3 flex items-center justify-between border-b border-[#202b40] pb-3 text-[10px]">
+        <span className="tracking-[.16em] text-[var(--mint)]">DEV OS / TERMINAL</span>
+        <span className="text-[#71809a]">restricted client mode</span>
+      </div>
+      <div className="mb-3 flex flex-wrap gap-2">
+        {commandNames.slice(0, 5).map((command) => (
+          <button
+            type="button"
+            key={command}
+            onClick={() => setValue(command)}
+            className="rounded-md border border-[#202b40] px-2 py-1 text-[10px] text-[#8fa8cf] hover:border-[var(--blue)]/60 hover:text-white"
+          >
+            {command}
+          </button>
+        ))}
+      </div>
       <div
         role="log"
         aria-live="polite"
