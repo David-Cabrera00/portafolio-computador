@@ -1,27 +1,457 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FileText, Folder, Mail, Monitor, Settings, Terminal, UserRound, Wrench, X, Minus, Maximize2, Power } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  FileText,
+  Folder,
+  Mail,
+  Monitor,
+  Settings,
+  Terminal,
+  UserRound,
+  Wrench,
+  X,
+  Minus,
+  Maximize2,
+  Power,
+} from "lucide-react";
 import { profile, projects, skillGroups } from "@/data/profile";
 import { AppId, useOSStore } from "@/store/os-store";
 
-const apps: { id: AppId; label: string; icon: typeof UserRound }[] = [{ id: "about", label: "Sobre mí", icon: UserRound }, { id: "projects", label: "Proyectos", icon: Folder }, { id: "skills", label: "Habilidades", icon: Wrench }, { id: "terminal", label: "Terminal", icon: Terminal }, { id: "files", label: "Archivos", icon: FileText }, { id: "contact", label: "Contacto", icon: Mail }, { id: "settings", label: "Ajustes", icon: Settings }];
+const apps: { id: AppId; label: string; icon: typeof UserRound }[] = [
+  { id: "about", label: "Sobre mí", icon: UserRound },
+  { id: "projects", label: "Proyectos", icon: Folder },
+  { id: "skills", label: "Habilidades", icon: Wrench },
+  { id: "terminal", label: "Terminal", icon: Terminal },
+  { id: "files", label: "Archivos", icon: FileText },
+  { id: "contact", label: "Contacto", icon: Mail },
+  { id: "settings", label: "Ajustes", icon: Settings },
+];
 
 function AppContent({ id }: { id: AppId }) {
   const openWindow = useOSStore((s) => s.openWindow);
-  if (id === "about") return <div className="space-y-4"><p className="text-lg text-white">{profile.role}</p><p className="text-[var(--muted)] leading-7">{profile.bio}</p><div className="rounded-xl border border-[var(--line)] bg-black/20 p-4"><span className="mono text-xs text-[var(--mint)]">STATUS</span><p className="mt-2 text-sm text-[var(--muted)]">Disponible para construir y aprender. Completa tus datos reales en <code>src/data/profile.ts</code>.</p></div></div>;
-  if (id === "projects") return <div className="grid gap-3">{projects.map((p) => <article key={p.name} className="rounded-xl border border-[var(--line)] bg-[#101725] p-4"><div className="flex items-center justify-between gap-3"><h3 className="font-semibold">{p.name}</h3><span className="mono text-[10px] text-[var(--mint)]">{p.status}</span></div><p className="mt-2 text-sm text-[var(--muted)]">{p.description}</p><div className="mt-3 flex flex-wrap gap-2">{p.stack.map((s) => <span key={s} className="rounded-md bg-[#202b40] px-2 py-1 text-xs text-[var(--blue)]">{s}</span>)}</div></article>)}</div>;
-  if (id === "skills") return <div className="grid gap-4 sm:grid-cols-2">{Object.entries(skillGroups).map(([group, skills]) => <div key={group}><h3 className="mb-2 text-sm text-[var(--mint)]">{group}</h3><div className="flex flex-wrap gap-2">{skills.map((s) => <span key={s} className="rounded-full border border-[var(--line)] px-3 py-1 text-xs text-[var(--muted)]">{s}</span>)}</div></div>)}</div>;
-  if (id === "contact") return <div className="space-y-4 text-sm text-[var(--muted)]"><p>El correo y los enlaces se configuran desde los datos centrales.</p><div className="grid gap-2"><a className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]" href={`mailto:${profile.email}`}>{profile.email}</a><a className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]" href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a><a className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]" href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a></div></div>;
-  if (id === "files") return <div className="mono text-sm leading-8 text-[var(--muted)]"><p className="text-[var(--mint)]">/portfolio</p><p>├── about/</p><p>├── projects/</p><p>├── skills/</p><p>├── documents/</p><p>└── contact/</p><p className="mt-3 text-xs text-[#71809a]">CV no disponible: añade un PDF real en public/documents/.</p></div>;
+  if (id === "about")
+    return (
+      <div className="space-y-4">
+        <p className="text-lg text-white">{profile.role}</p>
+        <p className="text-[var(--muted)] leading-7">{profile.bio}</p>
+        <div className="rounded-xl border border-[var(--line)] bg-black/20 p-4">
+          <span className="mono text-xs text-[var(--mint)]">STATUS</span>
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            Disponible para construir y aprender. Completa tus datos reales en{" "}
+            <code>src/data/profile.ts</code>.
+          </p>
+        </div>
+      </div>
+    );
+  if (id === "projects")
+    return (
+      <div className="grid gap-3">
+        {projects.map((p) => (
+          <article
+            key={p.name}
+            className="rounded-xl border border-[var(--line)] bg-[#101725] p-4"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-semibold">{p.name}</h3>
+              <span className="mono text-[10px] text-[var(--mint)]">
+                {p.status}
+              </span>
+            </div>
+            <p className="mt-2 text-sm text-[var(--muted)]">{p.description}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {p.stack.map((s) => (
+                <span
+                  key={s}
+                  className="rounded-md bg-[#202b40] px-2 py-1 text-xs text-[var(--blue)]"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    );
+  if (id === "skills")
+    return (
+      <div className="grid gap-4 sm:grid-cols-2">
+        {Object.entries(skillGroups).map(([group, skills]) => (
+          <div key={group}>
+            <h3 className="mb-2 text-sm text-[var(--mint)]">{group}</h3>
+            <div className="flex flex-wrap gap-2">
+              {skills.map((s) => (
+                <span
+                  key={s}
+                  className="rounded-full border border-[var(--line)] px-3 py-1 text-xs text-[var(--muted)]"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  if (id === "contact")
+    return (
+      <div className="space-y-4 text-sm text-[var(--muted)]">
+        <p>El correo y los enlaces se configuran desde los datos centrales.</p>
+        <div className="grid gap-2">
+          <a
+            className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
+            href={`mailto:${profile.email}`}
+          >
+            {profile.email}
+          </a>
+          <a
+            className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
+            href={profile.github}
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub ↗
+          </a>
+          <a
+            className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
+            href={profile.linkedin}
+            target="_blank"
+            rel="noreferrer"
+          >
+            LinkedIn ↗
+          </a>
+        </div>
+      </div>
+    );
+  if (id === "files")
+    return (
+      <div className="mono text-sm leading-8 text-[var(--muted)]">
+        <p className="text-[var(--mint)]">/portfolio</p>
+        <p>├── about/</p>
+        <p>├── projects/</p>
+        <p>├── skills/</p>
+        <p>├── documents/</p>
+        <p>└── contact/</p>
+        <p className="mt-3 text-xs text-[#71809a]">
+          CV no disponible: añade un PDF real en public/documents/.
+        </p>
+      </div>
+    );
   if (id === "settings") return <SettingsPanel />;
   return <TerminalPanel onOpen={openWindow} />;
 }
 
-function SettingsPanel() { const { theme, sounds, reducedMotion, setTheme, setSounds, setReducedMotion, resetPreferences } = useOSStore(); return <div className="space-y-4 text-sm"><label className="flex items-center justify-between gap-4">Tema <select value={theme} onChange={(e) => setTheme(e.target.value as "dark" | "dusk")} className="rounded-lg border border-[var(--line)] bg-[#101725] p-2"><option value="dark">Dark</option><option value="dusk">Dusk</option></select></label><label className="flex items-center justify-between">Sonidos <input type="checkbox" checked={sounds} onChange={(e) => setSounds(e.target.checked)} /></label><label className="flex items-center justify-between">Reducir animaciones <input type="checkbox" checked={reducedMotion} onChange={(e) => setReducedMotion(e.target.checked)} /></label><button onClick={resetPreferences} className="rounded-lg border border-red-400/40 px-3 py-2 text-red-300">Restablecer preferencias</button></div>; }
+function SettingsPanel() {
+  const {
+    theme,
+    sounds,
+    reducedMotion,
+    setTheme,
+    setSounds,
+    setReducedMotion,
+    resetPreferences,
+  } = useOSStore();
+  return (
+    <div className="space-y-4 text-sm">
+      <label className="flex items-center justify-between gap-4">
+        Tema{" "}
+        <select
+          value={theme}
+          onChange={(e) => setTheme(e.target.value as "dark" | "dusk")}
+          className="rounded-lg border border-[var(--line)] bg-[#101725] p-2"
+        >
+          <option value="dark">Dark</option>
+          <option value="dusk">Dusk</option>
+        </select>
+      </label>
+      <label className="flex items-center justify-between">
+        Sonidos{" "}
+        <input
+          type="checkbox"
+          checked={sounds}
+          onChange={(e) => setSounds(e.target.checked)}
+        />
+      </label>
+      <label className="flex items-center justify-between">
+        Reducir animaciones{" "}
+        <input
+          type="checkbox"
+          checked={reducedMotion}
+          onChange={(e) => setReducedMotion(e.target.checked)}
+        />
+      </label>
+      <button
+        onClick={resetPreferences}
+        className="rounded-lg border border-red-400/40 px-3 py-2 text-red-300"
+      >
+        Restablecer preferencias
+      </button>
+    </div>
+  );
+}
 
-function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) { const [lines, setLines] = useState(["DEV OS terminal — escribe help para comenzar."]); const [value, setValue] = useState(""); const run = () => { const command = value.trim(); if (!command) return; const [name, arg] = command.split(/\s+/); let output = ""; if (name === "help") output = "help  about  projects  skills  experience  education  contact  whoami  clear  date  echo  theme  open"; else if (name === "about") output = `${profile.name} · ${profile.role}`; else if (name === "projects") output = projects.map((p) => `• ${p.name}`).join("\n"); else if (name === "skills") output = Object.values(skillGroups).flat().join(" · "); else if (name === "whoami") output = profile.name; else if (name === "date") output = new Date().toLocaleString("es-CO"); else if (name === "echo") output = command.slice(5); else if (name === "clear") { setLines([]); setValue(""); return; } else if (name === "open" && apps.some((a) => a.id === arg)) { onOpen(arg as AppId); output = `Abriendo ${arg}...`; } else output = `Comando no reconocido: ${name}. Escribe help.`; setLines((old) => [...old, `> ${command}`, ...output.split("\n")]); setValue(""); }; return <div className="mono flex h-full min-h-[280px] flex-col rounded-lg bg-[#090d15] p-3 text-xs"><div className="flex-1 whitespace-pre-wrap text-[#a9bad4]">{lines.map((line, i) => <p key={`${line}-${i}`} className="mb-1">{line}</p>)}</div><div className="flex items-center gap-2 border-t border-[#202b40] pt-3 text-[var(--mint)]"><span>›</span><input aria-label="Comando de terminal" autoFocus value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={(e) => e.key === "Enter" && run()} className="min-w-0 flex-1 bg-transparent text-white outline-none" placeholder="escribe un comando..." /></div></div>; }
+function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
+  const [lines, setLines] = useState([
+    "DEV OS terminal — escribe help para comenzar.",
+  ]);
+  const [value, setValue] = useState("");
+  const run = () => {
+    const command = value.trim();
+    if (!command) return;
+    const [name, arg] = command.split(/\s+/);
+    let output = "";
+    if (name === "help")
+      output =
+        "help  about  projects  skills  experience  education  contact  whoami  clear  date  echo  theme  open";
+    else if (name === "about") output = `${profile.name} · ${profile.role}`;
+    else if (name === "projects")
+      output = projects.map((p) => `• ${p.name}`).join("\n");
+    else if (name === "skills")
+      output = Object.values(skillGroups).flat().join(" · ");
+    else if (name === "whoami") output = profile.name;
+    else if (name === "date") output = new Date().toLocaleString("es-CO");
+    else if (name === "echo") output = command.slice(5);
+    else if (name === "clear") {
+      setLines([]);
+      setValue("");
+      return;
+    } else if (name === "open" && apps.some((a) => a.id === arg)) {
+      onOpen(arg as AppId);
+      output = `Abriendo ${arg}...`;
+    } else output = `Comando no reconocido: ${name}. Escribe help.`;
+    setLines((old) => [...old, `> ${command}`, ...output.split("\n")]);
+    setValue("");
+  };
+  return (
+    <div className="mono flex h-full min-h-[280px] flex-col rounded-lg bg-[#090d15] p-3 text-xs">
+      <div className="flex-1 whitespace-pre-wrap text-[#a9bad4]">
+        {lines.map((line, i) => (
+          <p key={`${line}-${i}`} className="mb-1">
+            {line}
+          </p>
+        ))}
+      </div>
+      <div className="flex items-center gap-2 border-t border-[#202b40] pt-3 text-[var(--mint)]">
+        <span>›</span>
+        <input
+          aria-label="Comando de terminal"
+          autoFocus
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && run()}
+          className="min-w-0 flex-1 bg-transparent text-white outline-none"
+          placeholder="escribe un comando..."
+        />
+      </div>
+    </div>
+  );
+}
 
-function WindowView({ id }: { id: AppId }) { const win = useOSStore((s) => s.windows[id]); const close = useOSStore((s) => s.closeWindow); const minimize = useOSStore((s) => s.minimizeWindow); const maximize = useOSStore((s) => s.maximizeWindow); const focus = useOSStore((s) => s.focusWindow); if (!win.open || win.minimized) return null; return <section onPointerDown={() => focus(id)} className={`absolute ${win.maximized ? "inset-3" : "left-[8%] top-[10%] w-[min(720px,84vw)]"} z-20 overflow-hidden rounded-2xl border border-[var(--line)] bg-[#111827]/95 shadow-2xl backdrop-blur-xl`}><header className="flex items-center justify-between border-b border-[var(--line)] bg-[#171d2c] px-4 py-3"><div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[var(--mint)]" /><span className="text-sm font-medium">{win.title}</span></div><div className="flex gap-1"><button aria-label="Minimizar" onClick={() => minimize(id)} className="focus-ring rounded p-1 text-[var(--muted)]"><Minus size={15} /></button><button aria-label="Maximizar" onClick={() => maximize(id)} className="focus-ring rounded p-1 text-[var(--muted)]"><Maximize2 size={14} /></button><button aria-label="Cerrar" onClick={() => close(id)} className="focus-ring rounded p-1 text-[var(--muted)] hover:text-red-300"><X size={15} /></button></div></header><div className="max-h-[68vh] overflow-auto p-5"><AppContent id={id} /></div></section>; }
+function WindowView({ id }: { id: AppId }) {
+  const win = useOSStore((s) => s.windows[id]);
+  const close = useOSStore((s) => s.closeWindow);
+  const minimize = useOSStore((s) => s.minimizeWindow);
+  const maximize = useOSStore((s) => s.maximizeWindow);
+  const focus = useOSStore((s) => s.focusWindow);
+  const move = useOSStore((s) => s.moveWindow);
+  const dragRef = useRef<{
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+  } | null>(null);
+  const onPointerMove = (event: PointerEvent) => {
+    if (!dragRef.current || win.maximized) return;
+    const nextX = Math.max(
+      0,
+      Math.min(
+        70,
+        dragRef.current.originX +
+          ((event.clientX - dragRef.current.startX) / window.innerWidth) * 100,
+      ),
+    );
+    const nextY = Math.max(
+      0,
+      Math.min(
+        55,
+        dragRef.current.originY +
+          ((event.clientY - dragRef.current.startY) / window.innerHeight) * 100,
+      ),
+    );
+    move(id, { x: nextX, y: nextY });
+  };
+  const stopDragging = () => {
+    dragRef.current = null;
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", stopDragging);
+  };
+  const startDragging = (event: React.PointerEvent) => {
+    if (win.maximized || (event.target as HTMLElement).closest("button"))
+      return;
+    focus(id);
+    dragRef.current = {
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: win.position.x,
+      originY: win.position.y,
+    };
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", stopDragging);
+  };
+  useEffect(
+    () => () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", stopDragging);
+    },
+    // These listeners are cleaned up on unmount; handlers close over this window instance.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  if (!win.open || win.minimized) return null;
+  return (
+    <section
+      onPointerDown={() => focus(id)}
+      style={
+        win.maximized
+          ? undefined
+          : { left: `${win.position.x}%`, top: `${win.position.y}%` }
+      }
+      className={`absolute ${win.maximized ? "inset-3" : "w-[min(720px,84vw)]"} z-20 overflow-hidden rounded-2xl border border-[var(--line)] bg-[#111827]/95 shadow-2xl backdrop-blur-xl`}
+    >
+      <header
+        onPointerDown={startDragging}
+        className="flex touch-none cursor-move items-center justify-between border-b border-[var(--line)] bg-[#171d2c] px-4 py-3"
+      >
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-[var(--mint)]" />
+          <span className="text-sm font-medium">{win.title}</span>
+        </div>
+        <div className="flex gap-1">
+          <button
+            aria-label="Minimizar"
+            onClick={() => minimize(id)}
+            className="focus-ring rounded p-1 text-[var(--muted)]"
+          >
+            <Minus size={15} />
+          </button>
+          <button
+            aria-label="Maximizar"
+            onClick={() => maximize(id)}
+            className="focus-ring rounded p-1 text-[var(--muted)]"
+          >
+            <Maximize2 size={14} />
+          </button>
+          <button
+            aria-label="Cerrar"
+            onClick={() => close(id)}
+            className="focus-ring rounded p-1 text-[var(--muted)] hover:text-red-300"
+          >
+            <X size={15} />
+          </button>
+        </div>
+      </header>
+      <div className="max-h-[68vh] overflow-auto p-5">
+        <AppContent id={id} />
+      </div>
+    </section>
+  );
+}
 
-export function OSDesktop({ onExit }: { onExit: () => void }) { const [menu, setMenu] = useState(false); const hydratePreferences = useOSStore((s) => s.hydratePreferences); const openWindow = useOSStore((s) => s.openWindow); const windows = useOSStore((s) => s.windows); const activeId = useOSStore((s) => s.activeId); const open = apps.filter((a) => windows[a.id].open); useEffect(() => { hydratePreferences(); }, [hydratePreferences]); return <main className="grid-bg relative min-h-screen overflow-hidden bg-[#0b101b] pb-14"><div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" /><div className="relative flex min-h-[calc(100vh-3.5rem)] flex-wrap content-start gap-5 p-6 sm:p-10">{apps.slice(0, 5).map(({ id, label, icon: Icon }) => <button key={id} onDoubleClick={() => openWindow(id)} onClick={() => openWindow(id)} className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition hover:bg-white/5 hover:text-white"><span className="rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--blue)]"><Icon size={21} /></span>{label}</button>)}{apps.slice(5).map(({ id, label, icon: Icon }) => <button key={id} onClick={() => openWindow(id)} className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition hover:bg-white/5 hover:text-white"><span className="rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--mint)]"><Icon size={21} /></span>{label}</button>)}{apps.map(({ id }) => <WindowView key={id} id={id} />)}</div><footer className="fixed bottom-0 left-0 right-0 z-30 flex h-14 items-center gap-3 border-t border-[var(--line)] bg-[#111827]/90 px-4 backdrop-blur-xl"><button aria-label="Menú de aplicaciones" onClick={() => setMenu(!menu)} className="focus-ring rounded-lg bg-[var(--blue)] p-2 text-[#08101c]"><Monitor size={18} /></button>{open.map(({ id, label }) => <button key={id} onClick={() => openWindow(id)} className={`focus-ring rounded-lg px-3 py-2 text-xs ${activeId === id ? "bg-[#253553] text-white" : "text-[var(--muted)]"}`}>{label}</button>)}<div className="ml-auto flex items-center gap-3 text-xs text-[var(--muted)]"><span>{new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" })}</span><button aria-label="Salir de la experiencia 3D" onClick={onExit} className="focus-ring rounded-lg p-2 text-[var(--muted)] hover:text-white"><Power size={17} /></button></div>{menu && <div className="absolute bottom-16 left-4 w-56 rounded-2xl border border-[var(--line)] bg-[#111827] p-2 shadow-2xl"><p className="px-3 py-2 text-xs text-[var(--muted)]">DEV OS / aplicaciones</p>{apps.map(({ id, label }) => <button key={id} onClick={() => { openWindow(id); setMenu(false); }} className="focus-ring block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/5">{label}</button>)}</div>}</footer></main>; }
+export function OSDesktop({ onExit }: { onExit: () => void }) {
+  const [menu, setMenu] = useState(false);
+  const hydratePreferences = useOSStore((s) => s.hydratePreferences);
+  const openWindow = useOSStore((s) => s.openWindow);
+  const windows = useOSStore((s) => s.windows);
+  const activeId = useOSStore((s) => s.activeId);
+  const open = apps.filter((a) => windows[a.id].open);
+  useEffect(() => {
+    hydratePreferences();
+  }, [hydratePreferences]);
+  return (
+    <main className="grid-bg relative min-h-screen overflow-hidden bg-[#0b101b] pb-14">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
+      <div className="relative flex min-h-[calc(100vh-3.5rem)] flex-wrap content-start gap-5 p-6 sm:p-10">
+        {apps.slice(0, 5).map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            onDoubleClick={() => openWindow(id)}
+            onClick={() => openWindow(id)}
+            className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition hover:bg-white/5 hover:text-white"
+          >
+            <span className="rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--blue)]">
+              <Icon size={21} />
+            </span>
+            {label}
+          </button>
+        ))}
+        {apps.slice(5).map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            onClick={() => openWindow(id)}
+            className="focus-ring flex w-20 flex-col items-center gap-2 rounded-xl p-2 text-center text-xs text-[var(--muted)] transition hover:bg-white/5 hover:text-white"
+          >
+            <span className="rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--mint)]">
+              <Icon size={21} />
+            </span>
+            {label}
+          </button>
+        ))}
+        {apps.map(({ id }) => (
+          <WindowView key={id} id={id} />
+        ))}
+      </div>
+      <footer className="fixed bottom-0 left-0 right-0 z-30 flex h-14 items-center gap-3 border-t border-[var(--line)] bg-[#111827]/90 px-4 backdrop-blur-xl">
+        <button
+          aria-label="Menú de aplicaciones"
+          onClick={() => setMenu(!menu)}
+          className="focus-ring rounded-lg bg-[var(--blue)] p-2 text-[#08101c]"
+        >
+          <Monitor size={18} />
+        </button>
+        {open.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => openWindow(id)}
+            className={`focus-ring rounded-lg px-3 py-2 text-xs ${activeId === id ? "bg-[#253553] text-white" : "text-[var(--muted)]"}`}
+          >
+            {label}
+          </button>
+        ))}
+        <div className="ml-auto flex items-center gap-3 text-xs text-[var(--muted)]">
+          <span>
+            {new Date().toLocaleTimeString("es-CO", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+          <button
+            aria-label="Salir de la experiencia 3D"
+            onClick={onExit}
+            className="focus-ring rounded-lg p-2 text-[var(--muted)] hover:text-white"
+          >
+            <Power size={17} />
+          </button>
+        </div>
+        {menu && (
+          <div className="absolute bottom-16 left-4 w-56 rounded-2xl border border-[var(--line)] bg-[#111827] p-2 shadow-2xl">
+            <p className="px-3 py-2 text-xs text-[var(--muted)]">
+              DEV OS / aplicaciones
+            </p>
+            {apps.map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => {
+                  openWindow(id);
+                  setMenu(false);
+                }}
+                className="focus-ring block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/5"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+      </footer>
+    </main>
+  );
+}
