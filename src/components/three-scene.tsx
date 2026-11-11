@@ -44,7 +44,7 @@ function Computer({
         </RoundedBox>
         <mesh
           ref={screen}
-          position={[0, 1.25, -0.11]}
+          position={[0, 1.25, 0.11]}
           onClick={onSelect}
           onPointerOver={(event) => {
             event.stopPropagation();
@@ -61,6 +61,40 @@ function Computer({
             emissiveIntensity={approaching ? 0.65 : 0.35}
           />
         </mesh>
+        <group position={[0, 1.25, 0.125]} onClick={onSelect}>
+          <mesh position={[-0.7, 0.58, 0]}>
+            <boxGeometry args={[1.25, 0.035, 0.01]} />
+            <meshStandardMaterial
+              color="#7ce3c3"
+              emissive="#7ce3c3"
+              emissiveIntensity={1.8}
+            />
+          </mesh>
+          <mesh position={[-0.82, 0.28, 0]}>
+            <boxGeometry args={[0.75, 0.04, 0.01]} />
+            <meshStandardMaterial
+              color="#78a9ff"
+              emissive="#78a9ff"
+              emissiveIntensity={1.5}
+            />
+          </mesh>
+          <mesh position={[0.22, 0.12, 0]}>
+            <boxGeometry args={[0.9, 0.42, 0.01]} />
+            <meshStandardMaterial
+              color="#18345b"
+              emissive="#204c87"
+              emissiveIntensity={0.8}
+            />
+          </mesh>
+          <mesh position={[-0.38, -0.45, 0]}>
+            <boxGeometry args={[1.65, 0.025, 0.01]} />
+            <meshStandardMaterial
+              color="#5273ad"
+              emissive="#345b9a"
+              emissiveIntensity={1.2}
+            />
+          </mesh>
+        </group>
         <mesh position={[0, -0.05, 0]}>
           <boxGeometry args={[0.35, 2.3, 0.25]} />
           <meshStandardMaterial color="#2b3850" metalness={0.6} />
