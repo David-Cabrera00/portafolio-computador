@@ -138,6 +138,14 @@ function Computer({
             metalness={0.08}
           />
         </RoundedBox>
+        <mesh position={[0, -1.36, -0.98]}>
+          <boxGeometry args={[3.9, 0.018, 0.025]} />
+          <meshBasicMaterial color="#376fd0" toneMapped={false} />
+        </mesh>
+        <mesh position={[1.22, 1.04, 0.13]}>
+          <sphereGeometry args={[0.035, 12, 12]} />
+          <meshBasicMaterial color="#7ce3c3" toneMapped={false} />
+        </mesh>
         <group position={[0.15, -1.08, 0.2]} rotation={[-0.05, 0, 0]}>
           <RoundedBox args={[1.85, 0.06, 0.65]} radius={0.04} smoothness={3}>
             <meshStandardMaterial
