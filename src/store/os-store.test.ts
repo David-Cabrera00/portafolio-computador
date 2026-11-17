@@ -29,7 +29,7 @@ describe("DEV OS contract", () => {
     useOSStore.getState().setTheme("dusk");
     useOSStore.getState().setSounds(true);
     useOSStore.getState().resetPreferences();
-    expect(useOSStore.getState().theme).toBe("dark");
+    expect(useOSStore.getState().theme).toBe("aero");
     expect(useOSStore.getState().sounds).toBe(false);
   });
 
@@ -39,6 +39,25 @@ describe("DEV OS contract", () => {
     expect(useOSStore.getState().windows.projects.position).toEqual({
       x: 22,
       y: 18,
+    });
+  });
+
+  it("keeps focus and maximization state synchronized", async () => {
+    const { useOSStore } = await import("./os-store");
+    useOSStore.getState().openWindow("contact");
+    expect(useOSStore.getState().activeId).toBe("contact");
+    useOSStore.getState().maximizeWindow("contact");
+    expect(useOSStore.getState().windows.contact.maximized).toBe(true);
+    useOSStore.getState().maximizeWindow("contact");
+    expect(useOSStore.getState().windows.contact.maximized).toBe(false);
+  });
+
+  it("keeps window resizing in the centralized store", async () => {
+    const { useOSStore } = await import("./os-store");
+    useOSStore.getState().resizeWindow("projects", { width: 840, height: 520 });
+    expect(useOSStore.getState().windows.projects.size).toEqual({
+      width: 840,
+      height: 520,
     });
   });
 });

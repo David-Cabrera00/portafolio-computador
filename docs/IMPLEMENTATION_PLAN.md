@@ -10,7 +10,7 @@
 
 - [x] Next.js App Router + TypeScript estricto.
 - [x] Tailwind v4, ESLint, Prettier y scripts de validación.
-- [x] Metadata y ruta clásica `/portfolio`.
+- [x] Metadata y ruta clásica `/` con acceso al DEV OS opcional en `/dev-os`.
 
 ## Fase 2 — Experiencia 3D y OS
 
@@ -23,6 +23,6 @@
 
 1. Persistir preferencias con validación SSR-safe; aceptar si recarga conserva tema y accesibilidad.
 2. Añadir tests unitarios de store/parser; aceptar si cubren comandos y transiciones de ventana.
-3. Añadir Playwright responsive; aceptar si desktop y móvil cargan `/` y `/portfolio`.
+3. Añadir Playwright responsive; aceptar si desktop y móvil cargan `/` y `/dev-os`.
 4. Confirmar estructura académica con el contenido del profesor; aceptar solo cuando las secciones estén verificadas.
 5. Incorporar modelo GLB original/licenciado y transición de cámara al click del monitor; aceptar si existe fallback WebGL y no se bloquea la ruta clásica.

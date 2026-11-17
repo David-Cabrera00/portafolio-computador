@@ -9,6 +9,7 @@ export type Profile = {
   linkedin: string;
   education: string;
   experience: string;
+  availability: string;
 };
 
 export type Project = {
@@ -18,6 +19,8 @@ export type Project = {
   status: string;
   repository?: string;
   demo?: string;
+  cover?: string;
+  video?: string;
 };
 
 export type SkillGroups = Record<string, string[]>;

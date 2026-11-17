@@ -17,26 +17,30 @@ export type WindowState = {
   title: string;
   open: boolean;
   minimized: boolean;
+  closing: boolean;
   maximized: boolean;
   zIndex: number;
   position: { x: number; y: number };
+  size: { width: number; height: number };
 };
 
 type OSState = {
   windows: Record<AppId, WindowState>;
   activeId: AppId | null;
-  theme: "dark" | "dusk";
+  theme: "aero" | "dark" | "dusk";
   wallpaper: "aurora" | "grid" | "plain";
   sounds: boolean;
   reducedMotion: boolean;
   hydrated: boolean;
   openWindow: (id: AppId) => void;
   closeWindow: (id: AppId) => void;
+  beginCloseWindow: (id: AppId) => void;
   minimizeWindow: (id: AppId) => void;
   maximizeWindow: (id: AppId) => void;
   focusWindow: (id: AppId) => void;
   moveWindow: (id: AppId, position: { x: number; y: number }) => void;
-  setTheme: (theme: "dark" | "dusk") => void;
+  resizeWindow: (id: AppId, size: { width: number; height: number }) => void;
+  setTheme: (theme: "aero" | "dark" | "dusk") => void;
   setWallpaper: (wallpaper: "aurora" | "grid" | "plain") => void;
   setSounds: (sounds: boolean) => void;
   setReducedMotion: (value: boolean) => void;
@@ -55,6 +59,7 @@ const titles: Record<AppId, string> = {
   contact: "Contacto",
   settings: "Configuración",
 };
+const AERO_MIGRATION_KEY = "dev-os-aero-migrated";
 const initialWindows = Object.fromEntries(
   Object.keys(titles).map((id, index) => [
     id,
@@ -63,9 +68,11 @@ const initialWindows = Object.fromEntries(
       title: titles[id as AppId],
       open: false,
       minimized: false,
+      closing: false,
       maximized: false,
       zIndex: 1,
       position: { x: 8 + (index % 3) * 4, y: 10 + (index % 2) * 4 },
+      size: { width: 720, height: 460 },
     },
   ]),
 ) as Record<AppId, WindowState>;
@@ -82,7 +89,7 @@ function topVisibleWindow(
 export const useOSStore = create<OSState>((set) => ({
   windows: initialWindows,
   activeId: null,
-  theme: "dark",
+  theme: "aero",
   wallpaper: "aurora",
   sounds: false,
   reducedMotion: false,
@@ -95,6 +102,7 @@ export const useOSStore = create<OSState>((set) => ({
           ...s.windows[id],
           open: true,
           minimized: false,
+          closing: false,
           zIndex:
             Math.max(...Object.values(s.windows).map((w) => w.zIndex)) + 1,
         },
@@ -103,12 +111,26 @@ export const useOSStore = create<OSState>((set) => ({
     })),
   closeWindow: (id) =>
     set((s) => {
-      const windows = { ...s.windows, [id]: { ...s.windows[id], open: false } };
+      const windows = {
+        ...s.windows,
+        [id]: { ...s.windows[id], open: false, closing: false },
+      };
       return {
         windows,
         activeId: s.activeId === id ? topVisibleWindow(windows, id) : s.activeId,
       };
     }),
+  beginCloseWindow: (id) => {
+    set((s) => ({
+      windows: {
+        ...s.windows,
+        [id]: { ...s.windows[id], closing: true },
+      },
+    }));
+    if (typeof window !== "undefined") {
+      window.setTimeout(() => useOSStore.getState().closeWindow(id), 180);
+    }
+  },
   minimizeWindow: (id) =>
     set((s) => {
       const windows = {
@@ -144,6 +166,10 @@ export const useOSStore = create<OSState>((set) => ({
     set((s) => ({
       windows: { ...s.windows, [id]: { ...s.windows[id], position } },
     })),
+  resizeWindow: (id, size) =>
+    set((s) => ({
+      windows: { ...s.windows, [id]: { ...s.windows[id], size } },
+    })),
   setTheme: (theme) => {
     set({ theme });
     persist({ theme });
@@ -168,7 +194,16 @@ export const useOSStore = create<OSState>((set) => ({
       ) as Partial<
         Pick<OSState, "theme" | "wallpaper" | "sounds" | "reducedMotion">
       > | null;
-      set({ ...(stored ?? {}), hydrated: true });
+      const migrated = localStorage.getItem(AERO_MIGRATION_KEY) === "true";
+      const preferences = migrated
+        ? stored ?? {}
+        : { ...(stored ?? {}), theme: "aero" as const };
+      localStorage.setItem(AERO_MIGRATION_KEY, "true");
+      localStorage.setItem(
+        "dev-os-preferences",
+        JSON.stringify({ ...(stored ?? {}), ...preferences }),
+      );
+      set({ ...preferences, hydrated: true });
     } catch {
       set({ hydrated: true });
     }
@@ -177,9 +212,10 @@ export const useOSStore = create<OSState>((set) => ({
     if (typeof window !== "undefined") {
       localStorage.removeItem("dev-os-preferences");
       localStorage.removeItem("dev-os-intro-seen");
+      localStorage.removeItem(AERO_MIGRATION_KEY);
     }
     set({
-      theme: "dark",
+      theme: "aero",
       wallpaper: "aurora",
       sounds: false,
       reducedMotion: false,

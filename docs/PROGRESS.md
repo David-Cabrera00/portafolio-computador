@@ -1,8 +1,151 @@
 # Progreso
 
-- Fase actual: 30, simplificación del frente del monitor para corregir display.
+- Fase actual: 59, secciones académicas y navegación ampliada.
 - Completado: scaffold Next.js, dependencias, documentación inicial, escena 3D procedural, escritorio OS, gestor de ventanas, terminal segura, ruta clásica, datos centralizados, preferencias persistentes, ventanas movibles, atajos de teclado, modo móvil a pantalla completa y entrada al OS mediante clic en el monitor con acercamiento de cámara.
-- Pendiente: ejecutar E2E cuando el entorno permita descargar Chromium, accesibilidad de foco entre ventanas, responsive móvil refinado, modelo GLB y verificación de estructura académica.
+- Completado en esta fase: ventanas móviles ocupan un marco estable sin perder el posicionamiento desktop; ventanas y controles exponen semántica de diálogo/estado; barra de tareas comunica la ventana activa; contrato de store ampliado para foco y maximización.
+- Completado en esta fase: tema Aero Blue por defecto, wallpaper ambiental azul con viñeta y brillos, ventanas translúcidas, barra de tareas glass, botón Inicio circular y selector de tema actualizado.
+- Corrección aplicada: migración de preferencias antiguas para que sesiones existentes adopten Aero Blue una sola vez; después se respeta el tema elegido manualmente.
+- Completado en esta fase: menú Inicio con perfil, búsqueda de aplicaciones, accesos rápidos y salida; barra de tareas agrupada con iconos por aplicación.
+- Completado en esta fase: pantalla de arranque DEV OS / Aero Edition con emblema luminoso y progreso; transición de cierre antes de regresar a la escena 3D; animaciones desactivables con reduced motion.
+- Completado en esta fase: retirada de la tarjeta central de bienvenida y del panel lateral `WORKSPACE SIGNAL`, que eran contenido provisional y competían con el escritorio Aero.
+- Completado en esta fase: iconos reorganizados en una columna lateral; área central despejada para ventanas; gadgets compactos de hora, fecha y estado de sesión; tratamiento responsive para móvil.
+- Corrección aplicada: el shell del sistema ahora ocupa exactamente el viewport y bloquea el scroll global; solo las ventanas pueden desplazar su contenido internamente.
+- Completado en esta fase: iconos libres de cortar; layout inicial distribuido en dos columnas dentro del viewport; arrastre con puntero, límites del escritorio y persistencia de posiciones en `localStorage`.
+- Completado en esta fase: selección visual, doble clic para abrir, menú contextual, organizar/restablecer iconos y Papelera de reciclaje vinculada al explorador de archivos.
+- Completado en esta fase: ventanas redimensionables desde la esquina, tamaños centralizados en Zustand, límites de tamaño y tratamiento visual más claro para ventanas activas e inactivas.
+- Completado en esta fase: menú Inicio con aplicaciones recientes, búsqueda, accesos de sistema y menú de energía con cerrar sesión, reinicio de ventanas y cancelación.
+- Completado en esta fase: gadgets de hora/fecha, disponibilidad del perfil y resumen del workspace; proyectos y skills funcionan como accesos directos.
+- Completado en esta fase: detalle de proyectos con estados, acciones para repositorio/demo cuando existan, estado honesto de enlaces pendientes y acceso directo a Contacto; contrato de datos de proyectos tipado explícitamente.
+- Completado en esta fase: la salida del sistema vuelve a montar la escena 3D bajo la pantalla de cierre; la cámara se aleja con controles bloqueados antes de devolver el foco al monitor.
+- Corrección aplicada: la transición de salida ya no deja un frame negro mientras carga WebGL; usa la previsualización del workstation como continuidad visual y funde el Canvas encima.
+- Corrección estructural aplicada: la escena 3D permanece montada durante todo el ciclo y solo cambia visibilidad/estado; se evita recrear el Canvas durante el cierre, eliminando el parpadeo negro.
+- Corrección aplicada: al iniciar el cierre se restablece el estado interno de acercamiento de cámara; la escena ya no queda pegada en el primer plano del monitor.
+- Completado en esta fase: entrada animada común para las aplicaciones, tarjetas con brillo/elevación al interactuar, detalles de proyectos animados y estados Aero de foco para formularios; todas las animaciones respetan reduced motion.
+- Completado en esta fase: Terminal con entrada de líneas y caret visual; Archivos con entradas escalonadas; Contacto con aparición progresiva de campos; ventanas maximizadas usando el viewport completo y scroll interno.
+- Corrección aplicada: migración del layout de iconos a una nueva versión para eliminar posiciones antiguas solapadas; arrastre ajustado a slots y swap automático cuando una casilla ya está ocupada.
+- Corrección aplicada: Papelera alineada en una casilla libre de la segunda columna para evitar invadir Ajustes en viewport estrecho.
+- Completado en esta fase: cierre y minimización animados antes de desmontar; `Esc` usa el cierre centralizado; maximizar/restaurar mantiene su comportamiento y reduced motion desactiva las transiciones.
+- Completado en esta fase: multi-selección de iconos con Ctrl/Cmd, ordenar por nombre, limpieza de selección, filtro de habilidades y navegación entre carpetas de Archivos y aplicaciones relacionadas.
+- Completado en esta fase: sonidos sintéticos opcionales para abrir, cerrar, minimizar y maximizar ventanas; se activan únicamente desde Preferencias y no requieren assets externos.
+- Preparado para contenido real: el contrato de proyectos soporta repositorio/demo opcionales y las aplicaciones muestran estados honestos cuando faltan datos; no se inventaron datos personales ni enlaces.
+- Completado en esta fase: cámara inicial, OrbitControls y transiciones de entrada/salida reencuadradas al frente del workstation; se redujo el desplazamiento lateral automático.
+- Completado en esta fase: foco seguro al abrir ventanas, atajos `Escape`/`Ctrl+K` declarados, prueba E2E de overflow horizontal y seis escenarios E2E listados para desktop/móvil.
+- Completado en esta fase: nombre, correo, GitHub, LinkedIn, universidad, presentación y disponibilidad 24/7 integrados en la fuente central y reflejados por las aplicaciones; experiencia profesional continúa pendiente de confirmación.
+- Completado en esta fase: fichas reales para LULLABY, AnatomyLab AI, PetLink y ParkWatch; portadas visuales incorporadas para los dos proyectos adjuntos y soporte de `cover` en el contrato de proyectos.
+- Corrección aplicada: retirados MediCitas, Tanuag y Collar inteligente del catálogo, contadores, aplicaciones y referencia E2E.
+- Completado en esta fase: Proyectos rediseñado como una galería compacta de tarjetas independientes en dos columnas, con portadas, previews pendientes, tecnologías visibles, estados y detalle contextual expandible; el layout se adapta a una columna en pantallas pequeñas.
+- Completado en esta fase: Experiencia, Contacto y Ajustes reorganizados en composiciones compactas de dos columnas; los formularios y controles ya no fuerzan una lista vertical larga y regresan a una columna en móvil.
+- Completado en esta fase: silla ergonómica 3D generada desde el asset proporcionado, exportada a GLB y añadida delante del workstation con carga suspendida, escala contenida y fallback sin bloquear la escena.
+- Corrección aplicada: la silla se desplaza más hacia la izquierda en x=-1.02, conservando profundidad, escala y giro espejado.
+- Corrección aplicada: el HUD del monitor vuelve a respetar profundidad 3D; se elimina el `depthTest={false}` que hacía que la interfaz atravesara la silla y otros objetos del workstation.
+- Completado en esta fase: integración visual de la silla preparada para ajustes posteriores de materiales sin alterar el GLB original.
+- Corrección aplicada: la silla vuelve a renderizar directamente el GLB probado; se elimina la clonación React que provocaba que el asset desapareciera de la escena.
+- Corrección aplicada: la silla se oculta durante la entrada/salida de cámara y el HUD del monitor se desactiva durante el acercamiento para evitar capas transparentes sobre el modelo y el rectángulo oscuro sin profundidad.
+- Completado en esta fase: ruta `/portfolio` migrada a una experiencia clásica responsive basada en el portafolio entregado, con hero, fotos personales, CV, habilidades, proyectos reales, contacto y regreso al DEV OS; los contenidos consumen `src/data/profile.ts` y los assets se sirven desde `public/portfolio/`.
+- Completado en esta fase: botón visible `Mi portafolio` añadido a la barra superior del DEV OS para que visitantes y profesores encuentren directamente la versión clásica en `/portfolio`.
+- Completado en esta fase: portafolio clásico con scroll suave, barra de progreso, entrada animada del hero, revelado por intersección de secciones y aparición escalonada de proyectos; `prefers-reduced-motion` desactiva las transiciones.
+- Completado en esta fase: selector de tema claro/oscuro en `/portfolio`, persistencia mediante `localStorage`, transición suave y tokens específicos para fondos, superficies, texto, bordes, fotos y tarjetas.
+- Completado en esta fase: secciones independientes de Educación y Experiencia, navegación hacia Trayectoria y enlaces condicionales de repositorio/demo en las fichas de proyectos; la experiencia no confirmada se mantiene como placeholder honesto.
+- Completado en esta fase: navegación ampliada con Testimonios, Experiencia y Habilidades & Certificaciones; se añadieron las secciones visuales correspondientes y estados honestos para información pendiente.
+- Completado en esta fase: Habilidades & Certificaciones elevadas a una composición editorial; las habilidades se agrupan en paneles visuales por categoría y los certificados usan un archivo de expedientes preparado para incorporar documentos reales sin romper el layout.
+- Completado en esta fase: rediseño no genérico de Habilidades & Certificaciones; se retiraron porcentajes y barras, se añadió un selector interactivo de señales con módulos animados por categoría y un archivo de certificados navegable con consola visual, microinteracciones y soporte para reduced motion.
+- Completado en esta fase: Proyectos convertido en un showcase de casos de estudio; índice lateral interactivo, proyecto protagonista, capas de imagen con scan/zoom, metadatos, stack y estados honestos para código/demo pendiente.
+- Completado en esta fase: portada convencional elevada a una dirección editorial propia de David; hero tipográfico a gran escala, retrato con órbitas y coordenadas, ticker de identidad y metadatos de disponibilidad integrados sin perder claridad académica.
+- Completado en esta fase: sistema de motion propio inspirado en la referencia aportada sin copiar su composición; parallax sutil del retrato por puntero, órbitas independientes, hover con profundidad y reduced motion sin intro invasiva.
+- Ajuste aplicado: el motion de portada deja de depender solo del hover; el retrato flota en reposo, la órbita gira, las señales tienen ritmo propio y la respuesta al puntero se distribuye por capas para que la animación sea visible desde el primer vistazo.
+- Completado en esta fase: hero convencional rehecho como escenario interactivo propio; se eliminó la tarjeta de foto anterior y se incorporaron retrato libre, anillos, retícula, crosshair, etiquetas flotantes, barrido de luz, parallax por puntero y desplazamiento ligado al scroll.
+- Completado en esta fase: el lenguaje de motion se extendió a todo `/portfolio`; Sobre mí incorpora collage reactivo y field notes, Experiencia usa barridos y elevación documental, Testimonios tiene carrusel editorial y Contacto incorpora un scan ambiental.
+- Corrección aplicada: retirada la sección Laboratorio del portafolio convencional y eliminada de la navegación; el DEV OS 3D continúa siendo la experiencia experimental principal.
+- Completado en esta fase: certificaciones reales incorporadas al archivo visual —IBM/Coursera, DAXUS LATAM, DataCamp Git, DataCamp SQL y Universidad Mariana— con preview, emisor y fecha; habilidades reorganizadas hacia frameworks, persistencia e IA aplicada.
+- Corrección visual aplicada: Habilidades & Certificaciones dejó el fondo azul grisáceo heredado y volvió a una composición editorial de papel cálido, tinta oscura y consola de archivo, compatible también con el tema oscuro.
+- Completado en esta fase: navbar convencional reorganizado según el orden real de lectura —Sobre mí, Habilidades, Experiencia, Proyectos, Testimonios y Contacto— con enlace activo por IntersectionObserver y subrayado de sección.
+- Completado en esta fase: Sobre mí rehecho como un perfil interactivo; collage fotográfico con órbita y pin de señal, modos Identity/Process/Outside Code y ficha de perfil que cambia sin recargar.
+- Completado en esta fase: Experiencia rehecha como línea de tiempo interactiva con registros Academic/Professional, ficha expandida, estado de formación, ubicación, metadatos y placeholder profesional honesto.
+- Completado en esta fase: Proyectos reforzado como casos de estudio interactivos; la ficha protagonista responde al puntero por capas, cambia de atmósfera por proyecto, muestra coordenadas/metadatos y mantiene navegación accesible por índice.
+- Completado en esta fase: Testimonios convertido en carrusel editorial con archivo apilado, cita protagonista, navegación anterior/siguiente, progreso interactivo y placeholders verificables mientras llegan referencias reales.
+- Corrección aplicada: navbar convencional fijado al viewport para permanecer visible durante el recorrido; se añadió offset responsive al contenido y `scroll-margin` en las secciones para evitar que el encabezado cubra los títulos al navegar.
+- Completado en esta fase: CV real integrado en `/portfolio/assets/cv/cv.pdf`; el hero lo ofrece para descarga y el archivo de certificaciones abre los PDFs disponibles en una pestaña nueva, manteniendo preview visual para cada registro.
+- Completado en esta fase: Contacto rehecho como canal de comunicación real con formulario `mailto`, copia rápida del correo, estado de disponibilidad, ubicación y enlaces sociales; el pie de página ahora incluye navegación completa, canales, CV y regreso al DEV OS.
+- Refinamiento aplicado: Contacto y footer elevados a una composición editorial propia, con señal de disponibilidad, tarjetas de datos, formulario en panel, microinteracciones de copia/envío, navegación secundaria y responsive de dos columnas.
+- Completado en esta fase: sistema tipográfico del portafolio convencional migrado a `Instrument Serif` para display, `Manrope` para interfaz y `JetBrains Mono` para señales técnicas; el DEV OS conserva su identidad tipográfica.
+- Refinamiento aplicado: scroll reveals con progreso real de intersección, entrada con profundidad, escala y blur controlado; `prefers-reduced-motion` mantiene el contenido estable.
+- Ajuste tipográfico aplicado: `Manrope` vuelve a dominar los títulos para mejorar presencia y legibilidad; `Instrument Serif` queda limitado a frases de énfasis en cursiva, con escalas mayores para hero, encabezados de sección y contacto.
+- Corrección visual aplicada: la frase editorial del hero dejó de competir con el título principal; conserva la segunda familia tipográfica en escala reducida y sin cursiva, mientras las cursivas quedan reservadas para énfasis puntuales.
+- Corrección definitiva del hero: `Construyo mundos.` usa Manrope normal para evitar el aspecto caligráfico detectado en la captura; Instrument Serif queda disponible fuera del hero para titulares editoriales controlados.
+- Ajuste final de contraste tipográfico: `Construyo mundos.` vuelve a usar Instrument Serif en peso normal, sin cursiva y con escala menor; en escritorio se mantiene como una sola línea para evitar el bloque sans desproporcionado de la captura.
+- Corrección estructural del hero: el título ahora se compone de dos líneas completas —`Diseño sistemas.` y `Construyo mundos.`— con escala reducida y wrap controlado solo en móvil.
+- Contenido real aplicado al inicio: el hero ahora presenta `Construyendo software con rigor, lógica y propósito.` y una introducción completa con el perfil de David, deporte, tecnología, stack web, backend, datos e IA; la escala queda limitada para conservar proporciones.
+- Contenido real aplicado a Sobre mí: la sección ahora usa el título de alto impacto y la presentación profesional proporcionados, con el texto distribuido dentro de la tarjeta interactiva sin abandonar el lenguaje editorial.
+- Navegación corregida: se añadió `Inicio` como destino explícito del hero; `Sobre mí` queda separado como sección propia con su contenido profesional.
+- Sistema tipográfico aplicado a todos los títulos editoriales: Manrope sostiene la frase principal e Instrument Serif normal remata cada titular mediante fragmentos controlados, con `text-wrap: balance` para evitar cortes antiestéticos.
+- Corrección responsive aplicada al hero: se eliminó el `nowrap` que recortaba `Construyendo software con`, se redujo la escala desktop/mobile y se dejó el wrapping por palabras; los anclajes del navbar conservan `scroll-margin` para conectar cada sección sin ocultar sus encabezados.
+- Limpieza final del hero: retirados `AVAILABLE FOR COLLABORATION`, `BASE/FOCUS/STATUS`, `SCROLL TO EXPLORE`, `SOFTWARE · INTERACTION · VISUAL SYSTEMS`, `PORTRAIT STUDY`, coordenadas y etiquetas `FIELD NOTE`; el inicio ya no mezcla copy decorativo con la presentación real.
+- Auditoría responsive aplicada: el navbar ahora tiene menú accesible para tablet/móvil, el enlace activo se mantiene en ambas navegaciones, se evita overflow horizontal global y el hero/secciones ajustan sus columnas antes del breakpoint móvil.
+- Limpieza de contenido aplicada: el hero conserva únicamente disponibilidad, propuesta real, biografía, acciones y retrato; se retiraron etiquetas decorativas, coordenadas y metadatos genéricos que no aportaban información.
+- Contenido no verificado retirado: se eliminó la sección de testimonios provisionales y el registro profesional pendiente; Formación muestra únicamente la carrera y universidad confirmadas por David.
+- Corrección responsive del inicio: en móvil el hero apila contenido y retrato, reduce la escala tipográfica, oculta ornamentación secundaria y evita cortes, overflow y botones incómodos.
+- Refinamiento del hero: el CTA de CV ahora usa un borde/acento coherente con la paleta, se añadieron accesos reales a GitHub y LinkedIn con iconos inline y se aumentó la escala del display con wrapping seguro para no cortar palabras.
+- Completado en esta fase: idioma español/inglés integrado en `/portfolio` mediante contexto persistente; el selector aparece en desktop y menú móvil, traduce navegación, hero, Sobre mí, Formación, proyectos, contacto, footer y acciones principales, y conserva el idioma después de recargar.
+- Corrección visual aplicada: eliminado el prefijo `01—` duplicado en Sobre mí; el título responsive reduce su escala en móvil para no dominar ni cortarse en modo oscuro.
+- Corrección de tema aplicada: los selectores de Habilidades ahora usan superficies oscuras reales en modo oscuro, conservando el papel cálido únicamente para el tema claro.
+- Corrección de Formación aplicada: se eliminó el solapamiento entre metadatos y footer de la ficha; la tarjeta ahora fluye con espacio propio y permite abrir el PDF del certificado activo.
+- Formación ampliada: la línea de tiempo ahora contiene Ingeniería de Software (2024–actualidad) y los cinco certificados reales disponibles, con emisor, fecha, descripción y enlaces PDF cuando existen.
+- Motion de Formación aplicado: la barra vertical calcula su progreso real según la posición de la sección en el viewport, se inicia vacía y se llena mientras el usuario hace scroll; reduced motion elimina la transición.
+- Corrección cronológica aplicada: Formación ahora inicia en 2021, continúa con Ingeniería de Software 2024–actualidad y termina con las certificaciones de 2026; el primer hito queda seleccionado al entrar.
+- Interacción temporal aplicada: el hito activo se sincroniza con el porcentaje de scroll de la sección, por lo que la barra y la ficha avanzan juntas desde el primer registro.
+- Limpieza editorial aplicada: retirados rótulos repetitivos `RECORD`, `CASE`, `PROJECT`, `TYPE`, `STATE`, contadores `REC` y referencias de archivo; certificados se presentan como `CERTIFICACIONES` y solo conservan datos útiles y acciones PDF.
+- Traducción ampliada aplicada: proyectos, certificados, categorías y descripciones de habilidades, formación, fechas de la línea de tiempo y etiquetas de archivo ahora cambian de forma coherente entre español e inglés; se mantienen sin traducir únicamente nombres propios y tecnologías.
+- Corrección de formación bilingüe: la carrera usa el nombre localizado en inglés, los hitos traducen sus periodos y la etiqueta repetitiva `REGISTRO ACADÉMICO / ACADEMIC RECORD` se simplificó a `FORMACIÓN / EDUCATION`.
+- Validación de internacionalización: `npm run lint`, `npm test` (8 tests) y `npm run build` completados correctamente después de los cambios de copys.
+- Auditoría responsive aplicada: el hero conserva las palabras completas en tablet/móvil, los botones mantienen una altura táctil consistente, el botón de copiar deja de solaparse con el correo en pantallas estrechas y el footer se apila en una sola columna en móvil.
+- Corrección responsive aplicada: `ScrollReveal` ya no deja secciones altas, como Habilidades & Certificaciones, atrapadas con blur y opacidad reducida en móvil; el contenido se muestra completo al entrar y conserva el reveal progresivo en escritorio.
+- Sección de testimonios reincorporada después de Proyectos: conserva la composición editorial y el anclaje del navbar, pero muestra únicamente un estado pendiente de referencias verificables para no inventar citas, nombres o cargos.
+- Testimonios conectados al idioma ES/EN y validados con build; la ruta `/portfolio#testimonials` responde `HTTP 200`.
+- Testimonios reales integrados: Sara Noguera, Edwin Urbina y Felipe Rosas aparecen como referencias de colaboración con relación, contexto y descripción bilingüe; el carrusel mantiene controles accesibles y no inventa citas textuales.
+- Selector de tema refinado: los símbolos de texto fueron reemplazados por iconos de luna/sol con animación de giro y escala al alternar, manteniendo intactos el layout y el comportamiento de claro/oscuro.
+- Repositorios reales conectados: LULLABY, AnatomyLab AI, PetLink y ParkWatch ahora exponen sus enlaces de GitHub desde el showcase de proyectos y las aplicaciones que consumen la fuente central.
+- Demo de AnatomyLab AI integrada: el showcase soporta video real con poster, `autoplay` silenciado, loop, controles, `playsInline` y carga de metadatos; el archivo entregado pesa 324 MB y queda pendiente de compresión web antes de publicar.
+- Demo de LULLABY integrada: el mismo preview de video reutilizable muestra la grabación real del proyecto con poster, controles, loop silenciado y soporte responsive; el archivo entregado pesa 167 MB y también queda pendiente de compresión web antes de publicar.
+- Validación responsive local: `/portfolio` responde `HTTP 200`; lint, pruebas unitarias y build de producción continúan correctos tras los ajustes.
+- Pendiente: ejecutar E2E cuando el entorno permita descargar Chromium, sincronizar iluminación online/sleep/offline, integrar datos reales del portafolio, modelo GLB original/licenciado y verificar la estructura académica.
 - Problemas encontrados: `manuelcanello.dev`, `nareshkhatri.dev` y `structure-portfolio.vercel.app` no fueron legibles desde el inspector web; `dvmiz-portfolio.vercel.app` abrió sin contenido textual. Se evita inventar requisitos no comprobados.
-- Pruebas ejecutadas: `npm run lint` (sin errores), `npm run build` (correcto), `npm test` (4 tests correctos), `npx playwright test --list` (4 casos listados). `npm run test:e2e` bloqueado por navegador no instalado y certificado SSL del entorno.
-- Próximo paso: pulir ventanas y barra de tareas, reemplazar placeholders con datos reales, confirmar la estructura académica del profesor y ejecutar E2E con navegador disponible.
+- Pruebas ejecutadas: `npm run lint` (sin errores), `npm run build` (correcto), `npm test` (8 tests correctos), `npx playwright test --list` (6 casos listados). `npm run test:e2e` continúa bloqueado por Chromium no instalado y el certificado SSL del entorno.
+- Próximo paso: ejecutar E2E con Chromium disponible y después integrar los datos reales del portafolio.
+- Navegación de testimonios corregida: los enlaces de escritorio y móvil ahora resuelven el destino con `scrollIntoView`, actualizan el hash sin salto brusco y respetan el `scroll-margin` del encabezado fijo; se aplica el mismo comportamiento a todos los anclajes internos.
+- Validación de navegación: `npm run lint`, `npm test` (8 tests), `npm run build` y `git diff --check` ejecutados tras el ajuste; `npm test -- --runInBand` no es compatible con Vitest y se reemplazó por el comando oficial `npm test`.
+- Explorador de archivos elevado: `Archivos` ahora incluye raíz del workspace, carpetas internas de perfil, proyectos, habilidades, formación, documentos y contacto; incorpora breadcrumb, búsqueda, animación escalonada, estado online, CV descargable, enlaces reales y accesos a las aplicaciones del DEV OS.
+- Validación del explorador: `npm run lint`, `npm test` (8 tests), `npm run build` y `git diff --check` completados correctamente.
+- Media integrada en DEV OS: Sobre mí ahora incluye una galería personal con `foto2`, fútbol y vida personal; Proyectos muestra previews de los videos reales de AnatomyLab AI y LULLABY y ofrece controles completos al abrir su detalle, con poster y responsive.
+- Validación multimedia: `npm run lint`, `npm test` (8 tests), `npm run build` y `git diff --check` completados correctamente.
+- Corrección de pantalla maximizada: se limitaron las alturas de la galería personal y las proporciones de previews/detalle de video; las ventanas maximizadas ahora expanden el ancho sin deformar el contenido multimedia y conservan el desplazamiento interno.
+- Estabilidad multimedia aplicada: las tarjetas de Proyectos dejaron de montar los videos pesados con `autoplay`; ahora muestran poster e indicador de demo y solo cargan un reproductor cuando se selecciona el proyecto.
+- Rediseño del chrome de ventanas: todas las aplicaciones ahora comparten una barra superior más firme con icono real, ruta `DEV OS / LOCAL APP`, controles agrupados, estados de foco y separación visual del contenido; el modo maximizado conserva la proporción y el scroll interno.
+- Validación del chrome: `npm run lint`, `npm test` (8 tests), `npm run build` y `git diff --check` completados correctamente.
+- Rediseño de aplicaciones iniciado: Sobre mí ahora tiene una cabecera de perfil viva, estado de disponibilidad, composición de galería y jerarquía propia; Proyectos usa cabecera de casos y tarjetas con mayor profundidad; Terminal incorpora identidad de consola, sesión local, estado de comandos y prompt de ruta.
+- Validación de rediseño: `npm run lint`, `npm test` (8 tests), `npm run build` y `git diff --check` completados correctamente; Archivos, Habilidades y Contacto quedan como siguiente bloque de identidad específica.
+- Rediseño de identidad completado: Archivos adopta una cabecera de explorador y toolbar propia; Habilidades y Contacto usan cabeceras editoriales con metadata; todas las aplicaciones mantienen el chrome común, pero dejan de verse como tarjetas repetidas.
+- Validación final del rediseño: `npm run lint`, `npm test` (8 tests), `npm run build` y `git diff --check` completados correctamente.
+- Rediseño de apps restantes: Educación ahora presenta la carrera activa y cinco certificados con fechas y enlaces PDF disponibles; Experiencia usa una línea de estado profesional que no inventa historial; Ajustes incluye preview vivo de tema/wallpaper y controles organizados por área.
+- Validación de Educación, Experiencia y Ajustes: `npm run lint`, `npm test` (8 tests), `npm run build` y `git diff --check` completados correctamente.
+
+- Flujo de entrada reorganizado: / abre el portafolio convencional, /dev-os conserva la experiencia 3D opcional, el navbar ofrece el acceso y salir del escritorio DEV OS devuelve al portafolio. /portfolio redirige a / para preservar enlaces antiguos.
+
+- Diseño de habilidades afinado: separadas las herramientas 3D e interactivas (Godot, C#, Blender y Krita) de los frameworks backend, manteniendo categorías de frontend, datos e IA y la identidad editorial bilingüe.
+
+- Portada refinada: el retrato pasó de marco vertical orgánico a formato cuadrado de esquinas suaves; conserva el movimiento, la composición orbital y se adapta al ancho móvil.
+
+- Interacción de proyectos ampliada: navegación por teclado con flechas e Inicio/Fin, controles anterior/siguiente sobre la demo y controles persistentes en móvil; el showcase declara paneles y tabs accesibles.
+
+- Identidad visual de proyectos completada para PetLink y ParkWatch: escenas originales de mapa y reloj dibujadas con CSS en reemplazo de las iniciales abstractas; se conserva el uso de demos reales para LULLABY y AnatomyLab AI.
+
+- Showcase móvil: gesto lateral para cambiar de proyecto y transición direccional; scroll vertical y preferencia de movimiento reducido conservados.
+
+- Error DEV OS corregido: Environment preset=city intentaba descargar potsdamer_platz_1k.hdr y fallaba; reemplazado por iluminación procedural local. Verificado en el navegador: la escena vuelve a renderizar sin ese recurso de red.
+
+- DEV OS escritorio rediseñado: fondo oscuro de bajo contraste, área central despejada, widgets compactos y chrome coherente en barra/menús/ventanas; los lanzadores y controles conservan su comportamiento.
+
+- Separación de capas DEV OS: al abrir una app, el escritorio se atenúa y desenfoca sutilmente; ventana activa opaca y elevada sobre el veil.
+
+- Optimización de medios: los tres posters 3D se convirtieron a WebP, reduciendo su peso conjunto de ~3.3 MB a ~0.46 MB; las referencias apuntan a las nuevas imágenes.
+- Carga bajo demanda de demos: los videos de Proyectos muestran una portada y solo crean el reproductor al pulsar reproducir; el reproductor de detalle de DEV OS usa `preload="none"`.
+- Pendiente de rendimiento: AnatomyLab AI (324 MB) y LULLABY (167 MB) siguen siendo archivos originales grandes cuando se reproducen; no hay FFmpeg ni encoder H.264 compatible instalado para transcodificarlos aquí.

@@ -1,6 +1,7 @@
 "use client";
 
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import Link from "next/link";
 
 type Props = { children: ReactNode };
 type State = { hasError: boolean };
@@ -19,12 +20,12 @@ export class SceneBoundary extends Component<Props, State> {
         <div className="grid h-full place-items-center rounded-2xl border border-[var(--line)] bg-[#0b101b] p-8 text-center text-sm text-[var(--muted)]">
           No se pudo cargar la experiencia 3D.
           <br />
-          <a
+          <Link
             className="mt-3 inline-block text-[var(--mint)] underline"
-            href="/portfolio"
+            href="/"
           >
             Continuar con el portafolio clásico
-          </a>
+          </Link>
         </div>
       );
     return this.props.children;

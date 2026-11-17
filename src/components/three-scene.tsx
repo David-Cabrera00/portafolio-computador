@@ -9,8 +9,9 @@ import {
   ContactShadows,
   useTexture,
   useGLTF,
+  Lightformer,
 } from "@react-three/drei";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 function Computer({
@@ -209,21 +210,37 @@ function Computer({
     </Float>
   );
 }
-function CameraApproach({ approaching }: { approaching: boolean }) {
+function CameraApproach({
+  approaching,
+  exiting,
+}: {
+  approaching: boolean;
+  exiting: boolean;
+}) {
   const { camera, size } = useThree();
   useFrame(({ clock }) => {
     if (typeof document !== "undefined" && document.hidden) return;
     const ambient = clock.elapsedTime;
     const mobile = size.width < 640;
     const target = approaching
-      ? new THREE.Vector3(-0.35, 2.35, mobile ? 3.1 : 2.25)
+      ? new THREE.Vector3(0, 2.35, mobile ? 3.2 : 2.55)
+      : exiting
+        ? new THREE.Vector3(
+            mobile ? 0.3 : 0.65,
+            mobile ? 2.7 : 2.95,
+            mobile ? 8.9 : 8.75,
+          )
       : new THREE.Vector3(
-          (mobile ? 3.8 : 4.35) + Math.sin(ambient * 0.22) * 0.12,
-          (mobile ? 2.45 : 2.7) + Math.sin(ambient * 0.3) * 0.04,
-          (mobile ? 7.4 : 6.55) + Math.cos(ambient * 0.22) * 0.1,
+          (mobile ? 0.35 : 0.65) + Math.sin(ambient * 0.22) * 0.08,
+          (mobile ? 2.55 : 2.7) + Math.sin(ambient * 0.3) * 0.04,
+          (mobile ? 8.25 : 7.8) + Math.cos(ambient * 0.22) * 0.1,
         );
-    camera.position.lerp(target, approaching ? 0.055 : 0.02);
-    camera.lookAt(-0.35, approaching ? 2.38 : 1.1, approaching ? -0.3 : -0.45);
+    camera.position.lerp(target, approaching ? 0.055 : exiting ? 0.035 : 0.02);
+    camera.lookAt(
+      0,
+      approaching ? 2.38 : exiting ? 0.98 : 1.1,
+      approaching ? -0.25 : -0.38,
+    );
   });
   return null;
 }
@@ -269,6 +286,27 @@ function BlenderWorkstation({
         <planeGeometry args={[3.75, 2.35]} />
         <meshBasicMaterial transparent opacity={0.001} depthWrite={false} />
       </mesh>
+    </group>
+  );
+}
+
+function ErgonomicChair({
+  approaching,
+  exiting,
+}: {
+  approaching: boolean;
+  exiting: boolean;
+}) {
+  const { scene } = useGLTF("/models/chair/silla_ergonomica.glb");
+  return (
+    <group
+      position={[-1.02, -0.28, 1.55]}
+      rotation={[0, Math.PI - 0.2, 0]}
+      scale={1.85}
+      name="ergonomic-chair"
+      visible={!approaching && !exiting}
+    >
+      <primitive object={scene} />
     </group>
   );
 }
@@ -402,43 +440,43 @@ function MonitorHUD({ approaching }: { approaching: boolean }) {
   });
   const opacity = approaching ? 0.62 : 0.44;
   return (
-    <group position={[-0.37, 2.38, -0.22]}>
+    <group position={[-0.37, 2.38, -0.22]} visible={!approaching}>
       <mesh>
         <planeGeometry args={[1.72, 1.02]} />
-        <meshBasicMaterial color="#061731" transparent opacity={opacity} depthTest={false} depthWrite={false} />
+        <meshBasicMaterial color="#061731" transparent opacity={opacity} depthTest depthWrite={false} />
       </mesh>
       <group position={[0, 0, 0.004]}>
         <mesh position={[-0.48, 0.29, 0]}>
           <planeGeometry args={[0.5, 0.025]} />
-          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest={false} />
+          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest />
         </mesh>
         <mesh position={[-0.55, 0.18, 0]}>
           <planeGeometry args={[0.28, 0.02]} />
-          <meshBasicMaterial color="#80aaff" toneMapped={false} depthTest={false} />
+          <meshBasicMaterial color="#80aaff" toneMapped={false} depthTest />
         </mesh>
         <mesh position={[0.31, 0.12, 0]}>
           <planeGeometry args={[0.42, 0.25]} />
-          <meshBasicMaterial color="#164c9c" transparent opacity={0.82} toneMapped={false} depthTest={false} />
+          <meshBasicMaterial color="#164c9c" transparent opacity={0.82} toneMapped={false} depthTest depthWrite={false} />
         </mesh>
         <mesh ref={signal} position={[0.56, 0.22, 0]}>
           <circleGeometry args={[0.038, 16]} />
-          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest={false} />
+          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest />
         </mesh>
         <mesh position={[-0.05, -0.24, 0]}>
           <planeGeometry args={[1.04, 0.018]} />
-          <meshBasicMaterial color="#587bb6" toneMapped={false} depthTest={false} />
+          <meshBasicMaterial color="#587bb6" toneMapped={false} depthTest />
         </mesh>
         <mesh position={[-0.64, -0.39, 0]}>
           <planeGeometry args={[0.23, 0.016]} />
-          <meshBasicMaterial color="#6c8dbf" toneMapped={false} depthTest={false} />
+          <meshBasicMaterial color="#6c8dbf" toneMapped={false} depthTest />
         </mesh>
         <mesh ref={cursor} position={[-0.38, -0.39, 0]}>
           <planeGeometry args={[0.012, 0.052]} />
-          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest={false} />
+          <meshBasicMaterial color="#8bead0" toneMapped={false} depthTest />
         </mesh>
         <mesh ref={scanline} position={[0, 0.42, 0.006]}>
           <planeGeometry args={[1.62, 0.012]} />
-          <meshBasicMaterial color="#b4ccff" transparent opacity={0.28} toneMapped={false} depthTest={false} />
+          <meshBasicMaterial color="#b4ccff" transparent opacity={0.28} toneMapped={false} depthTest depthWrite={false} />
         </mesh>
       </group>
     </group>
@@ -446,9 +484,21 @@ function MonitorHUD({ approaching }: { approaching: boolean }) {
 }
 
 useGLTF.preload("/models/hero-workstation.glb");
+useGLTF.preload("/models/chair/silla_ergonomica.glb");
 
-export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
+export function ThreeScene({
+  onMonitorClick,
+  exitRequested = false,
+}: {
+  onMonitorClick: () => void;
+  exitRequested?: boolean;
+}) {
   const [approaching, setApproaching] = useState(false);
+  useEffect(() => {
+    if (!exitRequested) return;
+    const timer = window.setTimeout(() => setApproaching(false), 0);
+    return () => window.clearTimeout(timer);
+  }, [exitRequested]);
   const selectMonitor = () => {
     if (approaching) return;
     setApproaching(true);
@@ -456,7 +506,7 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
   };
   return (
     <Canvas
-      camera={{ position: [4.35, 2.7, 6.55], fov: 38 }}
+      camera={{ position: [0.65, 2.7, 7.8], fov: 38 }}
       dpr={[1, 1.25]}
       shadows
       gl={{ antialias: true, powerPreference: "high-performance" }}
@@ -473,19 +523,19 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
       <AtmosphereLights approaching={approaching} />
       <RoomBackdrop />
       <WallArt
-        src="/models/posters/fight-poster.png"
+        src="/models/posters/fight-poster.webp"
         position={[-3.72, 1.43, -2.68]}
         size={[0.82, 1.46]}
         rotation={-0.025}
       />
       <WallArt
-        src="/models/posters/glitch-poster.png"
+        src="/models/posters/glitch-poster.webp"
         position={[-2.36, 2.65, -2.68]}
         size={[0.72, 0.72]}
         rotation={0.02}
       />
       <WallArt
-        src="/models/posters/space-poster.png"
+        src="/models/posters/space-poster.webp"
         position={[2.28, 1.63, -2.68]}
         size={[1.08, 1.92]}
         rotation={0.028}
@@ -498,20 +548,27 @@ export function ThreeScene({ onMonitorClick }: { onMonitorClick: () => void }) {
         far={4}
         color="#000000"
       />
-      <CameraApproach approaching={approaching} />
+      <CameraApproach approaching={approaching} exiting={exitRequested} />
       <Suspense fallback={<Computer approaching={approaching} onSelect={selectMonitor} />}>
         <BlenderWorkstation onSelect={selectMonitor} />
       </Suspense>
+      <Suspense fallback={null}>
+        <ErgonomicChair approaching={approaching} exiting={exitRequested} />
+      </Suspense>
       <MonitorHUD approaching={approaching} />
-      <Environment preset="city" />
+      <Environment resolution={128} environmentIntensity={0.72}>
+        <Lightformer form="rect" color="#dce8ff" intensity={2.4} position={[0, 5, -4]} scale={[8, 5, 1]} />
+        <Lightformer form="rect" color="#9fc3ff" intensity={1.5} position={[-5, 2, 1]} rotation={[0, Math.PI / 3, 0]} scale={[3, 5, 1]} />
+        <Lightformer form="rect" color="#ffc49b" intensity={1.7} position={[4, 3, 0]} rotation={[0, -Math.PI / 3, 0]} scale={[3, 4, 1]} />
+      </Environment>
       <OrbitControls
         enablePan={false}
         minDistance={4}
         maxDistance={9}
-        target={[-0.3, 1.1, -0.45]}
+        target={[0, 1.1, -0.38]}
         minPolarAngle={Math.PI / 3.8}
         maxPolarAngle={Math.PI / 2.1}
-        enabled={!approaching}
+        enabled={!approaching && !exitRequested}
       />
     </Canvas>
   );

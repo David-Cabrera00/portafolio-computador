@@ -11,8 +11,9 @@ npm run dev
 
 Rutas principales:
 
-- `/`: experiencia 3D procedural + escritorio DEV OS.
-- `/portfolio`: versión clásica accesible sin WebGL.
+- `/`: portafolio convencional accesible y responsive.
+- `/dev-os`: experiencia 3D procedural + escritorio DEV OS.
+- `/portfolio`: ruta anterior que redirige al portafolio principal.
 
 ## Comandos
 
