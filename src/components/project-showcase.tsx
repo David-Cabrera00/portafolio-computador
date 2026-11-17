@@ -25,10 +25,10 @@ function ProjectArtwork({ project, language }: { project: Project; language: "es
   const [playing, setPlaying] = useState(false);
   if (project.video) {
     if (playing) {
-      return <video className="project-feature-video" src={project.video} poster={project.cover} autoPlay muted loop playsInline controls preload="none" aria-label={`${language === "es" ? "Video de" : "Video of"} ${project.name}`} />;
+      return <video className={`project-feature-video ${project.name === "PetLink" ? "project-feature-video-petlink" : ""}`} src={project.video} poster={project.cover} autoPlay muted loop={project.name !== "PetLink"} playsInline controls preload="none" aria-label={`${language === "es" ? "Video de" : "Video of"} ${project.name}`} />;
     }
     return (
-      <button type="button" className="project-video-launch" onClick={() => setPlaying(true)} aria-label={`${language === "es" ? "Reproducir demo de" : "Play demo of"} ${project.name}`}>
+      <button type="button" className={`project-video-launch ${project.name === "PetLink" ? "project-video-launch-petlink" : ""}`} onClick={() => setPlaying(true)} aria-label={`${language === "es" ? "Reproducir demo de" : "Play demo of"} ${project.name}`}>
         {project.cover && <Image src={project.cover} alt="" fill sizes="(max-width: 760px) 92vw, 64vw" />}
         <span className="project-video-play" aria-hidden="true"><Play size={21} fill="currentColor" /></span>
         <span className="project-video-prompt">{language === "es" ? "REPRODUCIR DEMO" : "PLAY PROJECT DEMO"}</span>

@@ -42,6 +42,8 @@ export const projects: Project[] = [
     stack: ["Mobile", "Geolocalización", "Algoritmos"],
     status: "Proyecto registrado",
     repository: "https://github.com/David-Cabrera00/PetLink-Proyect.git",
+    cover: "/projects/petlink-preview.webp",
+    video: "/projects/petlink.mp4",
   },
   {
     name: "ParkWatch",

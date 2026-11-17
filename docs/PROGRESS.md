@@ -149,3 +149,4 @@
 - Optimización de medios: los tres posters 3D se convirtieron a WebP, reduciendo su peso conjunto de ~3.3 MB a ~0.46 MB; las referencias apuntan a las nuevas imágenes.
 - Carga bajo demanda de demos: los videos de Proyectos muestran una portada y solo crean el reproductor al pulsar reproducir; el reproductor de detalle de DEV OS usa `preload="none"`.
 - Pendiente de rendimiento: AnatomyLab AI (324 MB) y LULLABY (167 MB) siguen siendo archivos originales grandes cuando se reproducen; no hay FFmpeg ni encoder H.264 compatible instalado para transcodificarlos aquí.
+- Demo PetLink integrada: se agregó el MP4 de 126 MB en Git LFS, una portada WebP extraída del video y ajustes de proporción vertical para que el teléfono se vea completo; el reproductor se carga al pulsar y no repite el clip al terminar.

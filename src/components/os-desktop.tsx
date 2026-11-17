@@ -311,14 +311,14 @@ function ProjectsPanel() {
             aria-expanded={selectedName === p.name}
             className={`project-card group app-interactive-card rounded-xl border bg-[#101725] p-3 text-left transition ${selectedName === p.name ? "border-[var(--blue)]" : "border-[var(--line)] hover:border-[var(--blue)]/60"}`}
           >
-            <div className="project-cover mb-3 overflow-hidden rounded-lg border border-[var(--line)] bg-[linear-gradient(135deg,rgba(120,169,255,.18),rgba(124,227,195,.08))]">
+            <div className={`project-cover mb-3 overflow-hidden rounded-lg border border-[var(--line)] bg-[linear-gradient(135deg,rgba(120,169,255,.18),rgba(124,227,195,.08))] ${p.name === "PetLink" ? "project-cover-petlink" : ""}`}>
               {p.cover ? (
                 <Image
                   src={p.cover}
                   alt={`Captura de ${p.name}`}
                   width={960}
                   height={540}
-                  className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]"
+                  className={`h-full w-full ${p.name === "PetLink" ? "object-contain" : "object-cover transition duration-300 group-hover:scale-[1.04]"}`}
                 />
               ) : (
                 <div className="project-cover-placeholder">
@@ -360,7 +360,7 @@ function ProjectsPanel() {
           <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
             {selected.description}
           </p>
-          {selected.video && <div className="os-project-detail-video"><video src={selected.video} poster={selected.cover} controls muted playsInline preload="none" aria-label={`Demo de ${selected.name}`} /></div>}
+          {selected.video && <div className="os-project-detail-video"><video className={selected.name === "PetLink" ? "petlink-demo-video" : ""} src={selected.video} poster={selected.cover} controls muted playsInline preload="none" aria-label={`Demo de ${selected.name}`} /></div>}
           <div className="mt-4 flex flex-wrap gap-2">
             {selected.repository ? (
               <a
