@@ -76,7 +76,6 @@ function ProjectArtwork({ project, language }: { project: Project; language: "es
 export function ProjectShowcase({ projects }: { projects: Project[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"next" | "previous">("next");
-  const featureRef = useRef<HTMLElement>(null);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const { language, t } = usePortfolioLanguage();
   const project = projects[activeIndex] ?? projects[0];
@@ -112,14 +111,6 @@ export function ProjectShowcase({ projects }: { projects: Project[] }) {
       moveToProject(projects.length - 1, true);
     }
   };
-  const moveFeature = (event: PointerEvent<HTMLElement>) => {
-    const node = featureRef.current;
-    if (!node) return;
-    const rect = node.getBoundingClientRect();
-    node.style.setProperty("--project-x", `${((event.clientX - rect.left) / rect.width - .5) * 2}`);
-    node.style.setProperty("--project-y", `${((event.clientY - rect.top) / rect.height - .5) * 2}`);
-  };
-  const resetFeature = () => { featureRef.current?.style.setProperty("--project-x", "0"); featureRef.current?.style.setProperty("--project-y", "0"); };
   const startProjectSwipe = (event: PointerEvent<HTMLElement>) => {
     if (event.pointerType === "touch") touchStartRef.current = { x: event.clientX, y: event.clientY };
   };
@@ -149,7 +140,7 @@ export function ProjectShowcase({ projects }: { projects: Project[] }) {
         <div className="project-index-foot"><span>{t.projects.select}</span><span>↑ ↓</span></div>
       </aside>
 
-      <article id="project-panel" role="tabpanel" aria-labelledby={`project-tab-${activeIndex}`} tabIndex={0} className={`project-feature project-feature-${tone} project-feature-${slideDirection}`} key={project.name} ref={featureRef} onPointerDown={startProjectSwipe} onPointerUp={finishProjectSwipe} onPointerCancel={() => { touchStartRef.current = null; }} onPointerMove={moveFeature} onPointerLeave={resetFeature}>
+      <article id="project-panel" role="tabpanel" aria-labelledby={`project-tab-${activeIndex}`} tabIndex={0} className={`project-feature project-feature-${tone} project-feature-${slideDirection}`} key={project.name} onPointerDown={startProjectSwipe} onPointerUp={finishProjectSwipe} onPointerCancel={() => { touchStartRef.current = null; }}>
         <div className="project-feature-media">
           <ProjectArtwork project={project} language={language} />
           <div className="project-feature-scan" aria-hidden="true" />
@@ -163,7 +154,7 @@ export function ProjectShowcase({ projects }: { projects: Project[] }) {
         </div>
         <div className="project-feature-content">
           <div className="project-feature-heading">
-            <div><span className="project-feature-overline">{language === "es" ? `PROYECTO / ${String(activeIndex + 1).padStart(2, "0")}` : `PROJECT / ${String(activeIndex + 1).padStart(2, "0")}`}</span><h3>{project.name}</h3></div>
+            <div><h3>{project.name}</h3></div>
             <span className="project-feature-status"><i />{language === "es" ? "DEMO DISPONIBLE" : "DEMO AVAILABLE"}</span>
           </div>
           <p>{projectCopy[language][project.name as keyof typeof projectCopy.es] ?? project.description}</p>

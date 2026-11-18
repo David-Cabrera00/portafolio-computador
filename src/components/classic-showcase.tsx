@@ -53,7 +53,7 @@ export function SkillsShowcase({ skillEntries }: { skillEntries: SkillEntry[] })
       </div>
       <div id="skill-panel" role="tabpanel" aria-labelledby={`skill-tab-${activeIndex}`} tabIndex={0} className={`skill-stage skill-stage-${meta.tone}`} key={group}>
         <div className="skill-stage-orbit" aria-hidden="true"><span>{meta.glyph}</span><i /><i /><i /></div>
-        <div className="skill-stage-copy"><span className="skill-stage-index">{language === "en" ? "SELECTED" : "SELECCIONADA"} / 0{activeIndex + 1}</span><Icon className="skill-stage-icon" size={26} strokeWidth={1.3} /><small>{language === "en" ? (group === "IA aplicada" ? "Applied flow" : meta.label) : meta.label}</small><h3>{groupLabel}</h3><p>{description}</p></div>
+        <div className="skill-stage-copy"><Icon className="skill-stage-icon" size={26} strokeWidth={1.3} /><small>{language === "en" ? (group === "IA aplicada" ? "Applied flow" : meta.label) : meta.label}</small><h3>{groupLabel}</h3><p>{description}</p></div>
         <div className="skill-constellation" aria-label={`${language === "en" ? "Technologies in" : "Tecnologías de"} ${groupLabel}`}>
           {skills.map((skill, index) => <span style={{ "--skill-index": index } as CSSProperties} key={skill}><b>{String(index + 1).padStart(2, "0")}</b>{skill}</span>)}
         </div>
