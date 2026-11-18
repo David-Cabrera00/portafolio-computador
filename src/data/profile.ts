@@ -22,8 +22,8 @@ export const projects: Project[] = [
     stack: ["Godot 4.7.2 (.NET)", "C#", "Blender", "Krita"],
     status: "Proyecto registrado",
     repository: "https://github.com/AlePython-byte/LULLABY.git",
+    demo: "https://youtu.be/a56EL31Si-c",
     cover: "/projects/lullaby.png",
-    video: "/projects/lullaby.mp4",
   },
   {
     name: "AnatomyLab AI",
@@ -32,8 +32,8 @@ export const projects: Project[] = [
     stack: ["3D interactivo", "Educación", "IA"],
     status: "Proyecto registrado",
     repository: "https://github.com/David-Cabrera00/Anatomylab-Proyect.git",
+    demo: "https://youtu.be/G8sStiytEi0",
     cover: "/projects/anatomylab-ai.png",
-    video: "/projects/anatomylab-ai.mp4",
   },
   {
     name: "PetLink",
@@ -42,8 +42,8 @@ export const projects: Project[] = [
     stack: ["Mobile", "Geolocalización", "Algoritmos"],
     status: "Proyecto registrado",
     repository: "https://github.com/David-Cabrera00/PetLink-Proyect.git",
-    cover: "/projects/petlink-preview.webp",
-    video: "/projects/petlink.mp4",
+    demo: "https://youtu.be/Ug-ZKyGMikw",
+    cover: "/projects/petlink-preview.jpg",
   },
   {
     name: "ParkWatch",
@@ -52,6 +52,8 @@ export const projects: Project[] = [
     stack: ["Wear OS", "Standalone", "Offline-first"],
     status: "Proyecto registrado",
     repository: "https://github.com/David-Cabrera00/ParkWatch-Proyect.git",
+    demo: "https://youtube.com/shorts/iLnfd_9NTd4?si=4deVsKsuotJEq1-F",
+    cover: "/projects/parkwatch.png",
   },
 ];
 

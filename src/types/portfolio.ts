@@ -20,7 +20,6 @@ export type Project = {
   repository?: string;
   demo?: string;
   cover?: string;
-  video?: string;
 };
 
 export type SkillGroups = Record<string, string[]>;

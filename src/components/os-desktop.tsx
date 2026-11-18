@@ -38,6 +38,8 @@ import {
 import { profile, projects, skillGroups } from "@/data/profile";
 import { executeTerminalCommand, terminalCommands } from "@/lib/terminal";
 import { playSystemSound } from "@/lib/system-sounds";
+import { getYouTubeEmbedUrl } from "@/lib/youtube";
+import type { Project } from "@/types/portfolio";
 import { AppId, useOSStore } from "@/store/os-store";
 
 const apps: { id: AppId; label: string; icon: typeof UserRound }[] = [
@@ -70,6 +72,24 @@ const iconPositionsKey = "dev-os-icon-positions";
 const iconLayoutVersionKey = "dev-os-icon-layout-version";
 const iconLayoutVersion = "2";
 const iconSlots = Object.values(defaultIconPositions);
+
+function YouTubeProjectDemo({ project }: { project: Project }) {
+  const [playing, setPlaying] = useState(false);
+  const embedUrl = project.demo ? getYouTubeEmbedUrl(project.demo) : null;
+  if (!embedUrl) return null;
+
+  if (playing) {
+    return <iframe className="os-project-youtube" src={embedUrl} title={`Demo de ${project.name}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />;
+  }
+
+  return (
+    <button type="button" className="os-project-youtube-launch" onClick={() => setPlaying(true)} aria-label={`Reproducir demo de ${project.name}`}>
+      {project.cover && <Image src={project.cover} alt="" fill sizes="(max-width: 760px) 90vw, 60vw" />}
+      <span className="project-video-play" aria-hidden="true"><Play size={21} fill="currentColor" /></span>
+      <span className="project-video-prompt">REPRODUCIR DEMO</span>
+    </button>
+  );
+}
 
 function nearestIconSlot(position: IconPosition) {
   return iconSlots.reduce((closest, slot) => {
@@ -326,7 +346,7 @@ function ProjectsPanel() {
                   <span>Preview pendiente</span>
                 </div>
               )}
-              {p.video && <span className="project-video-badge"><Play size={11} fill="currentColor" /> DEMO DISPONIBLE</span>}
+              {p.demo && <span className="project-video-badge"><Play size={11} fill="currentColor" /> DEMO DISPONIBLE</span>}
             </div>
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">
@@ -360,7 +380,7 @@ function ProjectsPanel() {
           <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
             {selected.description}
           </p>
-          {selected.video && <div className="os-project-detail-video"><video className={selected.name === "PetLink" ? "petlink-demo-video" : ""} src={selected.video} poster={selected.cover} controls muted playsInline preload="none" aria-label={`Demo de ${selected.name}`} /></div>}
+          {selected.demo && <div className="os-project-detail-video"><YouTubeProjectDemo project={selected} /></div>}
           <div className="mt-4 flex flex-wrap gap-2">
             {selected.repository ? (
               <a
@@ -387,7 +407,7 @@ function ProjectsPanel() {
               </a>
             ) : (
               <span className="rounded-lg border border-dashed border-[var(--line)] px-3 py-2 text-xs text-[#71809a]">
-                Demo por confirmar
+                Ver demo
               </span>
             )}
             <button

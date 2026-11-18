@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, GitBranch, MapPin, P
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import type { Project } from "@/types/portfolio";
 import { usePortfolioLanguage } from "@/components/portfolio-language";
+import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 const projectCopy = {
   es: {
@@ -23,17 +24,16 @@ const projectCopy = {
 
 function ProjectArtwork({ project, language }: { project: Project; language: "es" | "en" }) {
   const [playing, setPlaying] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-  const [videoAttempt, setVideoAttempt] = useState(0);
-  if (project.video) {
-    if (playing && !videoError) {
-      return <video key={videoAttempt} className={`project-feature-video ${project.name === "PetLink" ? "project-feature-video-petlink" : ""}`} src={project.video} poster={project.cover} autoPlay muted loop={project.name !== "PetLink"} playsInline controls preload="none" onError={() => setVideoError(true)} aria-label={`${language === "es" ? "Video de" : "Video of"} ${project.name}`} />;
+  const embedUrl = project.demo ? getYouTubeEmbedUrl(project.demo) : null;
+  if (embedUrl) {
+    if (playing) {
+      return <iframe className="project-feature-youtube" src={embedUrl} title={`${language === "es" ? "Demo de" : "Demo of"} ${project.name}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />;
     }
     return (
-      <button type="button" className={`project-video-launch ${project.name === "PetLink" ? "project-video-launch-petlink" : ""}`} onClick={() => { setVideoError(false); setVideoAttempt((attempt) => attempt + 1); setPlaying(true); }} aria-label={`${language === "es" ? "Reproducir demo de" : "Play demo of"} ${project.name}`}>
+      <button type="button" className={`project-video-launch ${project.name === "PetLink" ? "project-video-launch-petlink" : project.name === "ParkWatch" ? "project-video-launch-parkwatch" : ""}`} onClick={() => setPlaying(true)} aria-label={`${language === "es" ? "Reproducir demo de" : "Play demo of"} ${project.name}`}>
         {project.cover && <Image src={project.cover} alt="" fill sizes="(max-width: 760px) 92vw, 64vw" />}
         <span className="project-video-play" aria-hidden="true"><Play size={21} fill="currentColor" /></span>
-        <span className="project-video-prompt">{videoError ? language === "es" ? "ERROR DE CARGA · REINTENTAR" : "LOAD ERROR · TRY AGAIN" : language === "es" ? "REPRODUCIR DEMO" : "PLAY PROJECT DEMO"}</span>
+        <span className="project-video-prompt">{language === "es" ? "REPRODUCIR DEMO" : "PLAY PROJECT DEMO"}</span>
       </button>
     );
   }
