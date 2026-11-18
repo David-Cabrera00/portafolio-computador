@@ -755,10 +755,15 @@ function WindowView({ id }: { id: AppId }) {
   } | null>(null);
   const onPointerMove = (event: PointerEvent) => {
     if (!dragRef.current || win.maximized) return;
+    const workspace = windowRef.current?.parentElement;
+    const currentWindow = windowRef.current;
+    if (!workspace || !currentWindow) return;
+    const safeWidth = Math.max(0, workspace.clientWidth - currentWindow.offsetWidth - 16);
+    const safeHeight = Math.max(0, workspace.clientHeight - currentWindow.offsetHeight - 16);
     const nextX = Math.max(
       0,
       Math.min(
-        70,
+        (safeWidth / workspace.clientWidth) * 100,
         dragRef.current.originX +
           ((event.clientX - dragRef.current.startX) / window.innerWidth) * 100,
       ),
@@ -766,7 +771,7 @@ function WindowView({ id }: { id: AppId }) {
     const nextY = Math.max(
       0,
       Math.min(
-        55,
+        (safeHeight / workspace.clientHeight) * 100,
         dragRef.current.originY +
           ((event.clientY - dragRef.current.startY) / window.innerHeight) * 100,
       ),
@@ -780,14 +785,21 @@ function WindowView({ id }: { id: AppId }) {
   };
   const onResizeMove = (event: PointerEvent) => {
     if (!resizeRef.current || win.maximized) return;
+    const workspace = windowRef.current?.parentElement;
+    const maxWidth = workspace
+      ? Math.max(360, Math.min(1000, workspace.clientWidth - (win.position.x / 100) * workspace.clientWidth - 24))
+      : 1000;
+    const maxHeight = workspace
+      ? Math.max(260, Math.min(720, workspace.clientHeight - (win.position.y / 100) * workspace.clientHeight - 24))
+      : 720;
     resize(id, {
       width: Math.max(
         360,
-        Math.min(1000, resizeRef.current.originWidth + event.clientX - resizeRef.current.startX),
+        Math.min(maxWidth, resizeRef.current.originWidth + event.clientX - resizeRef.current.startX),
       ),
       height: Math.max(
         260,
-        Math.min(720, resizeRef.current.originHeight + event.clientY - resizeRef.current.startY),
+        Math.min(maxHeight, resizeRef.current.originHeight + event.clientY - resizeRef.current.startY),
       ),
     });
   };
@@ -1130,7 +1142,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
       }}
       data-theme={theme}
       data-reduced-motion={reducedMotion}
-      className={`os-shell relative h-screen max-h-screen overflow-hidden overscroll-none pb-14 ${theme === "aero" ? "aero-desktop" : wallpaper === "grid" ? "grid-bg bg-[var(--bg)]" : wallpaper === "plain" ? "bg-[var(--bg)]" : "bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.16),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.1),transparent_28%)]"}`}
+      className={`os-shell relative h-screen max-h-screen overflow-hidden overscroll-none pb-14 ${theme === "aero" ? "aero-desktop" : wallpaper === "grid" ? "grid-bg bg-[var(--bg)]" : wallpaper === "plain" ? "bg-[var(--bg)]" : "bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.16),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.1),transparent_28%)]"} ${activeId ? "has-active-window" : ""}`}
     >
       {wallpaper === "aurora" && (
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />

@@ -454,7 +454,7 @@ button {
 }
 .window-inactive {
   filter: saturate(0.82) brightness(0.9);
-  transition: filter 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  transition: filter 180ms ease, box-shadow 180ms ease, border-color 180ms ease, opacity 180ms ease, transform 180ms ease;
 }
 .window-active {
   filter: saturate(1) brightness(1);
@@ -1161,6 +1161,13 @@ html[data-classic-theme="dark"] .classic-contact-section { background:#101827; c
   border-color: rgba(181, 165, 255, .28) !important;
   box-shadow: 0 30px 90px rgba(0, 0, 0, .56), 0 0 0 1px rgba(181, 165, 255, .06) !important;
 }
+.aero-desktop.has-active-window .window-inactive { opacity:.34; filter:blur(1.2px) saturate(.48) brightness(.58); transform:scale(.992); }
+.aero-desktop.has-active-window .window-inactive:hover { opacity:.7; filter:blur(.35px) saturate(.75) brightness(.72); }
+.aero-desktop.has-active-window .window-active { border-color:rgba(181,165,255,.42) !important; }
+.aero-desktop.has-active-window .window-active .window-app-icon { border-color:rgba(181,165,255,.46); color:#d6cbff; background:rgba(139,115,235,.16); box-shadow:0 0 .9rem rgba(146,122,243,.12); }
+.aero-desktop .window-active .window-control { color:#c0c5d3; }
+.aero-desktop .window-active .window-control-close { color:#e9959e; }
+.aero-desktop .window-active .window-control-close:hover { color:#ffd8dc; }
 [data-theme="aero"].aero-desktop .desktop-focus-veil {
   position: absolute;
   z-index: 25;
