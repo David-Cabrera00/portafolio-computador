@@ -150,3 +150,4 @@
 - Carga bajo demanda de demos: los videos de Proyectos muestran una portada y solo crean el reproductor al pulsar reproducir; el reproductor de detalle de DEV OS usa `preload="none"`.
 - Pendiente de rendimiento: AnatomyLab AI (324 MB) y LULLABY (167 MB) siguen siendo archivos originales grandes cuando se reproducen; no hay FFmpeg ni encoder H.264 compatible instalado para transcodificarlos aquí.
 - Demo PetLink integrada: se agregó el MP4 de 126 MB en Git LFS, una portada WebP extraída del video y ajustes de proporción vertical para que el teléfono se vea completo; el reproductor se carga al pulsar y no repite el clip al terminar.
+- Incidente de producción de PetLink: Vercel estaba sirviendo el puntero Git LFS de 134 bytes en lugar del MP4; se habilitó Git LFS en la configuración del proyecto y se añadió un estado de reintento con portada para fallos de reproducción.

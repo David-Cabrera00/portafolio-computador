@@ -23,15 +23,17 @@ const projectCopy = {
 
 function ProjectArtwork({ project, language }: { project: Project; language: "es" | "en" }) {
   const [playing, setPlaying] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [videoAttempt, setVideoAttempt] = useState(0);
   if (project.video) {
-    if (playing) {
-      return <video className={`project-feature-video ${project.name === "PetLink" ? "project-feature-video-petlink" : ""}`} src={project.video} poster={project.cover} autoPlay muted loop={project.name !== "PetLink"} playsInline controls preload="none" aria-label={`${language === "es" ? "Video de" : "Video of"} ${project.name}`} />;
+    if (playing && !videoError) {
+      return <video key={videoAttempt} className={`project-feature-video ${project.name === "PetLink" ? "project-feature-video-petlink" : ""}`} src={project.video} poster={project.cover} autoPlay muted loop={project.name !== "PetLink"} playsInline controls preload="none" onError={() => setVideoError(true)} aria-label={`${language === "es" ? "Video de" : "Video of"} ${project.name}`} />;
     }
     return (
-      <button type="button" className={`project-video-launch ${project.name === "PetLink" ? "project-video-launch-petlink" : ""}`} onClick={() => setPlaying(true)} aria-label={`${language === "es" ? "Reproducir demo de" : "Play demo of"} ${project.name}`}>
+      <button type="button" className={`project-video-launch ${project.name === "PetLink" ? "project-video-launch-petlink" : ""}`} onClick={() => { setVideoError(false); setVideoAttempt((attempt) => attempt + 1); setPlaying(true); }} aria-label={`${language === "es" ? "Reproducir demo de" : "Play demo of"} ${project.name}`}>
         {project.cover && <Image src={project.cover} alt="" fill sizes="(max-width: 760px) 92vw, 64vw" />}
         <span className="project-video-play" aria-hidden="true"><Play size={21} fill="currentColor" /></span>
-        <span className="project-video-prompt">{language === "es" ? "REPRODUCIR DEMO" : "PLAY PROJECT DEMO"}</span>
+        <span className="project-video-prompt">{videoError ? language === "es" ? "ERROR DE CARGA · REINTENTAR" : "LOAD ERROR · TRY AGAIN" : language === "es" ? "REPRODUCIR DEMO" : "PLAY PROJECT DEMO"}</span>
       </button>
     );
   }
