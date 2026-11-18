@@ -160,18 +160,30 @@ function SkillsPanel() {
 }
 
 function EducationPanel() {
-  const certificates = [
-    { title: "Desarrollo de Aplicaciones móviles desde Cero", issuer: "Universidad Mariana", date: "2021", href: "/portfolio/certificates/mobile-development.pdf" },
-    { title: "Introduction to SQL", issuer: "DataCamp", date: "26 AGO 2026", href: "/portfolio/certificates/datacamp-sql.pdf" },
-    { title: "Introduction to Git", issuer: "DataCamp", date: "28 AGO 2026", href: "/portfolio/certificates/datacamp-git.pdf" },
-    { title: "Inmersión Agentes de IA en la Práctica", issuer: "DAXUS LATAM", date: "17 OCT 2026" },
-    { title: "Python for Data Science, AI & Development", issuer: "IBM / Coursera", date: "30 OCT 2026", href: "/portfolio/certificates/ibm-python-data-science.pdf" },
+  const records = [
+    { title: "Desarrollo de Aplicaciones móviles desde Cero", issuer: "Universidad Mariana · 32 horas", date: "2021", kind: "CURSO", href: "/portfolio/certificates/mobile-development.pdf" },
+    { title: "Ingeniería de Software", issuer: "Universidad Cooperativa de Colombia", date: "2024 — ACTUALIDAD", kind: "FORMACIÓN", current: true },
+    { title: "Introduction to SQL", issuer: "DataCamp · 2 horas", date: "26 AGO 2026", kind: "CERTIFICADO", href: "/portfolio/certificates/datacamp-sql.pdf" },
+    { title: "Introduction to Git", issuer: "DataCamp · 2 horas", date: "28 AGO 2026", kind: "CERTIFICADO", href: "/portfolio/certificates/datacamp-git.pdf" },
+    { title: "Inmersión Agentes de IA en la Práctica", issuer: "DAXUS LATAM · 8 horas", date: "17 OCT 2026", kind: "PARTICIPACIÓN" },
+    { title: "Python for Data Science, AI & Development", issuer: "IBM / Coursera", date: "30 OCT 2026", kind: "CERTIFICADO", href: "/portfolio/certificates/ibm-python-data-science.pdf" },
   ];
   return (
-    <div className="education-app space-y-5">
-      <AppPanelHeader eyebrow="EDUCATION / 06" title="Formación y certificaciones." description="Estudios y cursos registrados en orden cronológico." meta="2021 — ACTUALIDAD" />
-      <article className="education-degree"><div className="education-degree-mark"><BookOpen size={20} /></div><div><span>2024 — ACTUALIDAD · EN CURSO</span><h3>{profile.education}</h3><p>Ingeniería de Software · Universidad Cooperativa de Colombia</p></div><div className="education-degree-stamp">ACADEMIA<br />ACTIVA</div></article>
-      <div className="education-cert-list">{certificates.map((certificate, index) => <div className="education-cert-row" key={certificate.title}><span className="education-cert-index">{String(index + 1).padStart(2, "0")}</span><div className="education-cert-copy"><strong>{certificate.title}</strong><small>{certificate.issuer}</small></div><time>{certificate.date}</time>{certificate.href ? <a href={certificate.href} target="_blank" rel="noreferrer" aria-label={`Abrir certificado ${certificate.title}`}><ExternalLink size={15} /></a> : <span className="education-cert-no-pdf">VISTA</span>}</div>)}</div>
+    <div className="os-education-app">
+      <AppPanelHeader eyebrow="FORMACIÓN / RECORRIDO" title="Aprender, practicar, construir." description="Estudios y certificaciones organizados por fecha." meta="05 CERTIFICADOS" />
+      <ol className="os-education-timeline" aria-label="Formación académica y certificados">
+        {records.map((record) => (
+          <li className={`os-education-entry ${record.current ? "is-current" : ""}`} key={record.title}>
+            <span className="os-education-marker" aria-hidden="true">{record.current ? <GraduationCap size={16} /> : <FileBadge2 size={15} />}</span>
+            <article className="os-education-card">
+              <div className="os-education-card-top"><time>{record.date}</time><span>{record.kind}</span></div>
+              <h3>{record.title}</h3>
+              <p>{record.issuer}</p>
+              {record.current ? <span className="os-education-current"><i /> EN CURSO</span> : record.href ? <a href={record.href} target="_blank" rel="noreferrer">Ver certificado PDF <ArrowUpRight size={14} /></a> : <span className="os-education-no-pdf">Constancia registrada</span>}
+            </article>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
