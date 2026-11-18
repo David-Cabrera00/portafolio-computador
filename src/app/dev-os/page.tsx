@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { OSDesktop } from "@/components/os-desktop";
@@ -11,8 +12,10 @@ const ThreeScene = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="grid h-full place-items-center text-sm text-[var(--muted)]">
-        Cargando escena…
+      <div className="scene-load-state" role="status" aria-live="polite">
+        <span className="scene-load-mark" aria-hidden="true" />
+        <span>Preparando la escena 3D</span>
+        <small>Los modelos y la iluminación están cargando.</small>
       </div>
     ),
   },
@@ -35,6 +38,14 @@ export default function DevOSPage() {
     "intro" | "scene" | "boot" | "os" | "shutdown"
   >("intro");
   const [monitorFocus, setMonitorFocus] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setReducedMotion(preference.matches);
+    updatePreference();
+    preference.addEventListener("change", updatePreference);
+    return () => preference.removeEventListener("change", updatePreference);
+  }, []);
   const enterOS = () => {
     localStorage.setItem("dev-os-intro-seen", "true");
     setMonitorFocus(false);
@@ -45,6 +56,11 @@ export default function DevOSPage() {
     setMode("shutdown");
     window.setTimeout(() => router.push("/"), 1200);
   };
+  const beginEnter = (reduce = reducedMotion) => {
+    if (monitorFocus) return;
+    setMonitorFocus(true);
+    window.setTimeout(enterOS, reduce ? 0 : 850);
+  };
   const visibleMode = mode === "intro" && introSeen ? "scene" : mode;
   const sceneActive = visibleMode === "intro" || visibleMode === "scene";
   return (
@@ -54,10 +70,7 @@ export default function DevOSPage() {
           <div className="absolute inset-0">
             <SceneBoundary>
               <ThreeScene
-                onMonitorClick={() => {
-                  setMonitorFocus(true);
-                  window.setTimeout(enterOS, 850);
-                }}
+                onMonitorClick={beginEnter}
               />
             </SceneBoundary>
           </div>
@@ -65,6 +78,7 @@ export default function DevOSPage() {
             <div className="pointer-events-none absolute inset-0 z-20 bg-[#07101d]/35 backdrop-blur-[1px]" />
           )}
           <p className="sr-only">Haz click en el monitor para entrar al portafolio interactivo.</p>
+          {!monitorFocus && <div className="scene-controls"><Link href="/" className="scene-classic-link">Portafolio convencional</Link><button type="button" className="scene-enter-button" onClick={() => beginEnter()}><i aria-hidden="true" />Entrar al escritorio</button></div>}
         </section>
       )}
       {visibleMode === "os" && <OSDesktop onExit={exitOS} />}

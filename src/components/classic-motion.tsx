@@ -27,18 +27,24 @@ export function ClassicThemeToggle() {
 
 export function ScrollProgress() {
   const ref = useRef<HTMLSpanElement>(null);
+  const frame = useRef(0);
   useEffect(() => {
     const update = () => {
+      frame.current = 0;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const progress = max > 0 ? window.scrollY / max : 0;
       ref.current?.style.setProperty("transform", `scaleX(${Math.max(0, Math.min(progress, 1))})`);
     };
+    const scheduleUpdate = () => {
+      if (!frame.current) frame.current = window.requestAnimationFrame(update);
+    };
     update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frame.current) window.cancelAnimationFrame(frame.current);
     };
   }, []);
   return <div className="classic-scroll-progress" aria-hidden="true"><span ref={ref} /> </div>;
@@ -63,9 +69,7 @@ export function HeroMotion({ children, className = "" }: { children: ReactNode; 
 
 export function ScrollReveal({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const entered = useRef(false);
   const [visible, setVisible] = useState(false);
-  const [progress, setProgress] = useState(0);
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
@@ -74,13 +78,12 @@ export function ScrollReveal({ children, delay = 0, className = "" }: { children
     }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        entered.current = true;
         setVisible(true);
-        setProgress(Math.min(entry.intersectionRatio * 3.2, 1));
+        observer.disconnect();
       }
-    }, { threshold: [0, 0.08, 0.18, 0.32, 0.5, 0.72, 1], rootMargin: "0px 0px -8%" });
+    }, { threshold: 0.08, rootMargin: "0px 0px -8%" });
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
-  return <div ref={ref} className={`classic-reveal ${visible ? "is-visible" : ""} ${className}`} style={{ transitionDelay: `${delay}ms`, "--reveal-progress": progress } as CSSProperties}>{children}</div>;
+  return <div ref={ref} className={`classic-reveal ${visible ? "is-visible" : ""} ${className}`} style={{ transitionDelay: `${delay}ms` } as CSSProperties}>{children}</div>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useState, type CSSProperties, type KeyboardEvent } from "react";
 import Image from "next/image";
 import { ArrowUpRight, Code2, Database, Gamepad2, LayoutPanelTop, Wrench } from "lucide-react";
 import { usePortfolioLanguage } from "@/components/portfolio-language";
@@ -27,6 +27,14 @@ export function SkillsShowcase({ skillEntries }: { skillEntries: SkillEntry[] })
   const Icon = icons[group as keyof typeof icons] ?? Code2;
   const groupLabel = language === "en" ? skillGroupEnglish[group] : group;
   const description = language === "en" ? skillDescriptionEnglish[group] : meta.description;
+  const handleGroupKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : 0;
+    const target = event.key === "Home" ? 0 : event.key === "End" ? skillEntries.length - 1 : (index + direction + skillEntries.length) % skillEntries.length;
+    if (!direction && event.key !== "Home" && event.key !== "End") return;
+    event.preventDefault();
+    setActiveIndex(target);
+    document.getElementById(`skill-tab-${target}`)?.focus();
+  };
 
   return (
     <div className="skill-experience">
@@ -34,7 +42,7 @@ export function SkillsShowcase({ skillEntries }: { skillEntries: SkillEntry[] })
         {skillEntries.map(([name], index) => {
           const ItemIcon = icons[name as keyof typeof icons] ?? Code2;
           return (
-            <button type="button" role="tab" aria-selected={activeIndex === index} className={`skill-selector-item ${activeIndex === index ? "is-active" : ""}`} onClick={() => setActiveIndex(index)} key={name}>
+            <button type="button" id={`skill-tab-${index}`} role="tab" aria-controls="skill-panel" aria-selected={activeIndex === index} tabIndex={activeIndex === index ? 0 : -1} className={`skill-selector-item ${activeIndex === index ? "is-active" : ""}`} onClick={() => setActiveIndex(index)} onKeyDown={(event) => handleGroupKeyDown(event, index)} key={name}>
               <span className="skill-selector-number">0{index + 1}</span>
               <ItemIcon size={17} strokeWidth={1.5} />
               <strong>{language === "en" ? skillGroupEnglish[name] : name}</strong>
@@ -43,7 +51,7 @@ export function SkillsShowcase({ skillEntries }: { skillEntries: SkillEntry[] })
           );
         })}
       </div>
-      <div className={`skill-stage skill-stage-${meta.tone}`} key={group}>
+      <div id="skill-panel" role="tabpanel" aria-labelledby={`skill-tab-${activeIndex}`} tabIndex={0} className={`skill-stage skill-stage-${meta.tone}`} key={group}>
         <div className="skill-stage-orbit" aria-hidden="true"><span>{meta.glyph}</span><i /><i /><i /></div>
         <div className="skill-stage-copy"><span className="skill-stage-index">{language === "en" ? "SELECTED" : "SELECCIONADA"} / 0{activeIndex + 1}</span><Icon className="skill-stage-icon" size={26} strokeWidth={1.3} /><small>{language === "en" ? (group === "IA aplicada" ? "Applied flow" : meta.label) : meta.label}</small><h3>{groupLabel}</h3><p>{description}</p></div>
         <div className="skill-constellation" aria-label={`${language === "en" ? "Technologies in" : "Tecnologías de"} ${groupLabel}`}>

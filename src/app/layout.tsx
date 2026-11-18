@@ -8,12 +8,12 @@ const jetBrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jet
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
-  title: "Developer Portfolio OS",
-  description: "Portafolio interactivo de ingeniería de software.",
+  title: "David Andrés Cabrera | Portafolio de Ingeniería de Software",
+  description: "Estudiante de Ingeniería de Software interesado en desarrollo web integral, experiencias 3D y soluciones con inteligencia artificial.",
   metadataBase: new URL(siteUrl),
   openGraph: {
-    title: "Developer Portfolio OS",
-    description: "Portafolio interactivo de ingeniería de software.",
+    title: "David Andrés Cabrera | Portafolio de Ingeniería de Software",
+    description: "Estudiante de Ingeniería de Software interesado en desarrollo web integral, experiencias 3D y soluciones con inteligencia artificial.",
     type: "website",
     locale: "es_CO",
   },

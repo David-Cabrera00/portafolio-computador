@@ -24,10 +24,14 @@ const projectCopy = {
 
 function ProjectArtwork({ project, language }: { project: Project; language: "es" | "en" }) {
   const [playing, setPlaying] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const embedUrl = project.demo ? getYouTubeEmbedUrl(project.demo) : null;
   if (embedUrl) {
     if (playing) {
-      return <iframe className="project-feature-youtube" src={embedUrl} title={`${language === "es" ? "Demo de" : "Demo of"} ${project.name}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />;
+      return <>
+        {!videoLoaded && <div className="project-video-loading" role="status" aria-live="polite"><span aria-hidden="true" />{language === "es" ? "Cargando reproductor…" : "Loading player…"}</div>}
+        <iframe className={`project-feature-youtube ${videoLoaded ? "is-loaded" : ""}`} src={embedUrl} title={`${language === "es" ? "Demo de" : "Demo of"} ${project.name}`} onLoad={() => setVideoLoaded(true)} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+      </>;
     }
     return (
       <button type="button" className={`project-video-launch ${project.name === "PetLink" ? "project-video-launch-petlink" : project.name === "ParkWatch" ? "project-video-launch-parkwatch" : ""}`} onClick={() => setPlaying(true)} aria-label={`${language === "es" ? "Reproducir demo de" : "Play demo of"} ${project.name}`}>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ArrowUpRight, CircleUserRound, Compass, ScanLine } from "lucide-react";
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import type { Profile } from "@/types/portfolio";
 import { usePortfolioLanguage } from "@/components/portfolio-language";
 
@@ -16,6 +16,15 @@ export function AboutShowcase({ profile }: { profile: Profile }) {
   const Icon = active.icon;
   const { t } = usePortfolioLanguage();
   const modeContent = { identity: { label: t.about.tabs[0], title: t.about.identityTitle, text: t.about.identityText }, process: { label: t.about.tabs[1], title: t.about.processTitle, text: t.about.processText }, outside: { label: t.about.tabs[2], title: t.about.outsideTitle, text: t.about.outsideText } }[active.id];
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    const target = event.key === "Home" ? 0 : event.key === "End" ? modes.length - 1 : (index + direction + modes.length) % modes.length;
+    if (!direction && event.key !== "Home" && event.key !== "End") return;
+    event.preventDefault();
+    const next = modes[target];
+    setActiveId(next.id);
+    document.getElementById(`about-tab-${next.id}`)?.focus();
+  };
 
   return (
     <section id="about" className="classic-section about-exhibit-section">
@@ -31,9 +40,9 @@ export function AboutShowcase({ profile }: { profile: Profile }) {
           <p className="classic-kicker">{t.about.kicker}</p>
           <div className="about-exhibit-title"><h2>{t.about.title} <em>{t.about.emphasis}</em></h2></div>
           <div className="about-mode-switch" role="tablist" aria-label="Conocer a David">
-            {modes.map((mode, index) => <button type="button" role="tab" aria-selected={activeId === mode.id} className={activeId === mode.id ? "is-active" : ""} onClick={() => setActiveId(mode.id)} key={mode.id}>{t.about.tabs[index]}</button>)}
+            {modes.map((mode, index) => <button type="button" id={`about-tab-${mode.id}`} role="tab" aria-controls="about-panel" aria-selected={activeId === mode.id} tabIndex={activeId === mode.id ? 0 : -1} className={activeId === mode.id ? "is-active" : ""} onClick={() => setActiveId(mode.id)} onKeyDown={(event) => handleTabKeyDown(event, index)} key={mode.id}>{t.about.tabs[index]}</button>)}
           </div>
-          <div className="about-signal-card" key={active.id}><Icon size={22} strokeWidth={1.4} /><span>{modeContent.label} / {t.about.signal}</span><h3>{modeContent.title}</h3><p>{modeContent.text}</p></div>
+          <div id="about-panel" role="tabpanel" aria-labelledby={`about-tab-${active.id}`} tabIndex={0} className="about-signal-card" key={active.id}><Icon size={22} strokeWidth={1.4} /><span>{modeContent.label} / {t.about.signal}</span><h3>{modeContent.title}</h3><p>{modeContent.text}</p></div>
           <div className="about-exhibit-facts"><div><span>{t.about.formation}</span><strong>{profile.education}</strong></div><div><span>{t.about.availability}</span><strong>{profile.availability}</strong></div><div><span>{t.about.contact}</span><a href={`mailto:${profile.email}`}>{profile.email} <ArrowUpRight size={13} /></a></div></div>
         </div>
       </div>

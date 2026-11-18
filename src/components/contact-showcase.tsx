@@ -55,7 +55,7 @@ export function ContactShowcase({ profile }: { profile: Profile }) {
           </div>
           <label><span>{t.contact.subject}</span><input name="subject" placeholder={t.contact.subject} /></label>
           <label><span>{t.contact.message} <b>*</b></span><textarea name="message" required rows={6} placeholder={t.contact.message} /></label>
-          <div className="contact-form-footer"><span>{status || t.contact.status}</span><button type="submit" className="classic-button classic-button-primary">{t.contact.send} <Send size={15} /></button></div>
+          <div className="contact-form-footer"><span role="status" aria-live="polite">{status || t.contact.status}</span><button type="submit" className="classic-button classic-button-primary">{t.contact.send} <Send size={15} /></button></div>
         </form>
       </div>
     </section>

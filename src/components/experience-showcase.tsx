@@ -1,7 +1,7 @@
 "use client";
 
 import { Award, BookOpen, ExternalLink, GraduationCap, MapPin } from "lucide-react";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import type { Profile } from "@/types/portfolio";
 import { usePortfolioLanguage } from "@/components/portfolio-language";
 
@@ -32,6 +32,16 @@ export function ExperienceShowcase({ profile }: { profile: Profile }) {
   const activeContent = localizeRecord(active);
   const academicTitle = language === "en" ? "Software Engineering" : profile.education;
 
+  const handleRecordKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : 0;
+    const target = event.key === "Home" ? 0 : event.key === "End" ? records.length - 1 : (index + direction + records.length) % records.length;
+    if (!direction && event.key !== "Home" && event.key !== "End") return;
+    event.preventDefault();
+    const next = records[target];
+    setActiveId(next.id);
+    document.getElementById(`education-tab-${next.id}`)?.focus();
+  };
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -43,8 +53,6 @@ export function ExperienceShowcase({ profile }: { profile: Profile }) {
       const end = -rect.height + window.innerHeight * 0.2;
       const progress = Math.max(0, Math.min(1, (start - rect.top) / Math.max(start - end, 1)));
       section.style.setProperty("--timeline-progress", progress.toFixed(3));
-      const recordIndex = Math.min(records.length - 1, Math.floor(progress * records.length));
-      setActiveId((current) => current === records[recordIndex].id ? current : records[recordIndex].id);
     };
     const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(updateProgress); };
     updateProgress();
@@ -58,11 +66,11 @@ export function ExperienceShowcase({ profile }: { profile: Profile }) {
       <div className="classic-container">
         <div className="classic-section-heading"><div><p className="classic-kicker">{t.education.kicker}</p><h2>{t.education.title} <em>{t.education.emphasis}</em></h2></div><span className="classic-count">{t.education.record}</span></div>
         <div className="experience-exhibit">
-          <div className="experience-timeline" aria-label={language === "en" ? "Education timeline" : "Línea de tiempo de formación"}>
+          <div className="experience-timeline" role="tablist" aria-orientation="vertical" aria-label={language === "en" ? "Education timeline" : "Línea de tiempo de formación"}>
             <div className="experience-timeline-line" aria-hidden="true"><i /></div>
-            {records.map((record, index) => { const ItemIcon = record.icon; const content = localizeRecord(record); return <button type="button" role="tab" aria-selected={activeId === record.id} className={`experience-timeline-item ${activeId === record.id ? "is-active" : ""}`} onClick={() => setActiveId(record.id)} key={record.id}><span className="experience-timeline-index">{String(index + 1).padStart(2, "0")}</span><span className="experience-timeline-node"><ItemIcon size={17} /></span><span><small>{content.period}</small><strong>{content.title}</strong></span></button>; })}
+            {records.map((record, index) => { const ItemIcon = record.icon; const content = localizeRecord(record); return <button type="button" id={`education-tab-${record.id}`} role="tab" aria-controls="education-panel" aria-selected={activeId === record.id} tabIndex={activeId === record.id ? 0 : -1} className={`experience-timeline-item ${activeId === record.id ? "is-active" : ""}`} onClick={() => setActiveId(record.id)} onKeyDown={(event) => handleRecordKeyDown(event, index)} key={record.id}><span className="experience-timeline-index">{String(index + 1).padStart(2, "0")}</span><span className="experience-timeline-node"><ItemIcon size={17} /></span><span><small>{content.period}</small><strong>{content.title}</strong></span></button>; })}
           </div>
-          <article className="experience-record" key={active.id}>
+          <article id="education-panel" role="tabpanel" aria-labelledby={`education-tab-${active.id}`} tabIndex={0} className="experience-record" key={active.id}>
             <div className="experience-record-icon"><Icon size={27} strokeWidth={1.25} /></div>
             <p className="classic-project-index">{activeContent.period}</p>
             <h3>{activeContent.title}</h3>

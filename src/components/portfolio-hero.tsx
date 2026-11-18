@@ -16,22 +16,31 @@ function LinkedinIcon() {
 
 export function PortfolioHero({ profile }: { profile: Profile }) {
   const ref = useRef<HTMLElement>(null);
-  const { t } = usePortfolioLanguage();
+  const frame = useRef(0);
+  const { language, t } = usePortfolioLanguage();
 
   useEffect(() => {
     const node = ref.current;
     if (!node || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const updatePointer = (event: PointerEvent) => {
-      const x = (event.clientX / window.innerWidth - 0.5) * 2;
-      const y = (event.clientY / window.innerHeight - 0.5) * 2;
+    let pointer: PointerEvent | null = null;
+    const applyPointer = () => {
+      frame.current = 0;
+      if (!pointer) return;
+      const x = (pointer.clientX / window.innerWidth - 0.5) * 2;
+      const y = (pointer.clientY / window.innerHeight - 0.5) * 2;
       node.style.setProperty("--hero-x", x.toFixed(3));
       node.style.setProperty("--hero-y", y.toFixed(3));
     };
+    const updatePointer = (event: PointerEvent) => {
+      pointer = event;
+      if (!frame.current) frame.current = window.requestAnimationFrame(applyPointer);
+    };
     const updateScroll = () => node.style.setProperty("--hero-scroll", Math.min(window.scrollY / Math.max(window.innerHeight, 1), 1).toFixed(3));
-    window.addEventListener("pointermove", updatePointer, { passive: true });
+    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (canHover.matches) window.addEventListener("pointermove", updatePointer, { passive: true });
     window.addEventListener("scroll", updateScroll, { passive: true });
     updateScroll();
-    return () => { window.removeEventListener("pointermove", updatePointer); window.removeEventListener("scroll", updateScroll); };
+    return () => { window.removeEventListener("pointermove", updatePointer); window.removeEventListener("scroll", updateScroll); if (frame.current) window.cancelAnimationFrame(frame.current); };
   }, []);
 
   return (
@@ -48,13 +57,13 @@ export function PortfolioHero({ profile }: { profile: Profile }) {
             <a href={profile.linkedin} target="_blank" rel="noreferrer" className="portfolio-social-link" aria-label={t.hero.linkedin} title="LinkedIn"><LinkedinIcon /></a>
           </div>
         </div>
-        <div className="portfolio-hero-stage" aria-label="Retrato interactivo de David">
+          <div className="portfolio-hero-stage" role="img" aria-label={language === "es" ? `Retrato de ${profile.name}` : `Portrait of ${profile.name}`}>
           <div className="portfolio-hero-grid" aria-hidden="true" />
           <div className="portfolio-hero-crosshair" aria-hidden="true"><i /><i /></div>
           <div className="portfolio-hero-ring portfolio-hero-ring-back" aria-hidden="true" />
           <div className="portfolio-hero-ring portfolio-hero-ring-front" aria-hidden="true" />
           <div className="portfolio-hero-glow" aria-hidden="true" />
-          <div className="portfolio-hero-portrait"><Image src="/portfolio/assets/profile.jpeg" alt={`Retrato de ${profile.name}`} fill priority sizes="(max-width: 760px) 80vw, 440px" /></div>
+          <div className="portfolio-hero-portrait"><Image src="/portfolio/assets/profile.jpeg" alt="" fill priority sizes="(max-width: 760px) 80vw, 440px" /></div>
         </div>
       </div>
     </section>

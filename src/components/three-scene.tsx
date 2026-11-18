@@ -7,31 +7,55 @@ import {
   OrbitControls,
   RoundedBox,
   ContactShadows,
+  Html,
   useTexture,
   useGLTF,
   Lightformer,
+  useProgress,
 } from "@react-three/drei";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+
+function SceneAssetLoader() {
+  const { active, progress } = useProgress();
+  if (!active) return null;
+  const value = Math.round(progress);
+  return (
+    <Html fullscreen center zIndexRange={[30, 0]}>
+      <div className="scene-load-state" role="status" aria-live="polite">
+        <span className="scene-load-mark" aria-hidden="true" />
+        <span>Cargando modelos y texturas</span>
+        <div className="scene-load-progress" role="progressbar" aria-label="Carga de recursos 3D" aria-valuemin={0} aria-valuemax={100} aria-valuenow={value}>
+          <i style={{ transform: `scaleX(${value / 100})` }} />
+        </div>
+        <small>{value}%</small>
+      </div>
+    </Html>
+  );
+}
 
 function Computer({
   approaching,
   onSelect,
+  reducedMotion,
 }: {
   approaching: boolean;
   onSelect: () => void;
+  reducedMotion: boolean;
 }) {
   const screen = useRef<THREE.Mesh>(null);
+  const scaleTarget = useRef(new THREE.Vector3(1, 1, 1));
   const [hovered, setHovered] = useState(false);
-  useFrame(() => {
-    if (screen.current)
-      screen.current.rotation.y = Math.sin(Date.now() / 2500) * 0.01;
+  useFrame(({ clock }) => {
+    if (!screen.current) return;
+    if (!reducedMotion) screen.current.rotation.y = Math.sin(clock.elapsedTime * 0.4) * 0.01;
+    screen.current.scale.lerp(scaleTarget.current, reducedMotion ? 1 : 0.18);
   });
   return (
     <Float
-      speed={approaching ? 0 : 1.2}
-      rotationIntensity={0.08}
-      floatIntensity={approaching ? 0 : 0.12}
+      speed={approaching || reducedMotion ? 0 : 1.2}
+      rotationIntensity={reducedMotion ? 0 : 0.08}
+      floatIntensity={approaching || reducedMotion ? 0 : 0.12}
     >
       <group position={[0, 0, 0]}>
         <RoundedBox
@@ -49,15 +73,16 @@ function Computer({
         <mesh
           ref={screen}
           position={[0, 1.25, 0.15]}
-          scale={hovered && !approaching ? 1.012 : 1}
           onClick={onSelect}
           onPointerOver={(event) => {
             event.stopPropagation();
             setHovered(true);
+            scaleTarget.current.setScalar(!approaching ? 1.012 : 1);
             document.body.style.cursor = "pointer";
           }}
           onPointerOut={() => {
             setHovered(false);
+            scaleTarget.current.setScalar(1);
             document.body.style.cursor = "default";
           }}
         >
@@ -213,34 +238,30 @@ function Computer({
 function CameraApproach({
   approaching,
   exiting,
+  reducedMotion,
 }: {
   approaching: boolean;
   exiting: boolean;
+  reducedMotion: boolean;
 }) {
   const { camera, size } = useThree();
+  const target = useMemo(() => new THREE.Vector3(), []);
+  const lookTarget = useMemo(() => new THREE.Vector3(), []);
   useFrame(({ clock }) => {
     if (typeof document !== "undefined" && document.hidden) return;
     const ambient = clock.elapsedTime;
     const mobile = size.width < 640;
-    const target = approaching
-      ? new THREE.Vector3(0, 2.35, mobile ? 3.2 : 2.55)
-      : exiting
-        ? new THREE.Vector3(
-            mobile ? 0.3 : 0.65,
-            mobile ? 2.7 : 2.95,
-            mobile ? 8.9 : 8.75,
-          )
-      : new THREE.Vector3(
-          (mobile ? 0.35 : 0.65) + Math.sin(ambient * 0.22) * 0.08,
-          (mobile ? 2.55 : 2.7) + Math.sin(ambient * 0.3) * 0.04,
-          (mobile ? 8.25 : 7.8) + Math.cos(ambient * 0.22) * 0.1,
-        );
-    camera.position.lerp(target, approaching ? 0.055 : exiting ? 0.035 : 0.02);
-    camera.lookAt(
-      0,
-      approaching ? 2.38 : exiting ? 0.98 : 1.1,
-      approaching ? -0.25 : -0.38,
+    if (!approaching && !exiting && reducedMotion) return;
+    if (approaching) target.set(0, 2.35, mobile ? 3.2 : 2.55);
+    else if (exiting) target.set(mobile ? 0.3 : 0.65, mobile ? 2.7 : 2.95, mobile ? 10.2 : 8.75);
+    else target.set(
+      (mobile ? 0.12 : 0.65) + (reducedMotion ? 0 : Math.sin(ambient * 0.22) * 0.08),
+      (mobile ? 2.55 : 2.7) + (reducedMotion ? 0 : Math.sin(ambient * 0.3) * 0.04),
+      (mobile ? 10.2 : 7.8) + (reducedMotion ? 0 : Math.cos(ambient * 0.22) * 0.1),
     );
+    camera.position.lerp(target, approaching ? 0.055 : exiting ? 0.035 : 0.02);
+    lookTarget.set(0, approaching ? 2.38 : exiting ? 0.98 : 1.1, approaching ? -0.25 : -0.38);
+    camera.lookAt(lookTarget);
   });
   return null;
 }
@@ -297,12 +318,13 @@ function ErgonomicChair({
   approaching: boolean;
   exiting: boolean;
 }) {
+  const { size } = useThree();
   const { scene } = useGLTF("/models/chair/silla_ergonomica.glb");
   return (
     <group
-      position={[-1.02, -0.28, 1.55]}
+      position={size.width < 640 ? [-0.52, -0.28, 1.55] : [-1.02, -0.28, 1.55]}
       rotation={[0, Math.PI - 0.2, 0]}
-      scale={1.85}
+      scale={size.width < 640 ? 1.25 : 1.85}
       name="ergonomic-chair"
       visible={!approaching && !exiting}
     >
@@ -389,11 +411,11 @@ function WallArt({
   );
 }
 
-function AtmosphereLights({ approaching }: { approaching: boolean }) {
+function AtmosphereLights({ approaching, reducedMotion }: { approaching: boolean; reducedMotion: boolean }) {
   const screenLight = useRef<THREE.PointLight>(null);
   const lampLight = useRef<THREE.PointLight>(null);
   useFrame(({ clock }) => {
-    const pulse = Math.sin(clock.elapsedTime * 1.4) * 0.18;
+    const pulse = reducedMotion ? 0 : Math.sin(clock.elapsedTime * 1.4) * 0.18;
     if (screenLight.current)
       screenLight.current.intensity = (approaching ? 9 : 3.8) + pulse;
     if (lampLight.current) lampLight.current.intensity = 5.2 + pulse * 0.45;
@@ -425,11 +447,12 @@ function AtmosphereLights({ approaching }: { approaching: boolean }) {
   );
 }
 
-function MonitorHUD({ approaching }: { approaching: boolean }) {
+function MonitorHUD({ approaching, reducedMotion }: { approaching: boolean; reducedMotion: boolean }) {
   const scanline = useRef<THREE.Mesh>(null);
   const cursor = useRef<THREE.Mesh>(null);
   const signal = useRef<THREE.Mesh>(null);
   useFrame(({ clock }) => {
+    if (reducedMotion) return;
     const phase = (clock.elapsedTime * 0.18) % 1;
     if (scanline.current) scanline.current.position.y = 0.42 - phase * 0.84;
     if (cursor.current) cursor.current.visible = Math.floor(clock.elapsedTime * 1.8) % 2 === 0;
@@ -490,10 +513,26 @@ export function ThreeScene({
   onMonitorClick,
   exitRequested = false,
 }: {
-  onMonitorClick: () => void;
+  onMonitorClick: (reducedMotion: boolean) => void;
   exitRequested?: boolean;
 }) {
   const [approaching, setApproaching] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [mobileLayout, setMobileLayout] = useState(false);
+  useEffect(() => {
+    const viewport = window.matchMedia("(max-width: 639px)");
+    const updateLayout = () => setMobileLayout(viewport.matches);
+    updateLayout();
+    viewport.addEventListener("change", updateLayout);
+    return () => viewport.removeEventListener("change", updateLayout);
+  }, []);
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setReducedMotion(preference.matches);
+    updatePreference();
+    preference.addEventListener("change", updatePreference);
+    return () => preference.removeEventListener("change", updatePreference);
+  }, []);
   useEffect(() => {
     if (!exitRequested) return;
     const timer = window.setTimeout(() => setApproaching(false), 0);
@@ -501,17 +540,21 @@ export function ThreeScene({
   }, [exitRequested]);
   const selectMonitor = () => {
     if (approaching) return;
-    setApproaching(true);
-    onMonitorClick();
+    setApproaching(!reducedMotion);
+    onMonitorClick(reducedMotion);
   };
   return (
     <Canvas
-      camera={{ position: [0.65, 2.7, 7.8], fov: 38 }}
+      frameloop={reducedMotion && !approaching && !exitRequested ? "demand" : "always"}
+      camera={mobileLayout
+        ? { position: [0.12, 2.55, 10.2], fov: 54 }
+        : { position: [0.65, 2.7, 7.8], fov: 38 }}
       dpr={[1, 1.1]}
       shadows
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       <color attach="background" args={["#080b12"]} />
+      <SceneAssetLoader />
       <ambientLight intensity={0.38} />
       <spotLight
         position={[3, 5, 4]}
@@ -520,7 +563,7 @@ export function ThreeScene({
         penumbra={1}
         color="#78a9ff"
       />
-      <AtmosphereLights approaching={approaching} />
+      <AtmosphereLights approaching={approaching} reducedMotion={reducedMotion} />
       <RoomBackdrop />
       <WallArt
         src="/models/posters/fight-poster.webp"
@@ -548,14 +591,14 @@ export function ThreeScene({
         far={4}
         color="#000000"
       />
-      <CameraApproach approaching={approaching} exiting={exitRequested} />
-      <Suspense fallback={<Computer approaching={approaching} onSelect={selectMonitor} />}>
+      <CameraApproach approaching={approaching} exiting={exitRequested} reducedMotion={reducedMotion} />
+      <Suspense fallback={<Computer approaching={approaching} onSelect={selectMonitor} reducedMotion={reducedMotion} />}>
         <BlenderWorkstation onSelect={selectMonitor} />
       </Suspense>
       <Suspense fallback={null}>
         <ErgonomicChair approaching={approaching} exiting={exitRequested} />
       </Suspense>
-      <MonitorHUD approaching={approaching} />
+      <MonitorHUD approaching={approaching} reducedMotion={reducedMotion} />
       <Environment resolution={128} environmentIntensity={0.72}>
         <Lightformer form="rect" color="#dce8ff" intensity={2.4} position={[0, 5, -4]} scale={[8, 5, 1]} />
         <Lightformer form="rect" color="#9fc3ff" intensity={1.5} position={[-5, 2, 1]} rotation={[0, Math.PI / 3, 0]} scale={[3, 5, 1]} />

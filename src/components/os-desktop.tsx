@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -53,11 +53,15 @@ const windowIcons: Record<AppId, typeof UserRound> = Object.fromEntries(
 
 function YouTubeProjectDemo({ project }: { project: Project }) {
   const [playing, setPlaying] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const embedUrl = project.demo ? getYouTubeEmbedUrl(project.demo) : null;
   if (!embedUrl) return null;
 
   if (playing) {
-    return <iframe className="os-project-youtube" src={embedUrl} title={`Demo de ${project.name}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />;
+    return <>
+      {!videoLoaded && <div className="os-project-video-loading" role="status" aria-live="polite"><span aria-hidden="true" />Cargando reproductor…</div>}
+      <iframe className={`os-project-youtube ${videoLoaded ? "is-loaded" : ""}`} src={embedUrl} title={`Demo de ${project.name}`} onLoad={() => setVideoLoaded(true)} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+    </>;
   }
 
   return (
@@ -118,6 +122,14 @@ function SkillsPanel() {
     "Desarrollo interactivo": "Experiencias interactivas, prototipos y contenido 3D.",
   };
   const groupIndex = groupNames.indexOf(activeGroup);
+  const handleGroupKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : 0;
+    const target = event.key === "Home" ? 0 : event.key === "End" ? groupNames.length - 1 : (index + direction + groupNames.length) % groupNames.length;
+    if (!direction && event.key !== "Home" && event.key !== "End") return;
+    event.preventDefault();
+    setActiveGroup(groupNames[target]);
+    document.getElementById(`os-skill-tab-${target}`)?.focus();
+  };
   return (
     <div className="os-skills-app">
       <AppPanelHeader eyebrow="TECNOLOGÍAS / TOOLKIT" title="Herramientas para construir." description="Frameworks y tecnologías que forman parte de mis proyectos." meta={`${String(Object.values(skillGroups).flat().length).padStart(2, "0")} TECNOLOGÍAS`} />
@@ -127,8 +139,12 @@ function SkillsPanel() {
             type="button"
             key={group}
             role="tab"
+            id={`os-skill-tab-${index}`}
+            aria-controls="os-skill-panel"
             aria-selected={activeGroup === group}
+            tabIndex={activeGroup === group ? 0 : -1}
             onClick={() => setActiveGroup(group as SkillGroup)}
+            onKeyDown={(event) => handleGroupKeyDown(event, index)}
             className={`os-skill-category ${activeGroup === group ? "is-active" : ""}`}
           >
             <span className="os-skill-category-index">{String(index + 1).padStart(2, "0")}</span>
@@ -137,7 +153,7 @@ function SkillsPanel() {
           </button>
         ))}
       </div>
-      <section className={`os-skill-stage os-skill-stage-${groupIndex % 5}`} role="tabpanel" key={activeGroup}>
+      <section id="os-skill-panel" aria-labelledby={`os-skill-tab-${groupIndex}`} className={`os-skill-stage os-skill-stage-${groupIndex % 5}`} role="tabpanel" key={activeGroup}>
         <div className="os-skill-stage-copy">
           <span className="os-skill-stage-label">ÁREA / {String(groupIndex + 1).padStart(2, "0")}</span>
           <div className="os-skill-stage-mark" aria-hidden="true"><Wrench size={22} /></div>
