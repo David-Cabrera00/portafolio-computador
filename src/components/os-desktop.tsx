@@ -331,14 +331,14 @@ function ProjectsPanel() {
             aria-expanded={selectedName === p.name}
             className={`project-card group app-interactive-card rounded-xl border bg-[#101725] p-3 text-left transition ${selectedName === p.name ? "border-[var(--blue)]" : "border-[var(--line)] hover:border-[var(--blue)]/60"}`}
           >
-            <div className={`project-cover mb-3 overflow-hidden rounded-lg border border-[var(--line)] bg-[linear-gradient(135deg,rgba(120,169,255,.18),rgba(124,227,195,.08))] ${p.name === "PetLink" ? "project-cover-petlink" : ""}`}>
+            <div className={`project-cover mb-3 overflow-hidden rounded-lg border border-[var(--line)] bg-[linear-gradient(135deg,rgba(120,169,255,.18),rgba(124,227,195,.08))] ${p.name === "PetLink" ? "project-cover-petlink" : p.name === "ParkWatch" ? "project-cover-parkwatch" : ""}`}>
               {p.cover ? (
                 <Image
                   src={p.cover}
-                  alt={`Captura de ${p.name}`}
+                  alt={`Vista previa de ${p.name}`}
                   width={960}
                   height={540}
-                  className={`h-full w-full ${p.name === "PetLink" ? "object-contain" : "object-cover transition duration-300 group-hover:scale-[1.04]"}`}
+                  className={`h-full w-full ${p.name === "PetLink" || p.name === "ParkWatch" ? "object-contain" : "object-cover transition duration-500 group-hover:scale-[1.035]"}`}
                 />
               ) : (
                 <div className="project-cover-placeholder">
@@ -347,10 +347,10 @@ function ProjectsPanel() {
                 </div>
               )}
               {p.demo && <span className="project-video-badge"><Play size={11} fill="currentColor" /> DEMO DISPONIBLE</span>}
+              {p.demo && <span className="project-cover-play" aria-hidden="true"><Play size={18} fill="currentColor" /></span>}
             </div>
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="mono text-[10px] text-[#71809a]">{String(index + 1).padStart(2, "0")}</span>
                 <h3 className="font-semibold text-white">{p.name}</h3>
               </div>
               <span className="mono max-w-28 text-right text-[9px] text-[var(--mint)]">{p.status}</span>
@@ -370,16 +370,17 @@ function ProjectsPanel() {
         <aside className="app-detail project-detail rounded-xl border border-[var(--blue)]/50 bg-[#162238] p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="mono text-[10px] text-[var(--mint)]">PROJECT DETAIL</p>
-              <h3 className="mt-2 text-lg">{selected.name}</h3>
+              <p className="mono text-[10px] text-[var(--mint)]">PROJECT / CASE STUDY</p>
+              <h3 className="mt-2 text-2xl tracking-tight">{selected.name}</h3>
             </div>
             <span className="rounded-full border border-[var(--mint)]/40 px-2 py-1 text-[10px] text-[var(--mint)]">
               {selected.status}
             </span>
           </div>
-          <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-            {selected.description}
-          </p>
+          <div className="project-detail-intro">
+            <span className="mono">OVERVIEW</span>
+            <p>{selected.description}</p>
+          </div>
           {selected.demo && <div className="os-project-detail-video"><YouTubeProjectDemo project={selected} /></div>}
           <div className="mt-4 flex flex-wrap gap-2">
             {selected.repository ? (

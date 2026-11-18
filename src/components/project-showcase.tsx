@@ -158,7 +158,10 @@ export function ProjectShowcase({ projects }: { projects: Project[] }) {
           </div>
         </div>
         <div className="project-feature-content">
-          <h3>{project.name}</h3>
+          <div className="project-feature-heading">
+            <div><span className="project-feature-overline">{language === "es" ? `PROYECTO / ${String(activeIndex + 1).padStart(2, "0")}` : `PROJECT / ${String(activeIndex + 1).padStart(2, "0")}`}</span><h3>{project.name}</h3></div>
+            <span className="project-feature-status"><i />{language === "es" ? "DEMO DISPONIBLE" : "DEMO AVAILABLE"}</span>
+          </div>
           <p>{projectCopy[language][project.name as keyof typeof projectCopy.es] ?? project.description}</p>
           <div className="project-feature-bottom"><div className="classic-tags">{project.stack.map((item) => <span key={item}>{item}</span>)}</div><div className="project-feature-links">{project.repository ? <a href={project.repository} target="_blank" rel="noreferrer"><GitBranch size={14} /> {t.projects.code} <ArrowUpRight size={13} /></a> : <span className="project-link-muted"><GitBranch size={14} /> {t.projects.pendingCode}</span>}{project.demo ? <a href={project.demo} target="_blank" rel="noreferrer"><ExternalLink size={14} /> {t.projects.demo} <ArrowUpRight size={13} /></a> : <span className="project-link-muted"><ExternalLink size={14} /> {t.projects.pendingDemo}</span>}</div></div>
         </div>
