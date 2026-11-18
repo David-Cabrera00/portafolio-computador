@@ -26,11 +26,12 @@ export function ClassicThemeToggle() {
 }
 
 export function ScrollProgress() {
-  const [progress, setProgress] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const update = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(max > 0 ? (window.scrollY / max) * 100 : 0);
+      const progress = max > 0 ? window.scrollY / max : 0;
+      ref.current?.style.setProperty("transform", `scaleX(${Math.max(0, Math.min(progress, 1))})`);
     };
     update();
     window.addEventListener("scroll", update, { passive: true });
@@ -40,7 +41,7 @@ export function ScrollProgress() {
       window.removeEventListener("resize", update);
     };
   }, []);
-  return <div className="classic-scroll-progress" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>;
+  return <div className="classic-scroll-progress" aria-hidden="true"><span ref={ref} /> </div>;
 }
 
 export function HeroMotion({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -76,8 +77,6 @@ export function ScrollReveal({ children, delay = 0, className = "" }: { children
         entered.current = true;
         setVisible(true);
         setProgress(Math.min(entry.intersectionRatio * 3.2, 1));
-      } else if (!entered.current) {
-        setProgress(0);
       }
     }, { threshold: [0, 0.08, 0.18, 0.32, 0.5, 0.72, 1], rootMargin: "0px 0px -8%" });
     observer.observe(node);
