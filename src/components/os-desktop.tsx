@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,20 +15,17 @@ import {
   UserRound,
   Wrench,
   X,
-  Minus,
-  Maximize2,
-  Minimize2,
   Power,
   Activity,
   Command,
   Search,
-  Trash2,
   RefreshCw,
-  AlignJustify,
   FolderOpen,
   ExternalLink,
   ArrowLeft,
+  ArrowUpRight,
   ChevronRight,
+  House,
   Download,
   FileBadge2,
   FileCode2,
@@ -37,7 +34,6 @@ import {
 } from "lucide-react";
 import { profile, projects, skillGroups } from "@/data/profile";
 import { executeTerminalCommand, terminalCommands } from "@/lib/terminal";
-import { playSystemSound } from "@/lib/system-sounds";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 import type { Project } from "@/types/portfolio";
 import { AppId, useOSStore } from "@/store/os-store";
@@ -56,22 +52,6 @@ const apps: { id: AppId; label: string; icon: typeof UserRound }[] = [
 const windowIcons: Record<AppId, typeof UserRound> = Object.fromEntries(
   apps.map((app) => [app.id, app.icon]),
 ) as Record<AppId, typeof UserRound>;
-type IconPosition = { x: number; y: number };
-type IconPositions = Record<AppId, IconPosition>;
-type DesktopSelection = AppId | "recycle" | null;
-
-const defaultIconPositions = apps.reduce((positions, app, index) => {
-  positions[app.id] = {
-    x: index % 2 === 0 ? 2 : 10,
-    y: 2 + Math.floor(index / 2) * 17,
-  };
-  return positions;
-}, {} as IconPositions);
-
-const iconPositionsKey = "dev-os-icon-positions";
-const iconLayoutVersionKey = "dev-os-icon-layout-version";
-const iconLayoutVersion = "2";
-const iconSlots = Object.values(defaultIconPositions);
 
 function YouTubeProjectDemo({ project }: { project: Project }) {
   const [playing, setPlaying] = useState(false);
@@ -89,17 +69,6 @@ function YouTubeProjectDemo({ project }: { project: Project }) {
       <span className="project-video-prompt">REPRODUCIR DEMO</span>
     </button>
   );
-}
-
-function nearestIconSlot(position: IconPosition) {
-  return iconSlots.reduce((closest, slot) => {
-    const distance = Math.hypot(slot.x - position.x, slot.y - position.y);
-    const closestDistance = Math.hypot(
-      closest.x - position.x,
-      closest.y - position.y,
-    );
-    return distance < closestDistance ? slot : closest;
-  }, iconSlots[0]);
 }
 
 function AppContent({ id }: { id: AppId }) {
@@ -725,751 +694,179 @@ function TerminalPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
 }
 
 function WindowView({ id }: { id: AppId }) {
-  const win = useOSStore((s) => s.windows[id]);
-  const beginClose = useOSStore((s) => s.beginCloseWindow);
-  const minimize = useOSStore((s) => s.minimizeWindow);
-  const maximize = useOSStore((s) => s.maximizeWindow);
-  const focus = useOSStore((s) => s.focusWindow);
-  const move = useOSStore((s) => s.moveWindow);
-  const resize = useOSStore((s) => s.resizeWindow);
-  const activeId = useOSStore((s) => s.activeId);
-  const sounds = useOSStore((s) => s.sounds);
-  const [minimizing, setMinimizing] = useState(false);
-  const previousWindowState = useRef({
-    open: win.open,
-    minimized: win.minimized,
-    maximized: win.maximized,
-  });
-  const windowRef = useRef<HTMLElement>(null);
-  const dragRef = useRef<{
-    startX: number;
-    startY: number;
-    originX: number;
-    originY: number;
-  } | null>(null);
-  const resizeRef = useRef<{
-    startX: number;
-    startY: number;
-    originWidth: number;
-    originHeight: number;
-  } | null>(null);
-  const onPointerMove = (event: PointerEvent) => {
-    if (!dragRef.current || win.maximized) return;
-    const workspace = windowRef.current?.parentElement;
-    const currentWindow = windowRef.current;
-    if (!workspace || !currentWindow) return;
-    const safeWidth = Math.max(0, workspace.clientWidth - currentWindow.offsetWidth - 16);
-    const safeHeight = Math.max(0, workspace.clientHeight - currentWindow.offsetHeight - 16);
-    const nextX = Math.max(
-      0,
-      Math.min(
-        (safeWidth / workspace.clientWidth) * 100,
-        dragRef.current.originX +
-          ((event.clientX - dragRef.current.startX) / window.innerWidth) * 100,
-      ),
-    );
-    const nextY = Math.max(
-      0,
-      Math.min(
-        (safeHeight / workspace.clientHeight) * 100,
-        dragRef.current.originY +
-          ((event.clientY - dragRef.current.startY) / window.innerHeight) * 100,
-      ),
-    );
-    move(id, { x: nextX, y: nextY });
-  };
-  const stopDragging = () => {
-    dragRef.current = null;
-    window.removeEventListener("pointermove", onPointerMove);
-    window.removeEventListener("pointerup", stopDragging);
-  };
-  const onResizeMove = (event: PointerEvent) => {
-    if (!resizeRef.current || win.maximized) return;
-    const workspace = windowRef.current?.parentElement;
-    const maxWidth = workspace
-      ? Math.max(360, Math.min(1000, workspace.clientWidth - (win.position.x / 100) * workspace.clientWidth - 24))
-      : 1000;
-    const maxHeight = workspace
-      ? Math.max(260, Math.min(720, workspace.clientHeight - (win.position.y / 100) * workspace.clientHeight - 24))
-      : 720;
-    resize(id, {
-      width: Math.max(
-        360,
-        Math.min(maxWidth, resizeRef.current.originWidth + event.clientX - resizeRef.current.startX),
-      ),
-      height: Math.max(
-        260,
-        Math.min(maxHeight, resizeRef.current.originHeight + event.clientY - resizeRef.current.startY),
-      ),
-    });
-  };
-  const stopResizing = () => {
-    resizeRef.current = null;
-    window.removeEventListener("pointermove", onResizeMove);
-    window.removeEventListener("pointerup", stopResizing);
-  };
-  const startResizing = (event: React.PointerEvent) => {
-    if (win.maximized) return;
-    event.preventDefault();
-    event.stopPropagation();
-    focus(id);
-    resizeRef.current = {
-      startX: event.clientX,
-      startY: event.clientY,
-      originWidth: win.size.width,
-      originHeight: win.size.height,
-    };
-    window.addEventListener("pointermove", onResizeMove);
-    window.addEventListener("pointerup", stopResizing);
-  };
-  const requestMinimize = () => {
-    setMinimizing(true);
-    window.setTimeout(() => minimize(id), 180);
-  };
-  useEffect(() => {
-    const previous = previousWindowState.current;
-    if (sounds) {
-      if (!previous.open && win.open) playSystemSound("open");
-      if (previous.open && !win.open) playSystemSound("close");
-      if (!previous.minimized && win.minimized) playSystemSound("minimize");
-      if (previous.maximized !== win.maximized) {
-        playSystemSound("maximize");
-      }
-    }
-    previousWindowState.current = {
-      open: win.open,
-      minimized: win.minimized,
-      maximized: win.maximized,
-    };
-  }, [sounds, win.maximized, win.minimized, win.open]);
-  useEffect(() => {
-    if (
-      win.open &&
-      activeId === id &&
-      document.activeElement === document.body
-    ) {
-      windowRef.current?.focus({ preventScroll: true });
-    }
-  }, [activeId, id, win.open]);
-  const startDragging = (event: React.PointerEvent) => {
-    if (win.maximized || (event.target as HTMLElement).closest("button"))
-      return;
-    focus(id);
-    dragRef.current = {
-      startX: event.clientX,
-      startY: event.clientY,
-      originX: win.position.x,
-      originY: win.position.y,
-    };
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", stopDragging);
-  };
-  useEffect(
-    () => () => {
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", stopDragging);
-      window.removeEventListener("pointermove", onResizeMove);
-      window.removeEventListener("pointerup", stopResizing);
-    },
-    // These listeners are cleaned up on unmount; handlers close over this window instance.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-  if (!win.open || win.minimized) return null;
+  const win = useOSStore((state) => state.windows[id]);
+  const closeWindow = useOSStore((state) => state.closeWindow);
+  const Icon = windowIcons[id];
+
+  if (!win.open) return null;
+
   return (
-    <section
-      ref={windowRef}
-      onPointerDown={() => focus(id)}
-      role="dialog"
-      aria-modal="false"
-      aria-labelledby={`window-title-${id}`}
-      tabIndex={-1}
-      aria-label={`Ventana ${win.title}`}
-      className={`os-window os-window-floating aero-window absolute ${win.maximized ? "window-maximized inset-3" : "max-sm:inset-3 max-sm:w-auto"} ${win.closing ? "os-window-closing" : minimizing ? "os-window-minimizing" : ""} overflow-hidden rounded-2xl border bg-[#151821] shadow-2xl ${activeId === id ? "window-active border-white/15" : "window-inactive border-white/[.08]"}`}
-      style={{
-        zIndex: win.zIndex + 40,
-        ...(win.maximized
-          ? {}
-          : {
-              left: `${win.position.x}%`,
-              top: `${win.position.y}%`,
-              "--window-width": `${win.size.width}px`,
-              "--window-height": `${win.size.height}px`,
-            }),
-      } as React.CSSProperties}
-    >
-      <header
-        onPointerDown={startDragging}
-        onDoubleClick={() => maximize(id)}
-        className="aero-window-header flex touch-none cursor-move items-center justify-between border-b border-white/[.08] px-4 py-3"
-      >
-        <div className="window-app-identity flex min-w-0 items-center gap-2">
-          <span className="window-app-icon" aria-hidden="true">{(() => { const Icon = windowIcons[id]; return <Icon size={15} />; })()}</span>
-          <span className="min-w-0">
-            <span id={`window-title-${id}`} className="block truncate text-[.82rem] font-semibold tracking-[.01em]">
-              {win.title}
-            </span>
-          </span>
+    <section className="workspace-section-view" aria-labelledby={`workspace-title-${id}`}>
+      <header className="workspace-section-heading">
+        <span className="workspace-section-icon"><Icon size={18} /></span>
+        <div className="min-w-0">
+          <span className="workspace-section-kicker">DEV OS / PORTAFOLIO</span>
+          <h1 id={`workspace-title-${id}`}>{win.title}</h1>
         </div>
-        <div className="window-controls flex gap-1">
-          <button
-            aria-label="Minimizar"
-            title="Minimizar ventana"
-            aria-pressed={win.minimized}
-            onClick={requestMinimize}
-            className="focus-ring window-control rounded p-1 text-[var(--muted)]"
-          >
-            <Minus size={15} />
-          </button>
-          <button
-            aria-label="Maximizar"
-            title={win.maximized ? "Restaurar ventana" : "Maximizar ventana"}
-            aria-pressed={win.maximized}
-            onClick={() => maximize(id)}
-            className="focus-ring window-control rounded p-1 text-[var(--muted)]"
-          >
-            {win.maximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-          </button>
-          <button
-            aria-label="Cerrar"
-            aria-keyshortcuts="Escape"
-            title="Cerrar ventana"
-            onClick={() => beginClose(id)}
-            className="focus-ring window-control window-control-close rounded p-1 text-[var(--muted)] hover:text-red-300"
-          >
-            <X size={15} />
-          </button>
-        </div>
+        <button type="button" onClick={() => closeWindow(id)} className="workspace-home-return">
+          <span>Volver al inicio</span><X size={15} />
+        </button>
       </header>
-      <div className={`window-body overflow-auto p-5 max-sm:p-4 ${win.maximized ? "h-[calc(100dvh-8rem)] max-h-none" : "max-h-[68vh] max-sm:max-h-[calc(100vh-8.5rem)]"}`}>
+      <div className="workspace-section-content" key={id}>
         <AppContent id={id} />
       </div>
-      {!win.maximized && (
-        <button
-          type="button"
-          aria-label={`Redimensionar ventana ${win.title}`}
-          onPointerDown={startResizing}
-          className="window-resize-handle focus-ring"
-        />
-      )}
     </section>
   );
 }
 
+function WorkspaceHome({ now, onOpen }: { now: Date; onOpen: (id: AppId) => void }) {
+  return (
+    <div className="workspace-home">
+      <section className="workspace-welcome">
+        <div className="workspace-welcome-copy">
+          <span className="workspace-section-kicker">DAVID CABRERA / ESPACIO DE TRABAJO</span>
+          <h1>Ideas que ya<br /><em>están en marcha.</em></h1>
+          <p>Explora los proyectos, herramientas y experiencias que estoy construyendo.</p>
+          <div className="workspace-welcome-actions">
+            <button type="button" onClick={() => onOpen("projects")} className="workspace-primary-action">Explorar proyectos <ArrowUpRight size={15} /></button>
+            <button type="button" onClick={() => onOpen("about")} className="workspace-secondary-action">Conocer a David</button>
+          </div>
+        </div>
+        <div className="workspace-welcome-aside" aria-hidden="true">
+          <span className="workspace-orbit workspace-orbit-one" />
+          <span className="workspace-orbit workspace-orbit-two" />
+          <span className="workspace-aside-index">DC<span> / 01</span></span>
+          <span className="workspace-aside-caption">SOFTWARE · IDEAS · INTERACCIÓN</span>
+        </div>
+      </section>
+
+      <div className="workspace-home-grid">
+        <section className="workspace-home-projects">
+          <div className="workspace-home-section-heading">
+            <div><span className="workspace-section-kicker">TRABAJO SELECCIONADO</span><h2>Proyectos en curso</h2></div>
+            <button type="button" onClick={() => onOpen("projects")}>Ver todos <ChevronRight size={15} /></button>
+          </div>
+          <div className="workspace-project-grid">
+            {projects.map((project, index) => (
+              <button type="button" className={`workspace-project-tile workspace-project-tile-${index + 1}`} key={project.name} onClick={() => onOpen("projects")}>
+                <span className="workspace-project-image">
+                  {project.cover ? <Image src={project.cover} alt="" fill sizes="(max-width: 900px) 45vw, 28vw" className={project.name === "PetLink" || project.name === "ParkWatch" ? "workspace-portrait-cover" : ""} /> : <span className="workspace-cover-placeholder">{project.name.slice(0, 2)}</span>}
+                </span>
+                <span className="workspace-project-scrim" />
+                <span className="workspace-project-meta"><small>0{index + 1} / PROYECTO</small><strong>{project.name}</strong><i><ArrowUpRight size={14} /></i></span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <aside className="workspace-home-aside">
+          <section className="workspace-profile-card">
+            <div className="workspace-profile-top"><span className="workspace-section-kicker">PERFIL / EN LÍNEA</span><i /></div>
+            <div className="workspace-profile-identity"><span className="workspace-profile-avatar">DC</span><div><strong>{profile.name}</strong><small>{profile.role}</small></div></div>
+            <p>Desarrollo web integral, software interactivo y soluciones con IA.</p>
+            <button type="button" onClick={() => onOpen("about")}>Ver perfil <ArrowUpRight size={14} /></button>
+          </section>
+          <section className="workspace-home-stats" aria-label="Resumen del espacio de trabajo">
+            <div><strong>{projects.length.toString().padStart(2, "0")}</strong><span>proyectos</span></div>
+            <div><strong>{Object.values(skillGroups).flat().length.toString().padStart(2, "0")}</strong><span>tecnologías</span></div>
+            <div><strong>{Object.keys(skillGroups).length.toString().padStart(2, "0")}</strong><span>áreas</span></div>
+          </section>
+          <section className="workspace-date-card">
+            <span className="workspace-section-kicker">HOY / COLOMBIA</span>
+            <strong>{now.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" })}</strong>
+            <span>{now.toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long" })}</span>
+          </section>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
 export function OSDesktop({ onExit }: { onExit: () => void }) {
-  const [menu, setMenu] = useState(false);
-  const [startQuery, setStartQuery] = useState("");
-  const [powerMenu, setPowerMenu] = useState(false);
   const [now, setNow] = useState(() => new Date());
-  const [iconPositions, setIconPositions] = useState<IconPositions>(
-    defaultIconPositions,
-  );
-  const [selectedDesktopItem, setSelectedDesktopItem] =
-    useState<DesktopSelection>(null);
-  const [selectedDesktopItems, setSelectedDesktopItems] = useState<AppId[]>([]);
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(
-    null,
-  );
-  const [iconsHydrated, setIconsHydrated] = useState(false);
-  const iconDragRef = useRef<{
-    id: AppId;
-    startX: number;
-    startY: number;
-    originX: number;
-    originY: number;
-  } | null>(null);
-  const suppressIconClickRef = useRef(false);
-  const hydratePreferences = useOSStore((s) => s.hydratePreferences);
-  const openWindow = useOSStore((s) => s.openWindow);
-  const closeWindow = useOSStore((s) => s.closeWindow);
-  const beginCloseWindow = useOSStore((s) => s.beginCloseWindow);
-  const windows = useOSStore((s) => s.windows);
-  const activeId = useOSStore((s) => s.activeId);
-  const theme = useOSStore((s) => s.theme);
-  const wallpaper = useOSStore((s) => s.wallpaper);
-  const reducedMotion = useOSStore((s) => s.reducedMotion);
-  const open = apps.filter((a) => windows[a.id].open);
-  const startApps = apps.filter((app) =>
-    app.label.toLowerCase().includes(startQuery.toLowerCase()),
-  );
-  const recentApps = open.length > 0 ? open.slice(0, 4) : apps.slice(0, 4);
-  const stopIconDrag = () => {
-    iconDragRef.current = null;
-    window.removeEventListener("pointermove", moveIcon);
-    window.removeEventListener("pointerup", stopIconDrag);
-  };
-  const moveIcon = (event: PointerEvent) => {
-    const drag = iconDragRef.current;
-    if (!drag) return;
-    const distance = Math.hypot(
-      event.clientX - drag.startX,
-      event.clientY - drag.startY,
-    );
-    if (distance > 4) suppressIconClickRef.current = true;
-    const target = nearestIconSlot({
-      x: Math.max(
-        0.5,
-        Math.min(82, drag.originX + (event.clientX - drag.startX) / 12),
-      ),
-      y: Math.max(
-        0.5,
-        Math.min(78, drag.originY + (event.clientY - drag.startY) / 8),
-      ),
-    });
-    setIconPositions((positions) => {
-      const occupied = apps.find(
-        (app) =>
-          app.id !== drag.id &&
-          positions[app.id].x === target.x &&
-          positions[app.id].y === target.y,
-      );
-      const next = { ...positions, [drag.id]: target };
-      if (occupied) next[occupied.id] = positions[drag.id];
-      return next;
-    });
-  };
-  const startIconDrag = (id: AppId, event: React.PointerEvent) => {
-    if (event.button !== 0) return;
-    event.preventDefault();
-    iconDragRef.current = {
-      id,
-      startX: event.clientX,
-      startY: event.clientY,
-      originX: iconPositions[id].x,
-      originY: iconPositions[id].y,
-    };
-    window.addEventListener("pointermove", moveIcon);
-    window.addEventListener("pointerup", stopIconDrag);
-  };
-  const organizeIcons = () => {
-    setIconPositions(defaultIconPositions);
-    localStorage.setItem(iconLayoutVersionKey, iconLayoutVersion);
-    setContextMenu(null);
-  };
-  const sortIconsByName = () => {
-    const sorted = [...apps].sort((a, b) => a.label.localeCompare(b.label, "es"));
-    const sortedPositions = sorted.reduce((positions, app, index) => {
-      positions[app.id] = {
-        x: index % 2 === 0 ? 2 : 10,
-        y: 2 + Math.floor(index / 2) * 17,
-      };
-      return positions;
-    }, {} as IconPositions);
-    setIconPositions(sortedPositions);
-    localStorage.setItem(iconLayoutVersionKey, iconLayoutVersion);
-    setContextMenu(null);
-  };
-  const openContextMenu = (event: React.MouseEvent, id: DesktopSelection) => {
-    event.preventDefault();
-    setSelectedDesktopItem(id);
-    setContextMenu({
-      x: Math.min(event.clientX, window.innerWidth - 224),
-      y: Math.min(event.clientY, window.innerHeight - 190),
-    });
-  };
+  const hydratePreferences = useOSStore((state) => state.hydratePreferences);
+  const openWindow = useOSStore((state) => state.openWindow);
+  const closeWindow = useOSStore((state) => state.closeWindow);
+  const activeId = useOSStore((state) => state.activeId);
+  const theme = useOSStore((state) => state.theme);
+  const wallpaper = useOSStore((state) => state.wallpaper);
+  const reducedMotion = useOSStore((state) => state.reducedMotion);
+
+  useEffect(() => { hydratePreferences(); }, [hydratePreferences]);
   useEffect(() => {
-    hydratePreferences();
-  }, [hydratePreferences]);
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      try {
-        const stored = JSON.parse(
-          localStorage.getItem(iconPositionsKey) ?? "null",
-        ) as Partial<IconPositions> | null;
-        const version = localStorage.getItem(iconLayoutVersionKey);
-        if (version === iconLayoutVersion && stored) {
-          setIconPositions({ ...defaultIconPositions, ...stored });
-        } else {
-          localStorage.setItem(iconLayoutVersionKey, iconLayoutVersion);
-          localStorage.removeItem(iconPositionsKey);
-        }
-      } catch {
-        /* Keep the default desktop layout when storage is unavailable. */
-      } finally {
-        setIconsHydrated(true);
-      }
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    if (!iconsHydrated) return;
-    try {
-      localStorage.setItem(iconPositionsKey, JSON.stringify(iconPositions));
-    } catch {
-      /* Storage may be unavailable in private browsing. */
-    }
-  }, [iconPositions, iconsHydrated]);
-  useEffect(
-    () => () => {
-      window.removeEventListener("pointermove", moveIcon);
-      window.removeEventListener("pointerup", stopIconDrag);
-    },
-    // The listeners are removed when the desktop unmounts.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 1000);
+    const timer = window.setInterval(() => setNow(new Date()), 30_000);
     return () => window.clearInterval(timer);
   }, []);
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && menu) {
-        setMenu(false);
-        setPowerMenu(false);
-        return;
-      }
-      if (event.key === "Escape" && activeId) beginCloseWindow(activeId);
-      if (event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey)) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         openWindow("terminal");
+      } else if (event.key === "Escape" && activeId) {
+        closeWindow(activeId);
+      } else if (event.key === "Home" && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        if (activeId) closeWindow(activeId);
       }
     };
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
-  }, [activeId, beginCloseWindow, menu, openWindow]);
+  }, [activeId, closeWindow, openWindow]);
+
+  const activeApp = activeId ? apps.find((app) => app.id === activeId) : null;
+
   return (
-    <main
-      aria-label="Escritorio DEV OS"
-      onPointerDown={(event) => {
-        if (!(event.target as HTMLElement).closest("[data-context-menu]")) {
-          setContextMenu(null);
-          if (event.target === event.currentTarget) {
-            setSelectedDesktopItem(null);
-            setSelectedDesktopItems([]);
-          }
-        }
-      }}
-      data-theme={theme}
-      data-reduced-motion={reducedMotion}
-      className={`os-shell relative h-screen max-h-screen overflow-hidden overscroll-none pb-14 ${theme === "aero" ? "aero-desktop" : wallpaper === "grid" ? "grid-bg bg-[var(--bg)]" : wallpaper === "plain" ? "bg-[var(--bg)]" : "bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.16),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.1),transparent_28%)]"} ${activeId ? "has-active-window" : ""}`}
-    >
-      {wallpaper === "aurora" && (
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(120,169,255,.13),transparent_35%),radial-gradient(circle_at_10%_80%,rgba(124,227,195,.08),transparent_28%)]" />
-      )}
-      {theme === "aero" && (
-        <div
-          aria-hidden="true"
-          className="aero-shimmer pointer-events-none absolute left-[-20%] top-24 z-0 h-28 w-[140%] rotate-[-8deg] bg-gradient-to-r from-transparent via-white/10 to-transparent blur-2xl"
-        />
-      )}
-      <header className="aero-glass relative z-20 flex h-14 items-center justify-between border-b border-[var(--line)] bg-[#0b101b]/70 px-4 backdrop-blur-xl sm:px-8">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="mono text-[10px] tracking-[.24em] text-[var(--mint)]">
-            DEV OS
-          </span>
-          <span className="hidden text-xs text-[#71809a] sm:inline">/</span>
-          <span className="hidden truncate text-xs text-[var(--muted)] sm:inline">
-            workspace / portfolio
-          </span>
-        </div>
-        <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
-          <span className="hidden items-center gap-2 xl:flex">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--mint)]" />
-            <span className="mono text-[10px] tracking-[.16em] text-[var(--mint)]">
-              SYSTEM ONLINE
-            </span>
-          </span>
-          <span className="hidden items-center gap-2 lg:flex">
-            <Activity size={13} className="text-[var(--mint)]" />
-            {open.length} apps active
-          </span>
-          <Link
-            href="/"
-            className="focus-ring flex items-center gap-2 rounded-lg border border-[var(--mint)]/50 bg-[var(--mint)]/10 px-2.5 py-1.5 text-[var(--mint)] hover:bg-[var(--mint)]/20"
-          >
-            <ExternalLink size={13} />
-            <span>Mi portafolio</span>
-          </Link>
-          <button
-            onClick={() => openWindow("terminal")}
-            aria-keyshortcuts="Control+K"
-            className="focus-ring flex items-center gap-2 rounded-lg border border-[var(--line)] px-2.5 py-1.5 hover:border-[var(--blue)]/60 hover:text-white"
-          >
-            <Command size={13} />
-            <span className="hidden sm:inline">Command center</span>
-            <kbd className="mono hidden rounded bg-[#202b40] px-1.5 py-0.5 text-[10px] text-[var(--blue)] sm:inline">
-              Ctrl K
-            </kbd>
-          </button>
+    <main aria-label="Escritorio DEV OS" data-theme={theme} data-reduced-motion={reducedMotion} className={`devos-shell ${theme === "aero" ? "aero-desktop" : wallpaper === "grid" ? "grid-bg" : ""}`}>
+      <header className="devos-topbar">
+        <button type="button" className="devos-brand" onClick={() => activeId && closeWindow(activeId)} aria-label="Ir al inicio de DEV OS">
+          <span className="devos-brand-mark">N</span><span>DEV OS</span><i>/</i><small>{activeApp ? activeApp.label.toLowerCase() : "workspace / portfolio"}</small>
+        </button>
+        <div className="devos-topbar-actions">
+          <span className="devos-online"><i /> SISTEMA EN LÍNEA</span>
+          <span className="devos-active-count"><Activity size={14} /> {activeId ? "1 sección activa" : "espacio listo"}</span>
+          <Link href="/" className="devos-portfolio-link"><ExternalLink size={13} /><span>Mi portafolio</span></Link>
+          <button type="button" className="devos-command-link" onClick={() => openWindow("terminal")} aria-keyshortcuts="Control+K"><Command size={14} /><span>Terminal</span><kbd>Ctrl K</kbd></button>
         </div>
       </header>
-      <div className="relative min-h-[calc(100vh-7rem)] p-4 pt-6 sm:p-7 sm:pt-8 lg:p-9">
-        <div className="desktop-icons" aria-label="Aplicaciones del escritorio">
-          {apps.map(({ id, label, icon: Icon }, index) => (
-            <button
-              key={id}
-              type="button"
-              aria-label={`Abrir ${label}`}
-              onDoubleClick={() => openWindow(id)}
-              onClick={(event) => {
-                if (suppressIconClickRef.current) {
-                  suppressIconClickRef.current = false;
-                  return;
-                }
-                setSelectedDesktopItem(id);
-                setSelectedDesktopItems((selected) =>
-                  event.ctrlKey || event.metaKey
-                    ? selected.includes(id)
-                      ? selected.filter((item) => item !== id)
-                      : [...selected, id]
-                    : [id],
-                );
-              }}
-              onContextMenu={(event) => openContextMenu(event, id)}
-              onPointerDown={(event) => startIconDrag(id, event)}
-              style={{ left: `${iconPositions[id].x}%`, top: `${iconPositions[id].y}%` }}
-              title="Haz clic para abrir · arrastra para mover"
-              className={`desktop-icon focus-ring group flex flex-col items-center gap-1 rounded-lg p-2 text-center text-xs text-white transition duration-200 hover:bg-white/15 ${selectedDesktopItems.includes(id) || selectedDesktopItem === id ? "desktop-icon-selected" : ""}`}
-            >
-              <span className={`aero-icon rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 ${index < 5 ? "text-[var(--blue)]" : "text-[var(--mint)]"}`}>
-                <Icon size={21} />
-              </span>
-              <span className="desktop-icon-label rounded px-1.5 py-0.5 leading-4 group-hover:bg-[#0b4577]/70">{label}</span>
+
+      <div className="devos-layout">
+        <aside className="devos-sidebar">
+          <div className="devos-sidebar-heading"><span className="devos-sidebar-heading-mark"><Monitor size={16} /></span><div><strong>Workspace</strong><small>PORTAFOLIO PERSONAL</small></div></div>
+          <nav className="devos-nav" aria-label="Navegación del espacio de trabajo">
+            <button type="button" className={`devos-nav-item devos-nav-home ${!activeId ? "is-active" : ""}`} aria-current={!activeId ? "page" : undefined} onClick={() => activeId && closeWindow(activeId)}>
+              <House size={17} /><span>Inicio</span><small>00</small>
             </button>
-          ))}
-          <button
-            type="button"
-            aria-label="Abrir Papelera de reciclaje"
-            onClick={() => {
-              setSelectedDesktopItem("recycle");
-              setSelectedDesktopItems([]);
-            }}
-            onDoubleClick={() => openWindow("files")}
-            onContextMenu={(event) => openContextMenu(event, "recycle")}
-            className={`desktop-icon desktop-recycle focus-ring group flex flex-col items-center gap-1 rounded-lg p-2 text-center text-xs text-white transition duration-200 hover:bg-white/15 ${selectedDesktopItem === "recycle" ? "desktop-icon-selected" : ""}`}
-          >
-            <span className="aero-icon rounded-xl border border-[var(--line)] bg-[#131c2b] p-3 text-[var(--muted)]">
-              <Trash2 size={21} />
-            </span>
-            <span className="desktop-icon-label rounded px-1.5 py-0.5 leading-4 group-hover:bg-[#0b4577]/70">Papelera</span>
-          </button>
-        </div>
-        <aside className="desktop-widgets" aria-label="Gadgets del escritorio">
-          <div className="desktop-widget desktop-widget-clock">
-            <span className="mono text-[10px] tracking-[.18em] text-[var(--mint)]">LOCAL TIME</span>
-            <strong>{now.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" })}</strong>
-            <span>{now.toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long" })}</span>
-          </div>
-          <div className="desktop-widget">
-            <div className="flex items-center justify-between gap-3">
-              <span className="mono text-[10px] tracking-[.18em] text-[var(--mint)]">DEV OS</span>
-              <span className="h-2 w-2 rounded-full bg-[var(--mint)] shadow-[0_0_10px_var(--mint)]" />
+            <div className="devos-nav-group">
+              <span className="devos-nav-label">PORTAFOLIO</span>
+              {apps.filter((app) => ["about", "projects", "experience", "education", "skills", "contact"].includes(app.id)).map(({ id, label, icon: Icon }, index) => (
+                <button type="button" key={id} className={`devos-nav-item ${activeId === id ? "is-active" : ""}`} aria-current={activeId === id ? "page" : undefined} onClick={() => openWindow(id)}>
+                  <Icon size={17} /><span>{label}</span><small>{String(index + 1).padStart(2, "0")}</small>
+                </button>
+              ))}
             </div>
-            <p className="mt-3 text-sm font-medium text-white">{profile.name}</p>
-            <p className="mt-1 text-xs leading-5 text-[var(--muted)]">Disponible {profile.availability} · {profile.role}</p>
-          </div>
-          <div className="desktop-widget">
-            <div className="flex items-center justify-between">
-              <span className="mono text-[10px] tracking-[.18em] text-[var(--mint)]">WORKSPACE</span>
-              <Activity size={13} className="text-[var(--mint)]" />
+            <div className="devos-nav-group devos-nav-system">
+              <span className="devos-nav-label">SISTEMA</span>
+              {apps.filter((app) => ["files", "terminal", "settings"].includes(app.id)).map(({ id, label, icon: Icon }, index) => (
+                <button type="button" key={id} className={`devos-nav-item ${activeId === id ? "is-active" : ""}`} aria-current={activeId === id ? "page" : undefined} onClick={() => openWindow(id)}>
+                  <Icon size={17} /><span>{label}</span><small>{String(index + 1).padStart(2, "0")}</small>
+                </button>
+              ))}
             </div>
-            <div className="mt-3 grid grid-cols-3 gap-1">
-              <button type="button" onClick={() => openWindow("projects")} className="desktop-stat focus-ring rounded-md p-1 text-left">
-                <span>{projects.length}</span>
-                <small>proyectos</small>
-              </button>
-              <button type="button" onClick={() => openWindow("skills")} className="desktop-stat focus-ring rounded-md p-1 text-left">
-                <span>{Object.values(skillGroups).flat().length}</span>
-                <small>skills</small>
-              </button>
-              <div className="desktop-stat rounded-md p-1">
-                <span>{open.length}</span>
-                <small>abiertas</small>
-              </div>
-            </div>
-          </div>
+          </nav>
+          <div className="devos-sidebar-footer"><span className="devos-sidebar-avatar">DC</span><div><strong>David Cabrera</strong><small>Software + 3D</small></div><span className="devos-sidebar-status" /></div>
         </aside>
-        {activeId && <div className="desktop-focus-veil" aria-hidden="true" />}
-        {apps.map(({ id }) => (
-          <WindowView key={id} id={id} />
-        ))}
-        {contextMenu && (
-          <div
-            data-context-menu
-            className="desktop-context-menu os-menu-in"
-            style={{ left: contextMenu.x, top: contextMenu.y }}
-            role="menu"
-            aria-label="Menú contextual del escritorio"
-          >
-            {selectedDesktopItem && selectedDesktopItem !== "recycle" && (
-              <button type="button" role="menuitem" onClick={() => { openWindow(selectedDesktopItem); setContextMenu(null); }}>
-                <FolderOpen size={14} /> Abrir
-              </button>
-            )}
-            {selectedDesktopItem === "recycle" && (
-              <button type="button" role="menuitem" onClick={() => { openWindow("files"); setContextMenu(null); }}>
-                <FolderOpen size={14} /> Abrir Papelera
-              </button>
-            )}
-            <button type="button" role="menuitem" onClick={organizeIcons}>
-              <AlignJustify size={14} /> Organizar iconos
-            </button>
-            <button type="button" role="menuitem" onClick={sortIconsByName}>
-              <AlignJustify size={14} /> Ordenar por nombre
-            </button>
-            <button type="button" role="menuitem" onClick={() => { setIconPositions(defaultIconPositions); localStorage.removeItem(iconPositionsKey); localStorage.setItem(iconLayoutVersionKey, iconLayoutVersion); setContextMenu(null); }}>
-              <RefreshCw size={14} /> Restablecer posiciones
-            </button>
+
+        <section className="devos-main-area" aria-live="polite">
+          <div className="devos-content-scroll">
+            {activeId ? <WindowView key={activeId} id={activeId} /> : <WorkspaceHome now={now} onOpen={openWindow} />}
           </div>
-        )}
+          <footer className="devos-statusbar">
+            <span><i />{activeApp ? `PORTAFOLIO / ${activeApp.label.toUpperCase()}` : "WORKSPACE / RESUMEN"}</span>
+            <span className="devos-status-shortcut"><Command size={12} /> Ctrl K abre terminal · Esc vuelve al inicio</span>
+            <div><time>{now.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" })}</time><button type="button" onClick={onExit} aria-label="Salir de DEV OS"><Power size={15} /></button></div>
+          </footer>
+        </section>
       </div>
-      <footer className="aero-taskbar fixed bottom-0 left-0 right-0 z-30 flex h-14 min-w-0 items-center gap-3 overflow-x-auto overflow-y-hidden border-t border-[var(--line)] bg-[#111827]/90 px-3 backdrop-blur-xl sm:px-4">
-        <button
-          aria-label="Menú de aplicaciones"
-          onClick={() => setMenu(!menu)}
-          className="aero-start-button focus-ring shrink-0 rounded-full p-2 text-[#08101c]"
-        >
-          <Monitor size={18} />
-        </button>
-        {open.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            type="button"
-            aria-label={`Cambiar a ${label}`}
-            aria-current={activeId === id ? "page" : undefined}
-            aria-pressed={activeId === id}
-            onClick={() => openWindow(id)}
-            className={`focus-ring flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-2 text-xs transition ${activeId === id ? "border-[var(--blue)]/50 bg-[#253553] text-white" : windows[id].minimized ? "border-transparent text-[#71809a] opacity-60 hover:border-[var(--line)] hover:opacity-100" : "border-transparent text-[var(--muted)] hover:border-[var(--line)] hover:text-white"}`}
-          >
-            <Icon size={14} />
-            <span>{label}</span>
-          </button>
-        ))}
-        <div className="ml-auto flex shrink-0 items-center gap-3 text-xs text-[var(--muted)]">
-          <span className="hidden sm:inline">Ctrl+K terminal · Esc cerrar</span>
-          <span>
-            {now.toLocaleTimeString("es-CO", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </span>
-          <button
-            aria-label="Salir de la experiencia 3D"
-            onClick={onExit}
-            className="focus-ring rounded-lg p-2 text-[var(--muted)] hover:text-white"
-          >
-            <Power size={17} />
-          </button>
-        </div>
-        {menu && (
-          <div className="aero-menu aero-start-menu os-menu-in absolute bottom-16 left-4 w-[min(34rem,calc(100vw-2rem))] rounded-xl border border-[var(--line)] p-2 shadow-2xl">
-            <div className="aero-start-profile flex items-center gap-3 rounded-lg px-3 py-3">
-              <span className="aero-avatar flex h-11 w-11 shrink-0 items-center justify-center rounded-full border text-lg font-semibold text-white">
-                {profile.name.charAt(0)}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-white">{profile.name}</p>
-                <p className="mt-1 truncate text-xs text-[var(--muted)]">{profile.role}</p>
-              </div>
-            </div>
-            <div className="grid gap-2 border-t border-white/15 p-2 sm:grid-cols-[1.15fr_.85fr]">
-              <div className="min-w-0">
-                <div className="mb-2 flex items-center justify-between px-2">
-                  <span className="mono text-[10px] tracking-[.16em] text-[var(--mint)]">PROGRAMS</span>
-                  <span className="text-[10px] text-[var(--muted)]">{startApps.length} disponibles</span>
-                </div>
-                <label className="sr-only" htmlFor="start-search">Buscar aplicaciones</label>
-                <div className="mb-2 flex items-center gap-2 rounded-md border border-white/20 bg-black/15 px-2">
-                  <Search size={14} className="text-[var(--muted)]" />
-                  <input
-                    id="start-search"
-                    value={startQuery}
-                    onChange={(event) => setStartQuery(event.target.value)}
-                    placeholder="Buscar programas…"
-                    className="min-w-0 flex-1 bg-transparent py-2 text-xs text-white outline-none placeholder:text-[var(--muted)]"
-                  />
-                </div>
-                <div className="grid gap-1">
-                  {startApps.map(({ id, label, icon: Icon }) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => {
-                        openWindow(id);
-                        setMenu(false);
-                      }}
-                      className="focus-ring flex items-center gap-3 rounded-md px-2 py-2 text-left text-sm text-white hover:bg-white/15"
-                    >
-                      <Icon size={17} className="text-[var(--blue)]" />
-                      <span>{label}</span>
-                    </button>
-                  ))}
-                  {startApps.length === 0 && <p className="px-2 py-3 text-xs text-[var(--muted)]">No se encontraron aplicaciones.</p>}
-                </div>
-              </div>
-              <div className="hidden border-l border-white/15 pl-2 sm:block">
-                <p className="px-2 py-2 text-[10px] tracking-[.16em] text-[var(--mint)]">RECENT</p>
-                {recentApps.map(({ id, label, icon: Icon }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => {
-                      openWindow(id);
-                      setMenu(false);
-                    }}
-                    className="focus-ring flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs text-[var(--muted)] hover:bg-white/15 hover:text-white"
-                  >
-                    <Icon size={14} />
-                    {label}
-                  </button>
-                ))}
-                <p className="mt-3 px-2 py-2 text-[10px] tracking-[.16em] text-[var(--mint)]">SYSTEM</p>
-                {["settings", "files", "terminal"].map((id) => {
-                  const app = apps.find((item) => item.id === id);
-                  if (!app) return null;
-                  const Icon = app.icon;
-                  return (
-                    <button
-                      key={app.id}
-                      type="button"
-                      onClick={() => {
-                        openWindow(app.id);
-                        setMenu(false);
-                      }}
-                      className="focus-ring flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs text-[var(--muted)] hover:bg-white/15 hover:text-white"
-                    >
-                      <Icon size={14} />
-                      {app.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="relative flex items-center justify-between border-t border-white/15 px-2 pt-2">
-              <span className="mono text-[10px] text-[var(--muted)]">DEV OS / AERO EDITION</span>
-              <button
-                type="button"
-                onClick={() => setPowerMenu((value) => !value)}
-                className="focus-ring flex items-center gap-2 rounded-md px-2 py-1 text-xs text-white hover:bg-white/15"
-              >
-                <Power size={13} />
-                Apagar
-              </button>
-              {powerMenu && (
-                <div className="aero-power-menu os-menu-in absolute bottom-10 right-0 w-48 rounded-lg border p-1 shadow-xl">
-                  <button type="button" onClick={onExit}>
-                    Cerrar sesión
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      open.forEach(({ id }) => closeWindow(id));
-                      setPowerMenu(false);
-                      setMenu(false);
-                    }}
-                  >
-                    Reiniciar DEV OS
-                  </button>
-                  <button type="button" onClick={() => setPowerMenu(false)}>
-                    Cancelar
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </footer>
     </main>
   );
 }

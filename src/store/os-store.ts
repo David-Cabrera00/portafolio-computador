@@ -77,15 +77,6 @@ const initialWindows = Object.fromEntries(
   ]),
 ) as Record<AppId, WindowState>;
 
-function topVisibleWindow(
-  windows: Record<AppId, WindowState>,
-  excluded?: AppId,
-) {
-  return Object.values(windows)
-    .filter((window) => window.open && !window.minimized && window.id !== excluded)
-    .sort((a, b) => b.zIndex - a.zIndex)[0]?.id ?? null;
-}
-
 export const useOSStore = create<OSState>((set) => ({
   windows: initialWindows,
   activeId: null,
@@ -96,17 +87,18 @@ export const useOSStore = create<OSState>((set) => ({
   hydrated: false,
   openWindow: (id) =>
     set((s) => ({
-      windows: {
-        ...s.windows,
-        [id]: {
-          ...s.windows[id],
-          open: true,
-          minimized: false,
-          closing: false,
-          zIndex:
-            Math.max(...Object.values(s.windows).map((w) => w.zIndex)) + 1,
-        },
-      },
+      windows: Object.fromEntries(
+        Object.entries(s.windows).map(([windowId, current]) => [
+          windowId,
+          {
+            ...current,
+            open: windowId === id,
+            minimized: false,
+            closing: false,
+            zIndex: windowId === id ? current.zIndex + 1 : current.zIndex,
+          },
+        ]),
+      ) as Record<AppId, WindowState>,
       activeId: id,
     })),
   closeWindow: (id) =>
@@ -115,10 +107,7 @@ export const useOSStore = create<OSState>((set) => ({
         ...s.windows,
         [id]: { ...s.windows[id], open: false, closing: false },
       };
-      return {
-        windows,
-        activeId: s.activeId === id ? topVisibleWindow(windows, id) : s.activeId,
-      };
+      return { windows, activeId: s.activeId === id ? null : s.activeId };
     }),
   beginCloseWindow: (id) => {
     set((s) => ({
@@ -137,10 +126,7 @@ export const useOSStore = create<OSState>((set) => ({
         ...s.windows,
         [id]: { ...s.windows[id], minimized: true },
       };
-      return {
-        windows,
-        activeId: s.activeId === id ? topVisibleWindow(windows, id) : s.activeId,
-      };
+      return { windows, activeId: s.activeId === id ? null : s.activeId };
     }),
   maximizeWindow: (id) =>
     set((s) => ({
