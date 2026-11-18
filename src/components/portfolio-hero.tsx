@@ -52,7 +52,7 @@ export function PortfolioHero({ profile }: { profile: Profile }) {
           <p className="portfolio-hero-lead">{t.hero.lead}</p>
           <div className="classic-actions">
             <a href="#projects" className="classic-button classic-button-primary">{t.hero.explore} <ArrowUpRight size={16} /></a>
-            <a href="/portfolio/assets/cv/cv.pdf" download className="classic-button classic-button-secondary"><Download size={16} /> {t.hero.cv}</a>
+            <a href={language === "en" ? "/portfolio/assets/cv/cv-en.pdf" : "/portfolio/assets/cv/cv.pdf"} download className="classic-button classic-button-secondary"><Download size={16} /> {t.hero.cv}</a>
             <a href={profile.github} target="_blank" rel="noreferrer" className="portfolio-social-link" aria-label={t.hero.github} title="GitHub"><GithubIcon /></a>
             <a href={profile.linkedin} target="_blank" rel="noreferrer" className="portfolio-social-link" aria-label={t.hero.linkedin} title="LinkedIn"><LinkedinIcon /></a>
           </div>

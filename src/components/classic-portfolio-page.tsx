@@ -18,7 +18,7 @@ export function ClassicPortfolioPage() {
 }
 
 function PortfolioPageContent() {
-  const { t } = usePortfolioLanguage();
+  const { language, t } = usePortfolioLanguage();
   const skills = Object.values(skillGroups).flat();
   const skillEntries = Object.entries(skillGroups);
   return (
@@ -32,7 +32,7 @@ function PortfolioPageContent() {
       <ScrollReveal><section id="projects" className="classic-section classic-section-projects"><div className="classic-container"><div className="classic-section-heading"><div><p className="classic-kicker">{t.projects.kicker}</p><h2>{t.projects.title} <em>{t.projects.emphasis}</em></h2></div></div><ProjectShowcase projects={projects} /></div></section></ScrollReveal>
       <ScrollReveal><TestimonialsShowcase /></ScrollReveal>
       <ScrollReveal><ContactShowcase profile={profile} /></ScrollReveal>
-      <footer className="classic-footer"><div className="classic-container classic-footer-grid"><div className="classic-footer-brand"><a href="#top" className="classic-footer-logo">DC</a><strong>{profile.name}</strong><p>{t.hero.lead}</p></div><div><p className="classic-footer-heading">{t.footer.navigation}</p><nav className="classic-footer-links"><a href="#top">{t.nav.hero}</a><a href="#about">{t.nav.about}</a><a href="#projects">{t.nav.projects}</a><a href="#experience">{t.footer.formation}</a><a href="#skills-certifications">{t.footer.certifications}</a><a href="#contact">{t.nav.contact}</a></nav></div><div><p className="classic-footer-heading">{t.footer.channels}</p><nav className="classic-footer-links"><a href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><a href={`mailto:${profile.email}`}>Email ↗</a><a href="/portfolio/assets/cv/cv.pdf" target="_blank" rel="noreferrer">CV (PDF) ↗</a><Link href="/dev-os">DEV OS ↗</Link></nav></div></div><div className="classic-container classic-footer-bottom"><span>{t.footer.made}</span><a href="#top">{t.footer.back}</a></div></footer>
+      <footer className="classic-footer"><div className="classic-container classic-footer-grid"><div className="classic-footer-brand"><a href="#top" className="classic-footer-logo">DC</a><strong>{profile.name}</strong><p>{t.hero.lead}</p></div><div><p className="classic-footer-heading">{t.footer.navigation}</p><nav className="classic-footer-links"><a href="#top">{t.nav.hero}</a><a href="#about">{t.nav.about}</a><a href="#projects">{t.nav.projects}</a><a href="#experience">{t.footer.formation}</a><a href="#skills-certifications">{t.footer.certifications}</a><a href="#contact">{t.nav.contact}</a></nav></div><div><p className="classic-footer-heading">{t.footer.channels}</p><nav className="classic-footer-links"><a href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><a href={`mailto:${profile.email}`}>Email ↗</a><a href={language === "en" ? "/portfolio/assets/cv/cv-en.pdf" : "/portfolio/assets/cv/cv.pdf"} target="_blank" rel="noreferrer">CV (PDF) ↗</a><Link href="/dev-os">DEV OS ↗</Link></nav></div></div><div className="classic-container classic-footer-bottom"><span>{t.footer.made}</span><a href="#top">{t.footer.back}</a></div></footer>
     </main>
   );
 }
