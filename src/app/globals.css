@@ -1296,3 +1296,8 @@ html[data-classic-theme="dark"] .classic-contact-section { background:#101827; c
 @media (prefers-reduced-motion:reduce) {
   .devos-shell *, .devos-shell *::before, .devos-shell *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
 }
+/* Keep preview image, contrast scrim, and captions in a deterministic paint order. */
+.workspace-project-image { z-index:0; }
+.workspace-project-image img { z-index:0; display:block; }
+.workspace-project-scrim { z-index:1; }
+.workspace-project-meta { z-index:2; }
