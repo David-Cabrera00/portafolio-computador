@@ -393,64 +393,34 @@ function ContactPanel() {
     setStatus("Se preparó un correo en tu cliente predeterminado.");
   };
   return (
-    <div className="space-y-5 text-sm text-[var(--muted)]">
-      <AppPanelHeader eyebrow="COMMUNICATION / CHANNEL" title="Abramos una conversación." description="El formulario prepara un correo en tu cliente predeterminado; no almacena ni simula envíos." meta="MAILTO READY" />
-      <form onSubmit={submit} className="contact-form contact-form-grid grid gap-3">
-        <input
-          name="name"
-          required
-          placeholder="Tu nombre"
-          className="contact-name focus-ring rounded-lg border border-[var(--line)] bg-[#0d1421] px-3 py-2 text-white placeholder:text-[#71809a]"
-        />
-        <input
-          name="email"
-          type="email"
-          placeholder="Tu correo (opcional)"
-          className="contact-email focus-ring rounded-lg border border-[var(--line)] bg-[#0d1421] px-3 py-2 text-white placeholder:text-[#71809a]"
-        />
-        <textarea
-          name="message"
-          required
-          minLength={10}
-          rows={4}
-          placeholder="¿En qué podemos trabajar?"
-          className="contact-message focus-ring rounded-lg border border-[var(--line)] bg-[#0d1421] px-3 py-2 text-white placeholder:text-[#71809a]"
-        />
-        <button
-          type="submit"
-          className="contact-submit rounded-lg bg-[var(--mint)] px-4 py-2 text-[#08101c]"
-        >
-          Preparar correo
-        </button>
-      </form>
-      {status && (
-        <p role="status" className="text-[var(--mint)]">
-          {status}
-        </p>
-      )}
-      <div className="contact-links grid gap-2 sm:grid-cols-3">
-        <a
-          className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
-          href={`mailto:${profile.email}`}
-        >
-          {profile.email}
-        </a>
-        <a
-          className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
-          href={profile.github}
-          target="_blank"
-          rel="noreferrer"
-        >
-          GitHub ↗
-        </a>
-        <a
-          className="focus-ring rounded-lg border border-[var(--line)] p-3 text-[var(--blue)]"
-          href={profile.linkedin}
-          target="_blank"
-          rel="noreferrer"
-        >
-          LinkedIn ↗
-        </a>
+    <div className="os-contact-app">
+      <AppPanelHeader eyebrow="CONTACTO / CANALES ABIERTOS" title="Hablemos de lo que quieres construir." description="Cuéntame brevemente tu idea, proyecto u oportunidad. Te responderé por correo." meta="DISPONIBLE" />
+      <div className="os-contact-layout">
+        <aside className="os-contact-aside">
+          <span className="os-contact-overline">UNA CONVERSACIÓN EMPIEZA AQUÍ</span>
+          <h3>¿Tienes algo<br /><em>en mente?</em></h3>
+          <p>Estoy abierto a colaborar en proyectos de software, prácticas y nuevas ideas.</p>
+          <a className="os-contact-email" href={`mailto:${profile.email}`}>
+            <span className="os-contact-email-icon"><Mail size={18} /></span>
+            <span><small>ESCRÍBEME DIRECTAMENTE</small><strong>{profile.email}</strong></span>
+            <ArrowUpRight size={17} />
+          </a>
+          <div className="os-contact-socials" aria-label="Redes profesionales">
+            <a href={profile.github} target="_blank" rel="noreferrer"><span>GitHub</span><ArrowUpRight size={13} /></a>
+            <a href={profile.linkedin} target="_blank" rel="noreferrer"><span>LinkedIn</span><ArrowUpRight size={13} /></a>
+          </div>
+          <div className="os-contact-availability"><i /> Disponible para conversar <span>· Colombia</span></div>
+        </aside>
+        <form onSubmit={submit} className="os-contact-form">
+          <div className="os-contact-form-head"><span>NUEVO MENSAJE</span><small>01 — 03</small></div>
+          <div className="os-contact-fields">
+            <label><span>Tu nombre <b>*</b></span><input name="name" required autoComplete="name" placeholder="¿Cómo te llamas?" /></label>
+            <label><span>Correo <small>OPCIONAL</small></span><input name="email" type="email" autoComplete="email" placeholder="tu@correo.com" /></label>
+            <label className="os-contact-message-field"><span>¿En qué podemos trabajar? <b>*</b></span><textarea name="message" required minLength={10} rows={5} placeholder="Cuéntame un poco sobre tu idea…" /></label>
+          </div>
+          <div className="os-contact-form-footer"><p>Se abrirá tu aplicación de correo con el mensaje preparado.</p><button type="submit">Preparar correo <ArrowUpRight size={16} /></button></div>
+          {status && <p role="status" className="os-contact-status">{status}</p>}
+        </form>
       </div>
     </div>
   );
