@@ -6,7 +6,6 @@ export type AppId =
   | "about"
   | "projects"
   | "skills"
-  | "experience"
   | "education"
   | "terminal"
   | "files"
@@ -52,7 +51,6 @@ const titles: Record<AppId, string> = {
   about: "Sobre mí",
   projects: "Proyectos",
   skills: "Habilidades",
-  experience: "Experiencia",
   education: "Educación",
   terminal: "Terminal",
   files: "Archivos",

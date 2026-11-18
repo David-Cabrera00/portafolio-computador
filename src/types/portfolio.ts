@@ -8,7 +8,6 @@ export type Profile = {
   github: string;
   linkedin: string;
   education: string;
-  experience: string;
   availability: string;
 };
 

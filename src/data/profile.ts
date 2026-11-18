@@ -10,7 +10,6 @@ export const profile = {
   github: "https://github.com/David-Cabrera00",
   linkedin: "https://www.linkedin.com/in/david-cabrera-209a4a407/",
   education: "Ingeniería de Software · Universidad Cooperativa de Colombia",
-  experience: "Experiencia profesional por confirmar",
   availability: "24/7",
 } satisfies Profile;
 

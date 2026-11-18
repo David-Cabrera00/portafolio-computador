@@ -507,7 +507,7 @@ export function ThreeScene({
   return (
     <Canvas
       camera={{ position: [0.65, 2.7, 7.8], fov: 38 }}
-      dpr={[1, 1.25]}
+      dpr={[1, 1.1]}
       shadows
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >

@@ -7,7 +7,6 @@ import {
   FileText,
   Folder,
   BookOpen,
-  BriefcaseBusiness,
   Mail,
   Monitor,
   Settings,
@@ -42,7 +41,6 @@ const apps: { id: AppId; label: string; icon: typeof UserRound }[] = [
   { id: "about", label: "Sobre mí", icon: UserRound },
   { id: "projects", label: "Proyectos", icon: Folder },
   { id: "skills", label: "Habilidades", icon: Wrench },
-  { id: "experience", label: "Experiencia", icon: BriefcaseBusiness },
   { id: "education", label: "Educación", icon: BookOpen },
   { id: "terminal", label: "Terminal", icon: Terminal },
   { id: "files", label: "Archivos", icon: FileText },
@@ -80,8 +78,6 @@ function AppContent({ id }: { id: AppId }) {
       <ProjectsPanel />
     ) : id === "skills" ? (
       <SkillsPanel />
-    ) : id === "experience" ? (
-      <ExperiencePanel />
     ) : id === "education" ? (
       <EducationPanel />
     ) : id === "contact" ? (
@@ -110,73 +106,55 @@ function AppPanelHeader({ eyebrow, title, description, meta }: { eyebrow: string
 }
 
 function SkillsPanel() {
-  const groups = Object.entries(skillGroups);
   type SkillGroup = keyof typeof skillGroups;
   const groupNames = Object.keys(skillGroups) as SkillGroup[];
   const [activeGroup, setActiveGroup] = useState<SkillGroup>(groupNames[0] ?? "Backend");
-  const [skillQuery, setSkillQuery] = useState("");
-  const activeSkills = skillGroups[activeGroup].filter((skill) =>
-    skill.toLowerCase().includes(skillQuery.toLowerCase()),
-  );
+  const activeSkills = skillGroups[activeGroup];
+  const groupDescriptions: Record<SkillGroup, string> = {
+    "Frameworks backend": "Servicios, APIs y lógica de servidor para aplicaciones confiables.",
+    "Frameworks frontend": "Interfaces web claras, adaptables y conectadas a datos reales.",
+    "Datos y persistencia": "Estructuras y consultas para guardar información con sentido.",
+    "IA aplicada": "Herramientas de IA integradas a flujos de trabajo y productos.",
+    "Desarrollo interactivo": "Experiencias interactivas, prototipos y contenido 3D.",
+  };
+  const groupIndex = groupNames.indexOf(activeGroup);
   return (
-    <div className="space-y-5">
-      <AppPanelHeader eyebrow="CAPABILITY MAP / 04" title="Herramientas para construir." description="Una vista rápida de las tecnologías registradas en el perfil." meta={`${String(Object.values(skillGroups).flat().length).padStart(2, "0")} SKILLS`} />
-      <div className="flex flex-wrap gap-2 border-b border-[var(--line)] pb-3">
-        {groups.map(([group, skills]) => (
+    <div className="os-skills-app">
+      <AppPanelHeader eyebrow="TECNOLOGÍAS / TOOLKIT" title="Herramientas para construir." description="Frameworks y tecnologías que forman parte de mis proyectos." meta={`${String(Object.values(skillGroups).flat().length).padStart(2, "0")} TECNOLOGÍAS`} />
+      <div className="os-skill-categories" role="tablist" aria-label="Categorías de habilidades">
+        {groupNames.map((group, index) => (
           <button
             type="button"
             key={group}
+            role="tab"
+            aria-selected={activeGroup === group}
             onClick={() => setActiveGroup(group as SkillGroup)}
-            className={`focus-ring rounded-lg px-3 py-2 text-xs transition ${activeGroup === group ? "bg-[var(--blue)] text-[#08101c]" : "border border-[var(--line)] text-[var(--muted)] hover:text-white"}`}
+            className={`os-skill-category ${activeGroup === group ? "is-active" : ""}`}
           >
-            {group} <span className="ml-1 opacity-60">{skills.length}</span>
+            <span className="os-skill-category-index">{String(index + 1).padStart(2, "0")}</span>
+            <span>{group}</span>
+            <small>{skillGroups[group].length}</small>
           </button>
         ))}
       </div>
-      <label className="sr-only" htmlFor="skill-search">Filtrar habilidades</label>
-      <input
-        id="skill-search"
-        value={skillQuery}
-        onChange={(event) => setSkillQuery(event.target.value)}
-        placeholder="Filtrar tecnologías…"
-        className="focus-ring w-full rounded-lg border border-[var(--line)] bg-[#0d1421] px-3 py-2 text-sm text-white placeholder:text-[#71809a]"
-      />
-      <div className="grid gap-3 sm:grid-cols-2">
-        {activeSkills.map((skill, index) => (
-          <div key={skill} className="app-interactive-card rounded-xl border border-[var(--line)] bg-black/20 p-4">
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-medium text-white">{skill}</span>
-              <span className="mono text-[10px] text-[#71809a]">{String(index + 1).padStart(2, "0")}</span>
-            </div>
-            <div className="mt-3 h-1 overflow-hidden rounded-full bg-[#202b40]">
-              <div className="h-full w-2/3 rounded-full bg-gradient-to-r from-[var(--blue)] to-[var(--mint)]" />
-            </div>
-            <p className="mt-2 text-[10px] text-[#71809a]">Registrado en el perfil · nivel por confirmar</p>
-          </div>
-        ))}
-      </div>
-      {activeSkills.length === 0 && (
-        <p className="app-detail rounded-xl border border-dashed border-[var(--line)] p-4 text-sm text-[var(--muted)]">
-          No hay tecnologías que coincidan con “{skillQuery}”.
-        </p>
-      )}
-    </div>
-  );
-}
-
-function ExperiencePanel() {
-  return (
-    <div className="experience-app space-y-5">
-      <AppPanelHeader eyebrow="CAREER / 03" title="Una trayectoria en construcción." description="Registro profesional actual. La experiencia laboral se completa cuando haya información confirmada." meta="01 RECORD" />
-      <div className="experience-ledger">
-        <div className="experience-ledger-rail"><span /><i /></div>
-        <article className="experience-ledger-entry">
-          <div className="experience-entry-top"><span>ESTADO ACTUAL</span><span className="experience-status"><i /> EN FORMACIÓN</span></div>
-          <h3>{profile.experience}</h3>
-          <p>Este espacio queda preparado para añadir cargos, organizaciones y periodos verificables.</p>
-          <div className="experience-entry-meta"><span>COLOMBIA</span><span>DISPONIBLE PARA COLABORAR</span></div>
-        </article>
-      </div>
+      <section className={`os-skill-stage os-skill-stage-${groupIndex % 5}`} role="tabpanel" key={activeGroup}>
+        <div className="os-skill-stage-copy">
+          <span className="os-skill-stage-label">ÁREA / {String(groupIndex + 1).padStart(2, "0")}</span>
+          <div className="os-skill-stage-mark" aria-hidden="true"><Wrench size={22} /></div>
+          <h3>{activeGroup}</h3>
+          <p>{groupDescriptions[activeGroup]}</p>
+          <span className="os-skill-stage-count">{String(activeSkills.length).padStart(2, "0")} herramientas en esta área</span>
+        </div>
+        <div className="os-skill-card-grid">
+          {activeSkills.map((skill, index) => (
+            <article className="os-skill-card" key={skill}>
+              <span className="os-skill-card-index">{String(index + 1).padStart(2, "0")} / STACK</span>
+              <strong>{skill}</strong>
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </article>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -215,12 +193,12 @@ function AboutPanel({ onOpen }: { onOpen: (id: AppId) => void }) {
       </div>
       <div className="os-about-gallery" aria-label="Galería personal">
         <div className="os-about-gallery-main">
-          <Image src="/portfolio/assets/foto2.jpeg" alt={`Retrato de ${profile.name}`} width={920} height={920} priority={false} />
-          <span className="os-gallery-label">PROFILE / FIELD NOTE</span>
+          <Image className="os-gallery-portrait" src="/portfolio/assets/foto2.jpeg" alt={`Retrato de ${profile.name}`} width={920} height={920} sizes="(max-width: 760px) 90vw, 36vw" />
+          <span className="os-gallery-label">RETRATO</span>
         </div>
         <div className="os-about-gallery-side">
-          <div><Image src="/portfolio/assets/futbol.jpeg" alt="David jugando fútbol" width={600} height={600} /><span>DEPORTE</span></div>
-          <div><Image src="/portfolio/assets/novia.jpeg" alt="David en un momento personal" width={600} height={600} /><span>FUERA DEL CÓDIGO</span></div>
+          <div><Image className="os-gallery-football" src="/portfolio/assets/futbol.jpeg" alt="David jugando fútbol" width={600} height={600} sizes="(max-width: 760px) 90vw, 48vw" /><span>DEPORTE</span></div>
+          <div><Image className="os-gallery-personal" src="/portfolio/assets/novia.jpeg" alt="David en un momento personal" width={600} height={600} sizes="(max-width: 760px) 90vw, 48vw" /><span>FUERA DEL CÓDIGO</span></div>
         </div>
       </div>
       <div className="grid gap-2 sm:grid-cols-5">
@@ -838,7 +816,7 @@ export function OSDesktop({ onExit }: { onExit: () => void }) {
             </button>
             <div className="devos-nav-group">
               <span className="devos-nav-label">PORTAFOLIO</span>
-              {apps.filter((app) => ["about", "projects", "experience", "education", "skills", "contact"].includes(app.id)).map(({ id, label, icon: Icon }, index) => (
+              {apps.filter((app) => ["about", "projects", "education", "skills", "contact"].includes(app.id)).map(({ id, label, icon: Icon }, index) => (
                 <button type="button" key={id} className={`devos-nav-item ${activeId === id ? "is-active" : ""}`} aria-current={activeId === id ? "page" : undefined} onClick={() => openWindow(id)}>
                   <Icon size={17} /><span>{label}</span><small>{String(index + 1).padStart(2, "0")}</small>
                 </button>

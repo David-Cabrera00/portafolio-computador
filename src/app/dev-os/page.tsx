@@ -46,25 +46,27 @@ export default function DevOSPage() {
     window.setTimeout(() => router.push("/"), 1200);
   };
   const visibleMode = mode === "intro" && introSeen ? "scene" : mode;
+  const sceneActive = visibleMode === "intro" || visibleMode === "scene";
   return (
     <main suppressHydrationWarning className="relative min-h-screen overflow-hidden bg-[var(--bg)]" aria-label="Portafolio 3D interactivo">
-      <section className={`scene-layer absolute inset-0 transition-opacity duration-300 ${visibleMode === "os" || visibleMode === "boot" ? "pointer-events-none opacity-0" : "opacity-100"}`}>
-        <div className="absolute inset-0">
-          <SceneBoundary>
-            <ThreeScene
-              exitRequested={visibleMode === "shutdown"}
-              onMonitorClick={() => {
-                setMonitorFocus(true);
-                window.setTimeout(enterOS, 850);
-              }}
-            />
-          </SceneBoundary>
-        </div>
-        {monitorFocus && (
-          <div className="pointer-events-none absolute inset-0 z-20 bg-[#07101d]/35 backdrop-blur-[1px]" />
-        )}
-        <p className="sr-only">Haz click en el monitor para entrar al portafolio interactivo.</p>
-      </section>
+      {sceneActive && (
+        <section className={`scene-layer absolute inset-0 transition-opacity duration-300 ${monitorFocus ? "pointer-events-none" : ""}`}>
+          <div className="absolute inset-0">
+            <SceneBoundary>
+              <ThreeScene
+                onMonitorClick={() => {
+                  setMonitorFocus(true);
+                  window.setTimeout(enterOS, 850);
+                }}
+              />
+            </SceneBoundary>
+          </div>
+          {monitorFocus && (
+            <div className="pointer-events-none absolute inset-0 z-20 bg-[#07101d]/35 backdrop-blur-[1px]" />
+          )}
+          <p className="sr-only">Haz click en el monitor para entrar al portafolio interactivo.</p>
+        </section>
+      )}
       {visibleMode === "os" && <OSDesktop onExit={exitOS} />}
       {visibleMode === "boot" && <BootScreen />}
       {visibleMode === "shutdown" && <ShutdownScreen />}

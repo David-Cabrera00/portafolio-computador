@@ -6,7 +6,6 @@ export const terminalCommands = [
   "about",
   "projects",
   "skills",
-  "experience",
   "education",
   "contact",
   "whoami",
@@ -35,7 +34,6 @@ export function executeTerminalCommand(
     return { output: projects.map((p) => `• ${p.name}`).join("\n") };
   if (name === "skills")
     return { output: Object.values(skillGroups).flat().join(" · ") };
-  if (name === "experience") return { output: profile.experience };
   if (name === "education") return { output: profile.education };
   if (name === "whoami") return { output: profile.name };
   if (name === "date") return { output: now.toLocaleString("es-CO") };
@@ -50,7 +48,6 @@ export function executeTerminalCommand(
       "about",
       "projects",
       "skills",
-      "experience",
       "education",
       "terminal",
       "files",
